@@ -329,30 +329,46 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () async {
-                          await _model.addEntry(
-                            context,
-                            selectedMood,
-                            textController.text.isEmpty
-                                ? null
-                                : textController.text,
-                            [],
-                          );
-                          if (context.mounted) {
-                            Navigator.pop(context);
-                          }
-                        },
+                        onPressed: _model.isAddingEntry
+                            ? null
+                            : () async {
+                                await _model.addEntry(
+                                  context,
+                                  selectedMood,
+                                  textController.text.isEmpty
+                                      ? null
+                                      : textController.text,
+                                  [],
+                                );
+                                if (context.mounted) {
+                                  Navigator.pop(context);
+                                }
+                              },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: theme.primary,
+                          disabledBackgroundColor: theme.primary.withValues(
+                            alpha: 0.5,
+                          ),
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
                         ),
-                        child: Text(
-                          'Salvar Registro',
-                          style: theme.titleSmall.override(color: Colors.white),
-                        ),
+                        child: _model.isAddingEntry
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : Text(
+                                'Salvar Registro',
+                                style: theme.titleSmall.override(
+                                  color: Colors.white,
+                                ),
+                              ),
                       ),
                     ),
                   ],

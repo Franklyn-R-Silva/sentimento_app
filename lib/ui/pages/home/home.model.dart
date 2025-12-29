@@ -22,6 +22,13 @@ class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     notifyListeners();
   }
 
+  bool _isAddingEntry = false;
+  bool get isAddingEntry => _isAddingEntry;
+  set isAddingEntry(bool value) {
+    _isAddingEntry = value;
+    notifyListeners();
+  }
+
   /// Initialization and disposal methods.
 
   @override
@@ -91,9 +98,15 @@ class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     String? texto,
     List<String> tags,
   ) async {
+    if (isAddingEntry) return;
+    isAddingEntry = true;
+
     final supabase = Supabase.instance.client;
     final userId = supabase.auth.currentUser?.id;
-    if (userId == null) return;
+    if (userId == null) {
+      isAddingEntry = false;
+      return;
+    }
 
     try {
       await EntradasHumorTable().insert({
@@ -111,6 +124,8 @@ class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
           context,
         ).showSnackBar(SnackBar(content: Text('Erro ao salvar: $e')));
       }
+    } finally {
+      isAddingEntry = false;
     }
   }
 

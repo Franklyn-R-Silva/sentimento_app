@@ -94,4 +94,36 @@ class JournalModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     _searchQuery = '';
     _applyFilters();
   }
+
+  Future<void> deleteEntry(String id) async {
+    try {
+      await EntradasHumorTable().delete(matchingRows: (q) => q.eq('id', id));
+      _entries.removeWhere((e) => e.id == id);
+      _applyFilters();
+    } catch (e) {
+      debugPrint('Error deleting entry: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> updateEntry(EntradasHumorRow entry, String? newText) async {
+    try {
+      if (newText == null) return;
+
+      await EntradasHumorTable().update(
+        data: {'nota_texto': newText},
+        matchingRows: (q) => q.eq('id', entry.id),
+      );
+
+      final index = _entries.indexWhere((e) => e.id == entry.id);
+      if (index != -1) {
+        // Create a new row with updated data (manual copy since it's immutable-ish)
+        // Ideally we fetch again, but for speed we just patch locally or reload
+        await loadEntries();
+      }
+    } catch (e) {
+      debugPrint('Error updating entry: $e');
+      rethrow;
+    }
+  }
 }

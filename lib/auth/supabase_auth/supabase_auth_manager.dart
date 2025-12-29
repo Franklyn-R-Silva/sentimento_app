@@ -1,0 +1,175 @@
+// Dart imports:
+import 'dart:async';
+
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:logger/logger.dart';
+import 'package:sentimento_app/auth/auth_manager.dart';
+import 'package:sentimento_app/auth/supabase_auth/auth_util.dart';
+import 'package:sentimento_app/auth/supabase_auth/email_auth.dart';
+import 'package:sentimento_app/auth/supabase_auth/supabase_user_provider.dart';
+import 'package:sentimento_app/backend/supabase.dart';
+import 'package:sentimento_app/core/nav/nav.dart';
+
+// Project imports:
+
+export '/auth/base_auth_user_provider.dart';
+
+class SupabaseAuthManager extends AuthManager with EmailSignInManager {
+  final logger = Logger();
+  @override
+  Future signOut() {
+    clearUserProfile();
+    return SupaFlow.client.auth.signOut();
+  }
+
+  @override
+  Future deleteUser(final BuildContext context) async {
+    try {
+      if (!loggedIn) {
+        logger.e('Error: delete user attempted with no logged in user!');
+        return;
+      }
+      await currentUser?.delete();
+    } on AuthException catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${e.message}')));
+      }
+    }
+  }
+
+  @override
+  Future updateEmail({
+    required final String email,
+    required final BuildContext context,
+  }) async {
+    try {
+      if (!loggedIn) {
+        logger.e('Error: update email attempted with no logged in user!');
+        return;
+      }
+      await currentUser?.updateEmail(email);
+    } on AuthException catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${e.message}')));
+      }
+      return;
+    }
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Email change confirmation email sent')),
+      );
+    }
+  }
+
+  Future updatePassword({
+    required final String newPassword,
+    required final BuildContext context,
+  }) async {
+    try {
+      if (!loggedIn) {
+        logger.e('Error: update password attempted with no logged in user!');
+        return;
+      }
+      await currentUser?.updatePassword(newPassword);
+    } on AuthException catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${e.message}')));
+      }
+      return;
+    }
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Password updated successfully')),
+      );
+    }
+  }
+
+  @override
+  Future resetPassword({
+    required final String email,
+    required final BuildContext context,
+    final String? redirectTo,
+  }) async {
+    try {
+      await SupaFlow.client.auth.resetPasswordForEmail(
+        email,
+        redirectTo: redirectTo,
+      );
+    } on AuthException catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${e.message}')));
+      }
+      return null;
+    }
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Password reset email sent')),
+      );
+    }
+  }
+
+  @override
+  Future<BaseAuthUser?> signInWithEmail(
+    final BuildContext context,
+    final String email,
+    final String password,
+  ) => _signInOrCreateAccount(context, () => emailSignInFunc(email, password));
+
+  @override
+  Future<BaseAuthUser?> createAccountWithEmail(
+    final BuildContext context,
+    final String email,
+    final String password,
+  ) => _signInOrCreateAccount(
+    context,
+    () => emailCreateAccountFunc(email, password),
+  );
+
+  /// Tries to sign in or create an account using Supabase Auth.
+  /// Returns the User object if sign in was successful.
+  Future<BaseAuthUser?> _signInOrCreateAccount(
+    final BuildContext context,
+    final Future<User?> Function() signInFunc,
+  ) async {
+    try {
+      final user = await signInFunc();
+      final authUser = user == null ? null : SentimentoAppSupabaseUser(user);
+
+      // Update currentUser here in case user info needs to be used immediately
+      // after a user is signed in. This should be handled by the user stream,
+      // but adding here too in case of a race condition where the user stream
+      // doesn't assign the currentUser in time.
+      if (authUser != null) {
+        currentUser = authUser;
+        AppStateNotifier.instance.update(authUser);
+      }
+      return authUser;
+    } on AuthException catch (e) {
+      final errorMsg = e.message.contains('User already registered')
+          ? 'Error: The email is already in use by a different account'
+          : 'Error: ${e.message}';
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(errorMsg)));
+      }
+      return null;
+    }
+  }
+}

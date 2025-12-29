@@ -167,6 +167,10 @@ class _JournalPageWidgetState extends State<JournalPageWidget> {
                             }),
                           ],
                         ),
+                      ).animate().fade().slideX(
+                        begin: -0.2,
+                        end: 0,
+                        delay: 100.ms,
                       ),
 
                       const SizedBox(height: 8),

@@ -94,15 +94,21 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               // Header with greeting
-                              HomeHeader(recentEntries: model.recentEntries),
+                              HomeHeader(recentEntries: model.recentEntries)
+                                  .animate()
+                                  .fade(duration: 400.ms)
+                                  .slideY(begin: -0.2, end: 0),
 
                               const SizedBox(height: 24),
 
                               // Streak widget
                               MoodStreak(
-                                streakDays: model.currentStreak,
-                                longestStreak: model.longestStreak,
-                              ),
+                                    streakDays: model.currentStreak,
+                                    longestStreak: model.longestStreak,
+                                  )
+                                  .animate()
+                                  .fade(delay: 100.ms)
+                                  .slideX(begin: 0.1, end: 0),
 
                               const SizedBox(height: 24),
 
@@ -110,11 +116,17 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                               Text('Sua Semana', style: theme.titleMedium),
                               const SizedBox(height: 12),
                               GradientCard(
-                                margin: EdgeInsets.zero,
-                                child: WeeklyChart(
-                                  entries: model.weeklyEntries,
-                                ),
-                              ),
+                                    margin: EdgeInsets.zero,
+                                    child: WeeklyChart(
+                                      entries: model.weeklyEntries,
+                                    ),
+                                  )
+                                  .animate()
+                                  .fade(delay: 150.ms)
+                                  .scale(
+                                    alignment: Alignment.bottomCenter,
+                                    begin: const Offset(0.9, 0.9),
+                                  ),
 
                               const SizedBox(height: 24),
 

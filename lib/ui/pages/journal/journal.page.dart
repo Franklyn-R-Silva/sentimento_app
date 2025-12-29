@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:sentimento_app/backend/tables/entradas_humor.dart';
 import 'package:sentimento_app/backend/services/data_refresh_service.dart';
@@ -141,7 +142,7 @@ class _JournalPageWidgetState extends State<JournalPageWidget> {
                       JournalSearchBar(
                         controller: _searchController,
                         onChanged: (value) => model.searchQuery = value,
-                      ),
+                      ).animate().fade().slideY(begin: -0.5, end: 0),
 
                       // Mood filter chips
                       SizedBox(
@@ -182,10 +183,13 @@ class _JournalPageWidgetState extends State<JournalPageWidget> {
                                 itemBuilder: (context, index) {
                                   final entry = model.filteredEntries[index];
                                   return MoodCard(
-                                    entry: entry,
-                                    onTap: () =>
-                                        _showEntryDetail(context, entry),
-                                  );
+                                        entry: entry,
+                                        onTap: () =>
+                                            _showEntryDetail(context, entry),
+                                      )
+                                      .animate(delay: (50 * index).ms)
+                                      .fade()
+                                      .slideX(begin: 0.2, end: 0);
                                 },
                               ),
                       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 
 import 'package:sentimento_app/backend/services/data_refresh_service.dart';
@@ -138,17 +139,32 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                     ),
                                   ),
                                 ],
+                              ).animate().fade().slideY(
+                                begin: 0.5,
+                                end: 0,
+                                delay: 200.ms,
                               ),
                               const SizedBox(height: 8),
 
                               if (model.recentEntries.isEmpty)
-                                const HomeEmptyState()
+                                const HomeEmptyState().animate().fade().scale()
                               else
                                 ...model.recentEntries
                                     .take(5)
+                                    .toList()
+                                    .asMap()
+                                    .entries
                                     .map(
                                       (entry) =>
-                                          MoodCard(entry: entry, onTap: () {}),
+                                          MoodCard(
+                                                entry: entry.value,
+                                                onTap: () {},
+                                              )
+                                              .animate(
+                                                delay: (100 * entry.key).ms,
+                                              )
+                                              .fade()
+                                              .slideX(begin: 0.2, end: 0),
                                     ),
 
                               const SizedBox(height: 100), // Space for FAB

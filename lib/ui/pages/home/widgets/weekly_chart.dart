@@ -58,7 +58,7 @@ class WeeklyChart extends StatelessWidget {
             Icon(
               Icons.show_chart_rounded,
               size: 48,
-              color: theme.secondaryText.withOpacity(0.5),
+              color: theme.secondaryText.withValues(alpha: 0.5),
             ),
             const SizedBox(height: 12),
             Text(
@@ -69,7 +69,7 @@ class WeeklyChart extends StatelessWidget {
             Text(
               'Adicione seu primeiro registro!',
               style: theme.labelSmall.override(
-                color: theme.secondaryText.withOpacity(0.7),
+                color: theme.secondaryText.withValues(alpha: 0.7),
               ),
             ),
           ],
@@ -88,7 +88,7 @@ class WeeklyChart extends StatelessWidget {
             horizontalInterval: 1,
             getDrawingHorizontalLine: (value) {
               return FlLine(
-                color: theme.alternate.withOpacity(0.2),
+                color: theme.alternate.withValues(alpha: 0.2),
                 strokeWidth: 1,
                 dashArray: [5, 5],
               );
@@ -173,8 +173,8 @@ class WeeklyChart extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    theme.primary.withOpacity(0.3),
-                    theme.primary.withOpacity(0.0),
+                    theme.primary.withValues(alpha: 0.3),
+                    theme.primary.withValues(alpha: 0.0),
                   ],
                 ),
               ),

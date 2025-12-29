@@ -1,9 +1,7 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sentimento_app/core/theme.dart';
-import 'package:sentimento_app/core/widgets.dart';
 import 'package:sentimento_app/core/model.dart';
 import 'package:sentimento_app/ui/pages/home/widgets/mood_card.dart';
 import 'package:sentimento_app/ui/pages/home/widgets/mood_selector.dart';
@@ -119,7 +117,9 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                     Container(
                                       padding: const EdgeInsets.all(12),
                                       decoration: BoxDecoration(
-                                        color: theme.primary.withOpacity(0.1),
+                                        color: theme.primary.withValues(
+                                          alpha: 0.1,
+                                        ),
                                         borderRadius: BorderRadius.circular(16),
                                       ),
                                       child: Text(
@@ -383,7 +383,7 @@ class _EmptyEntriesState extends StatelessWidget {
           Icon(
             Icons.sentiment_satisfied_alt_rounded,
             size: 64,
-            color: theme.primary.withOpacity(0.5),
+            color: theme.primary.withValues(alpha: 0.5),
           ),
           const SizedBox(height: 16),
           Text('Nenhum registro ainda', style: theme.titleMedium),

@@ -1,4 +1,5 @@
 // ignore_for_file: type_literal_in_constant_pattern, avoid_dynamic_calls
+// ignore_for_file: strict_raw_type
 
 // Dart imports:
 import 'dart:io';

@@ -16,7 +16,7 @@ void main() async {
 
   // Load environment variables first
   try {
-    await dotenv.load(fileName: ".env");
+    await dotenv.load(fileName: '.env');
     logger.i('dotenv carregado com sucesso!');
   } catch (e) {
     logger.e('Erro ao carregar dotenv: $e');

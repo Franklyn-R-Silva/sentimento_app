@@ -1,13 +1,12 @@
+// ignore_for_file: strict_raw_type
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_animate/flutter_animate.dart';
 
-enum AnimationTrigger {
-  onPageLoad,
-  onActionTrigger,
-}
+enum AnimationTrigger { onPageLoad, onActionTrigger }
 
 class AnimationInfo {
   AnimationInfo({
@@ -34,12 +33,18 @@ class AnimationInfo {
   }
 }
 
-void createAnimation(final AnimationInfo animation, final TickerProvider vsync) {
+void createAnimation(
+  final AnimationInfo animation,
+  final TickerProvider vsync,
+) {
   final newController = AnimationController(vsync: vsync);
   animation.controller = newController;
 }
 
-void setupAnimations(final Iterable<AnimationInfo> animations, final TickerProvider vsync) {
+void setupAnimations(
+  final Iterable<AnimationInfo> animations,
+  final TickerProvider vsync,
+) {
   for (var animation in animations) {
     createAnimation(animation, vsync);
   }
@@ -54,8 +59,13 @@ extension AnimatedWidgetExtension on Widget {
     return Animate(
       effects: animationInfo.effects,
       child: this,
-      onPlay: (final controller) => animationInfo.loop ? controller.repeat(reverse: animationInfo.reverse) : null,
-      onComplete: (final controller) => !animationInfo.loop && animationInfo.reverse ? controller.reverse() : null,
+      onPlay: (final controller) => animationInfo.loop
+          ? controller.repeat(reverse: animationInfo.reverse)
+          : null,
+      onComplete: (final controller) =>
+          !animationInfo.loop && animationInfo.reverse
+          ? controller.reverse()
+          : null,
     );
   }
 
@@ -66,7 +76,12 @@ extension AnimatedWidgetExtension on Widget {
   }) {
     animationInfo.maybeUpdateEffects(effects);
     return hasBeenTriggered || animationInfo.applyInitialState
-        ? Animate(controller: animationInfo.controller, autoPlay: false, effects: animationInfo.effects, child: this)
+        ? Animate(
+            controller: animationInfo.controller,
+            autoPlay: false,
+            effects: animationInfo.effects,
+            child: this,
+          )
         : this;
   }
 }
@@ -79,9 +94,9 @@ class TiltEffect extends Effect<Offset> {
     final Offset? begin,
     final Offset? end,
   }) : super(
-          begin: begin ?? const Offset(0, 0),
-          end: end ?? const Offset(0, 0),
-        );
+         begin: begin ?? const Offset(0, 0),
+         end: end ?? const Offset(0, 0),
+       );
 
   @override
   Widget build(

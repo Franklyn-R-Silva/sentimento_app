@@ -1,4 +1,5 @@
 // ignore_for_file: overridden_fields, annotate_overrides
+// ignore_for_file: strict_raw_type
 
 // Flutter imports:
 import 'package:flutter/material.dart';

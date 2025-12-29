@@ -24,39 +24,42 @@ class GradientCard extends StatelessWidget {
     final theme = FlutterFlowTheme.of(context);
 
     if (moodLevel == null) {
-      return [theme.primary.withOpacity(0.1), theme.secondary.withOpacity(0.1)];
+      return [
+        theme.primary.withValues(alpha: 0.1),
+        theme.secondary.withValues(alpha: 0.1),
+      ];
     }
 
     switch (moodLevel) {
       case 1: // Muito triste
         return [
-          const Color(0xFFE57373).withOpacity(0.3),
-          const Color(0xFFEF5350).withOpacity(0.2),
+          const Color(0xFFE57373).withValues(alpha: 0.3),
+          const Color(0xFFEF5350).withValues(alpha: 0.2),
         ];
       case 2: // Triste
         return [
-          const Color(0xFFFFB74D).withOpacity(0.3),
-          const Color(0xFFFF9800).withOpacity(0.2),
+          const Color(0xFFFFB74D).withValues(alpha: 0.3),
+          const Color(0xFFFF9800).withValues(alpha: 0.2),
         ];
       case 3: // Neutro
         return [
-          const Color(0xFF90CAF9).withOpacity(0.3),
-          const Color(0xFF64B5F6).withOpacity(0.2),
+          const Color(0xFF90CAF9).withValues(alpha: 0.3),
+          const Color(0xFF64B5F6).withValues(alpha: 0.2),
         ];
       case 4: // Feliz
         return [
-          const Color(0xFF81C784).withOpacity(0.3),
-          const Color(0xFF66BB6A).withOpacity(0.2),
+          const Color(0xFF81C784).withValues(alpha: 0.3),
+          const Color(0xFF66BB6A).withValues(alpha: 0.2),
         ];
       case 5: // Muito feliz
         return [
-          theme.primary.withOpacity(0.3),
-          theme.secondary.withOpacity(0.2),
+          theme.primary.withValues(alpha: 0.3),
+          theme.secondary.withValues(alpha: 0.2),
         ];
       default:
         return [
-          theme.primary.withOpacity(0.1),
-          theme.secondary.withOpacity(0.1),
+          theme.primary.withValues(alpha: 0.1),
+          theme.secondary.withValues(alpha: 0.1),
         ];
     }
   }
@@ -74,10 +77,13 @@ class GradientCard extends StatelessWidget {
           colors: _getGradientColors(context),
         ),
         borderRadius: BorderRadius.circular(borderRadius),
-        border: Border.all(color: theme.alternate.withOpacity(0.3), width: 1),
+        border: Border.all(
+          color: theme.alternate.withValues(alpha: 0.3),
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
-            color: theme.primary.withOpacity(0.1),
+            color: theme.primary.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),

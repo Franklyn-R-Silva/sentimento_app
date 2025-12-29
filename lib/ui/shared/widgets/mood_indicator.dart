@@ -75,7 +75,7 @@ class MoodIndicator extends StatelessWidget {
               value: 1,
               strokeWidth: strokeWidth,
               valueColor: AlwaysStoppedAnimation<Color>(
-                theme.alternate.withOpacity(0.3),
+                theme.alternate.withValues(alpha: 0.3),
               ),
             ),
           ),

@@ -1,3 +1,6 @@
+// ignore_for_file: strict_raw_type, argument_type_not_assignable
+// ignore_for_file: constant_identifier_names
+
 // Dart imports:
 import 'dart:convert';
 

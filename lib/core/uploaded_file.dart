@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_dynamic_calls
+// ignore_for_file: argument_type_not_assignable
 
 // Dart imports:
 import 'dart:convert';
@@ -23,15 +24,13 @@ class FFUploadedFile {
   String toString() =>
       'FFUploadedFile(name: $name, bytes: ${bytes?.length ?? 0}, height: $height, width: $width, blurHash: $blurHash,)';
 
-  String serialize() => jsonEncode(
-        {
-          'name': name,
-          'bytes': bytes,
-          'height': height,
-          'width': width,
-          'blurHash': blurHash,
-        },
-      );
+  String serialize() => jsonEncode({
+    'name': name,
+    'bytes': bytes,
+    'height': height,
+    'width': width,
+    'blurHash': blurHash,
+  });
 
   static FFUploadedFile deserialize(final String val) {
     final serializedData = jsonDecode(val) as Map<String, dynamic>;
@@ -52,13 +51,7 @@ class FFUploadedFile {
   }
 
   @override
-  int get hashCode => Object.hash(
-        name,
-        bytes,
-        height,
-        width,
-        blurHash,
-      );
+  int get hashCode => Object.hash(name, bytes, height, width, blurHash);
 
   @override
   bool operator ==(final Object other) =>

@@ -1,3 +1,5 @@
+// ignore_for_file: strict_raw_type
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

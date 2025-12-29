@@ -1,3 +1,6 @@
+// ignore_for_file: strict-raw-types
+// ignore_for_file: argument_type_not_assignable
+
 // Package imports:
 import 'package:logger/logger.dart';
 

@@ -210,7 +210,7 @@ class _EmptyState extends StatelessWidget {
           Icon(
             Icons.book_outlined,
             size: 64,
-            color: theme.secondaryText.withOpacity(0.5),
+            color: theme.secondaryText.withValues(alpha: 0.5),
           ),
           const SizedBox(height: 16),
           Text(
@@ -221,7 +221,7 @@ class _EmptyState extends StatelessWidget {
           Text(
             'Comece a registrar seu humor!',
             style: theme.bodySmall.override(
-              color: theme.secondaryText.withOpacity(0.7),
+              color: theme.secondaryText.withValues(alpha: 0.7),
             ),
           ),
         ],

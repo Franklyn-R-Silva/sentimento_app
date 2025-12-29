@@ -12,8 +12,10 @@ class AppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = FlutterFlowTheme.of(context);
     final user = Supabase.instance.client.auth.currentUser;
-    final userName =
-        user?.userMetadata?['name'] ?? user?.email?.split('@').first ?? 'Amigo';
+    final String userName =
+        (user?.userMetadata?['name'] as String?) ??
+        user?.email?.split('@').first ??
+        'Amigo';
 
     return Drawer(
       backgroundColor: theme.primaryBackground,

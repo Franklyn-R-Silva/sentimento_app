@@ -35,12 +35,15 @@ class MoodStreak extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            theme.primary.withOpacity(0.2),
-            theme.secondary.withOpacity(0.1),
+            theme.primary.withValues(alpha: 0.2),
+            theme.secondary.withValues(alpha: 0.1),
           ],
         ),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: theme.primary.withOpacity(0.3), width: 1),
+        border: Border.all(
+          color: theme.primary.withValues(alpha: 0.3),
+          width: 1,
+        ),
       ),
       child: Row(
         children: [
@@ -49,15 +52,15 @@ class MoodStreak extends StatelessWidget {
             width: 72,
             height: 72,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
+              gradient: const LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [const Color(0xFFFF6B35), const Color(0xFFFF9800)],
+                colors: [Color(0xFFFF6B35), Color(0xFFFF9800)],
               ),
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFFFF6B35).withOpacity(0.4),
+                  color: const Color(0xFFFF6B35).withValues(alpha: 0.4),
                   blurRadius: 16,
                   offset: const Offset(0, 6),
                 ),

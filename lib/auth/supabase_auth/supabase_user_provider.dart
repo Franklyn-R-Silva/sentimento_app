@@ -1,3 +1,5 @@
+// ignore_for_file: strict_raw_type
+
 // Package imports:
 import 'package:rxdart/rxdart.dart';
 import 'package:sentimento_app/auth/base_auth_user_provider.dart';

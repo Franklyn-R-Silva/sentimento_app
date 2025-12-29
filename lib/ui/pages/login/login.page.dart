@@ -74,9 +74,9 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      theme.primary.withOpacity(0.1),
+                      theme.primary.withValues(alpha: 0.1),
                       theme.primaryBackground,
-                      theme.secondary.withOpacity(0.05),
+                      theme.secondary.withValues(alpha: 0.05),
                     ],
                   ),
                 ),
@@ -103,7 +103,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                               borderRadius: BorderRadius.circular(28),
                               boxShadow: [
                                 BoxShadow(
-                                  color: theme.primary.withOpacity(0.4),
+                                  color: theme.primary.withValues(alpha: 0.4),
                                   blurRadius: 24,
                                   offset: const Offset(0, 8),
                                 ),
@@ -325,7 +325,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
         hintText: hint,
         labelStyle: theme.labelMedium.override(color: theme.secondaryText),
         hintStyle: theme.bodyMedium.override(
-          color: theme.secondaryText.withOpacity(0.5),
+          color: theme.secondaryText.withValues(alpha: 0.5),
         ),
         prefixIcon: Icon(icon, color: theme.secondaryText),
         suffixIcon: isPassword

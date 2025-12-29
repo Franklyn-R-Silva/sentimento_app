@@ -1,3 +1,6 @@
+// ignore_for_file: strict_raw_type, argument_type_not_assignable
+// ignore_for_file: inference_failure_on_untyped_parameter
+
 // Dart imports:
 import 'dart:async';
 

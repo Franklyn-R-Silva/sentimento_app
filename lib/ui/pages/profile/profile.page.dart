@@ -66,8 +66,8 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          theme.primary.withOpacity(0.2),
-                          theme.secondary.withOpacity(0.1),
+                          theme.primary.withValues(alpha: 0.2),
+                          theme.secondary.withValues(alpha: 0.1),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(24),
@@ -87,7 +87,7 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                             borderRadius: BorderRadius.circular(24),
                             boxShadow: [
                               BoxShadow(
-                                color: theme.primary.withOpacity(0.4),
+                                color: theme.primary.withValues(alpha: 0.4),
                                 blurRadius: 16,
                                 offset: const Offset(0, 6),
                               ),
@@ -163,7 +163,7 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                     onTap: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('Exportação em breve!'),
+                          content: const Text('Exportação em breve!'),
                           backgroundColor: theme.primary,
                         ),
                       );
@@ -185,7 +185,7 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                   _SectionTitle(title: 'Sobre', theme: theme),
                   const SizedBox(height: 12),
 
-                  _SettingsTile(
+                  const _SettingsTile(
                     icon: Icons.info_outline_rounded,
                     title: 'Versão do App',
                     subtitle: '1.0.0',
@@ -281,7 +281,7 @@ class _SettingsTile extends StatelessWidget {
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: theme.primary.withOpacity(0.1),
+            color: theme.primary.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(icon, color: theme.primary, size: 20),

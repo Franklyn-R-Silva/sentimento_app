@@ -1,3 +1,5 @@
+// ignore_for_file: strict_raw_type
+
 // Dart imports:
 import 'dart:async';
 

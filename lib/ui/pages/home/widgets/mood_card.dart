@@ -32,10 +32,13 @@ class MoodCard extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [_color.withOpacity(0.15), _color.withOpacity(0.05)],
+          colors: [
+            _color.withValues(alpha: 0.15),
+            _color.withValues(alpha: 0.05),
+          ],
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _color.withOpacity(0.3), width: 1),
+        border: Border.all(color: _color.withValues(alpha: 0.3), width: 1),
       ),
       child: Material(
         color: Colors.transparent,
@@ -51,7 +54,7 @@ class MoodCard extends StatelessWidget {
                   width: 56,
                   height: 56,
                   decoration: BoxDecoration(
-                    color: _color.withOpacity(0.2),
+                    color: _color.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Center(
@@ -96,12 +99,12 @@ class MoodCard extends StatelessWidget {
                           ),
                         ),
                       ],
-                      if (entry.tags != null && entry.tags!.isNotEmpty) ...[
+                      if (entry.tags.isNotEmpty) ...[
                         const SizedBox(height: 8),
                         Wrap(
                           spacing: 6,
                           runSpacing: 4,
-                          children: entry.tags!
+                          children: entry.tags
                               .take(3)
                               .map(
                                 (tag) => Container(
@@ -110,7 +113,7 @@ class MoodCard extends StatelessWidget {
                                     vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: theme.primary.withOpacity(0.1),
+                                    color: theme.primary.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Text(

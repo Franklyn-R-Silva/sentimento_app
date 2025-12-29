@@ -9,6 +9,7 @@ import 'package:sentimento_app/ui/pages/journal/widgets/journal_empty_state.dart
 import 'package:sentimento_app/ui/pages/journal/widgets/journal_filter_chip.dart';
 import 'package:sentimento_app/ui/pages/journal/widgets/journal_search_bar.dart';
 import 'package:sentimento_app/ui/pages/journal/widgets/journal_entry_detail_sheet.dart';
+import 'package:sentimento_app/ui/pages/journal/widgets/journal_calendar_view.dart';
 import 'journal.model.dart';
 
 export 'journal.model.dart';
@@ -82,6 +83,8 @@ class _JournalPageWidgetState extends State<JournalPageWidget> {
     );
   }
 
+  bool _isCalendarView = false;
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<JournalModel>.value(
@@ -101,7 +104,23 @@ class _JournalPageWidgetState extends State<JournalPageWidget> {
               ),
               centerTitle: false,
               actions: [
-                if (model.filterMood != null || model.searchQuery.isNotEmpty)
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _isCalendarView = !_isCalendarView;
+                    });
+                  },
+                  icon: Icon(
+                    _isCalendarView
+                        ? Icons.format_list_bulleted_rounded
+                        : Icons.calendar_month_rounded,
+                    color: theme.primary,
+                  ),
+                  tooltip: _isCalendarView ? 'Ver Lista' : 'Ver Calendário',
+                ),
+                if ((model.filterMood != null ||
+                        model.searchQuery.isNotEmpty) &&
+                    !_isCalendarView)
                   TextButton(
                     onPressed: () {
                       _searchController.clear();
@@ -114,61 +133,64 @@ class _JournalPageWidgetState extends State<JournalPageWidget> {
                   ),
               ],
             ),
-            body: Column(
-              children: [
-                // Search bar
-                JournalSearchBar(
-                  controller: _searchController,
-                  onChanged: (value) => model.searchQuery = value,
-                ),
-
-                // Mood filter chips
-                SizedBox(
-                  height: 48,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+            body: _isCalendarView
+                ? JournalCalendarView(model: model)
+                : Column(
                     children: [
-                      JournalFilterChip(
-                        label: 'Todos',
-                        isSelected: model.filterMood == null,
-                        onTap: () => model.filterMood = null,
+                      // Search bar
+                      JournalSearchBar(
+                        controller: _searchController,
+                        onChanged: (value) => model.searchQuery = value,
                       ),
-                      ...List.generate(5, (index) {
-                        final mood = index + 1;
-                        final emojis = ['😢', '😟', '😐', '🙂', '😄'];
-                        return JournalFilterChip(
-                          label: emojis[index],
-                          isSelected: model.filterMood == mood,
-                          onTap: () => model.filterMood = mood,
-                        );
-                      }),
+
+                      // Mood filter chips
+                      SizedBox(
+                        height: 48,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          children: [
+                            JournalFilterChip(
+                              label: 'Todos',
+                              isSelected: model.filterMood == null,
+                              onTap: () => model.filterMood = null,
+                            ),
+                            ...List.generate(5, (index) {
+                              final mood = index + 1;
+                              final emojis = ['😢', '😟', '😐', '🙂', '😄'];
+                              return JournalFilterChip(
+                                label: emojis[index],
+                                isSelected: model.filterMood == mood,
+                                onTap: () => model.filterMood = mood,
+                              );
+                            }),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      // Entries list
+                      Expanded(
+                        child: model.isLoading
+                            ? const Center(child: CircularProgressIndicator())
+                            : model.filteredEntries.isEmpty
+                            ? const JournalEmptyState()
+                            : ListView.builder(
+                                padding: const EdgeInsets.only(bottom: 100),
+                                itemCount: model.filteredEntries.length,
+                                itemBuilder: (context, index) {
+                                  final entry = model.filteredEntries[index];
+                                  return MoodCard(
+                                    entry: entry,
+                                    onTap: () =>
+                                        _showEntryDetail(context, entry),
+                                  );
+                                },
+                              ),
+                      ),
                     ],
                   ),
-                ),
-
-                const SizedBox(height: 8),
-
-                // Entries list
-                Expanded(
-                  child: model.isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : model.filteredEntries.isEmpty
-                      ? const JournalEmptyState()
-                      : ListView.builder(
-                          padding: const EdgeInsets.only(bottom: 100),
-                          itemCount: model.filteredEntries.length,
-                          itemBuilder: (context, index) {
-                            final entry = model.filteredEntries[index];
-                            return MoodCard(
-                              entry: entry,
-                              onTap: () => _showEntryDetail(context, entry),
-                            );
-                          },
-                        ),
-                ),
-              ],
-            ),
           );
         },
       ),

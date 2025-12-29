@@ -54,7 +54,7 @@ class JournalModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         queryFn: (q) => q
             .eq('user_id', userId)
             .order('criado_em', ascending: false)
-            .limit(100),
+            .limit(1000),
       );
 
       _entries = response;
@@ -64,6 +64,23 @@ class JournalModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     } finally {
       isLoading = false;
     }
+  }
+
+  Map<DateTime, List<EntradasHumorRow>> get entriesByDate {
+    final map = <DateTime, List<EntradasHumorRow>>{};
+    for (var entry in _entries) {
+      final date = DateTime(
+        entry.criadoEm.year,
+        entry.criadoEm.month,
+        entry.criadoEm.day,
+      );
+      if (map.containsKey(date)) {
+        map[date]!.add(entry);
+      } else {
+        map[date] = [entry];
+      }
+    }
+    return map;
   }
 
   void _applyFilters() {

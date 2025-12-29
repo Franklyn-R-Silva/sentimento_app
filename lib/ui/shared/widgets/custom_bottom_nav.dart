@@ -5,11 +5,13 @@ import 'package:sentimento_app/core/theme.dart';
 class CustomBottomNav extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
+  final VoidCallback? onMenuTap;
 
   const CustomBottomNav({
     super.key,
     required this.currentIndex,
     required this.onTap,
+    this.onMenuTap,
   });
 
   @override
@@ -21,7 +23,7 @@ class CustomBottomNav extends StatelessWidget {
         color: theme.secondaryBackground,
         boxShadow: [
           BoxShadow(
-            color: theme.primary.withOpacity(0.1),
+            color: theme.primary.withAlpha(25),
             blurRadius: 20,
             offset: const Offset(0, -5),
           ),
@@ -29,10 +31,28 @@ class CustomBottomNav extends StatelessWidget {
       ),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
+              // Menu button
+              if (onMenuTap != null)
+                GestureDetector(
+                  onTap: onMenuTap,
+                  behavior: HitTestBehavior.opaque,
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: theme.primary.withAlpha(25),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Icon(
+                      Icons.menu_rounded,
+                      color: theme.primary,
+                      size: 24,
+                    ),
+                  ),
+                ),
               _NavItem(
                 icon: Icons.home_rounded,
                 label: 'Home',

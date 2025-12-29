@@ -13,6 +13,7 @@ import 'package:sentimento_app/ui/pages/journal/journal.page.dart';
 import 'package:sentimento_app/ui/pages/login/login.page.dart';
 import 'package:sentimento_app/ui/pages/main/main.page.dart';
 import 'package:sentimento_app/ui/pages/profile/profile.page.dart';
+import 'package:sentimento_app/ui/pages/settings/settings.page.dart';
 import 'package:sentimento_app/ui/pages/stats/stats.page.dart';
 
 // Project imports:
@@ -128,6 +129,12 @@ GoRouter createRouter(final AppStateNotifier appStateNotifier) => GoRouter(
       path: ProfilePageWidget.routePath,
       requireAuth: true,
       builder: (final context, final params) => const ProfilePageWidget(),
+    ),
+    FFRoute(
+      name: SettingsPageWidget.routeName,
+      path: SettingsPageWidget.routePath,
+      requireAuth: true,
+      builder: (final context, final params) => const SettingsPageWidget(),
     ),
     FFRoute(
       name: 'Login',

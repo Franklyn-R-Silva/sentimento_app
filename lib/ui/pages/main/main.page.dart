@@ -4,9 +4,10 @@ import 'package:sentimento_app/ui/pages/home/home.page.dart';
 import 'package:sentimento_app/ui/pages/journal/journal.page.dart';
 import 'package:sentimento_app/ui/pages/profile/profile.page.dart';
 import 'package:sentimento_app/ui/pages/stats/stats.page.dart';
+import 'package:sentimento_app/ui/widgets/app_drawer.dart';
 import 'package:sentimento_app/ui/shared/widgets/custom_bottom_nav.dart';
 
-/// MainPage - Página principal com navegação inferior
+/// MainPage - Página principal com navegação inferior e drawer
 class MainPageWidget extends StatefulWidget {
   const MainPageWidget({super.key});
 
@@ -19,6 +20,7 @@ class MainPageWidget extends StatefulWidget {
 
 class _MainPageWidgetState extends State<MainPageWidget> {
   int _currentIndex = 0;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final List<Widget> _pages = const [
     HomePageWidget(),
@@ -32,11 +34,14 @@ class _MainPageWidgetState extends State<MainPageWidget> {
     final theme = FlutterFlowTheme.of(context);
 
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: theme.primaryBackground,
+      drawer: const AppDrawer(),
       body: IndexedStack(index: _currentIndex, children: _pages),
       bottomNavigationBar: CustomBottomNav(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
+        onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
       ),
     );
   }

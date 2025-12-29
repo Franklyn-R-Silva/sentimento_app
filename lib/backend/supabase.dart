@@ -1,10 +1,11 @@
 // Package imports:
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 export './database.dart';
 
-String _kSupabaseUrl = String.fromEnvironment('SUPABASE_URL');
-String _kSupabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
+String _kSupabaseUrl = dotenv.env['SUPABASE_URL'] ?? '';
+String _kSupabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY'] ?? '';
 
 class SupaFlow {
   SupaFlow._();

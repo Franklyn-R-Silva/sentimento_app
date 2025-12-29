@@ -72,3 +72,43 @@ $$ language plpgsql security definer;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+-- Criação da tabela de metas
+create table public.metas (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users not null default auth.uid(),
+  titulo text not null,
+  descricao text,
+  categoria text not null default 'geral',
+  tipo text not null default 'streak', -- streak, contador, habito
+  meta_valor int default 1,
+  valor_atual int default 0,
+  icone text default '🎯',
+  cor text default '#7C4DFF',
+  frequencia text default 'diaria', -- diaria, semanal, mensal
+  ativo boolean default true,
+  concluido boolean default false,
+  data_inicio timestamptz default now(),
+  data_fim timestamptz,
+  criado_em timestamptz default now() not null
+);
+
+-- Habilitar Row Level Security (RLS) para metas
+alter table public.metas enable row level security;
+
+-- Políticas de Segurança para metas
+create policy "Usuários podem ver suas próprias metas"
+  on public.metas for select
+  using (auth.uid() = user_id);
+
+create policy "Usuários podem inserir suas próprias metas"
+  on public.metas for insert
+  with check (auth.uid() = user_id);
+
+create policy "Usuários podem atualizar suas próprias metas"
+  on public.metas for update
+  using (auth.uid() = user_id);
+
+create policy "Usuários podem deletar suas próprias metas"
+  on public.metas for delete
+  using (auth.uid() = user_id);

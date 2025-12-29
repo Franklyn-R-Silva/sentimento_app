@@ -88,13 +88,10 @@ class _JournalPageWidgetState extends State<JournalPageWidget> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Humor: ${entry.nota ?? 3}/5',
-                        style: theme.titleMedium,
-                      ),
+                      Text('Humor: ${entry.nota}/5', style: theme.titleMedium),
                       const SizedBox(height: 4),
                       Text(
-                        '${entry.criadoEm!.day}/${entry.criadoEm!.month}/${entry.criadoEm!.year} às ${entry.criadoEm!.hour}:${entry.criadoEm!.minute.toString().padLeft(2, '0')}',
+                        '${entry.criadoEm.day}/${entry.criadoEm.month}/${entry.criadoEm.year} às ${entry.criadoEm.hour}:${entry.criadoEm.minute.toString().padLeft(2, '0')}',
                         style: theme.labelMedium.override(
                           color: theme.secondaryText,
                         ),

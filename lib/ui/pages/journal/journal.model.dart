@@ -53,7 +53,7 @@ class JournalModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       final response = await EntradasHumorTable().queryRows(
         queryFn: (q) => q
             .eq('user_id', userId)
-            .order('created_at', ascending: false)
+            .order('criado_em', ascending: false)
             .limit(100),
       );
 

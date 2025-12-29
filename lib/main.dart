@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:logger/logger.dart';
 import 'package:sentimento_app/auth/supabase_auth/supabase_user_provider.dart';
@@ -12,6 +13,15 @@ import 'package:sentimento_app/core/nav/nav.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final logger = Logger();
+
+  // Load environment variables first
+  try {
+    await dotenv.load(fileName: ".env");
+    logger.i('dotenv carregado com sucesso!');
+  } catch (e) {
+    logger.e('Erro ao carregar dotenv: $e');
+  }
+
   try {
     await SupaFlow.initialize();
     logger.i('Supabase initialize com sucesso!');

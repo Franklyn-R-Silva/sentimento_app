@@ -1,7 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sentimento_app/backend/tables/entradas_humor.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/core/widgets.dart';
 import 'package:sentimento_app/core/model.dart';

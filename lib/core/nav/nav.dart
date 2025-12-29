@@ -287,8 +287,8 @@ class FFRoute {
           : builder(context, ffParams);
       final child = appStateNotifier.loading
           ? Container(
-              color: Colors.transparent,
-              child: Image.asset('assets/images/cao_1.png', fit: BoxFit.cover),
+              color: Colors.white,
+              child: const Center(child: CircularProgressIndicator()),
             )
           : page;
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sentimento_app/backend/tables/entradas_humor.dart';
 import 'package:sentimento_app/core/model.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/ui/pages/home/widgets/mood_card.dart';
@@ -35,10 +36,10 @@ class _JournalPageWidgetState extends State<JournalPageWidget> {
     super.dispose();
   }
 
-  void _showEntryDetail(BuildContext context, dynamic entry) {
+  void _showEntryDetail(BuildContext context, EntradasHumorRow entry) {
     final theme = FlutterFlowTheme.of(context);
     final emojis = ['😢', '😟', '😐', '🙂', '😄'];
-    final mood = (entry.nota ?? 3) - 1;
+    final mood = entry.nota - 1;
     final emoji = emojis[mood.clamp(0, 4)];
 
     showModalBottomSheet<void>(
@@ -116,7 +117,7 @@ class _JournalPageWidgetState extends State<JournalPageWidget> {
               Text(entry.notaTexto!, style: theme.bodyMedium),
             ],
 
-            if (entry.tags != null && entry.tags!.isNotEmpty) ...[
+            if (entry.tags.isNotEmpty) ...[
               const SizedBox(height: 24),
               Text(
                 'Tags:',
@@ -126,7 +127,7 @@ class _JournalPageWidgetState extends State<JournalPageWidget> {
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: (entry.tags as List<dynamic>)
+                children: entry.tags
                     .map<Widget>(
                       (tag) => Container(
                         padding: const EdgeInsets.symmetric(

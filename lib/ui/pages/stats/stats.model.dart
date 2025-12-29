@@ -52,7 +52,7 @@ class StatsModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       // Fetch all entries for the user
       final entries = await EntradasHumorTable().queryRows(
         queryFn: (q) =>
-            q.eq('user_id', userId).order('created_at', ascending: true),
+            q.eq('user_id', userId).order('criado_em', ascending: true),
       );
 
       if (entries.isEmpty) {

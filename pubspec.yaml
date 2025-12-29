@@ -44,6 +44,10 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^6.0.0
+  import_sorter:
+    git:
+      url: https://github.com/Franklyn-R-Silva/import_sorter.git
+      ref: feat/sort-pubspec
 
 
 flutter:

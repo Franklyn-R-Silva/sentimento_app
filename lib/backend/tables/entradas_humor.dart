@@ -31,6 +31,6 @@ class EntradasHumorRow extends SupabaseDataRow {
   List<String> get tags => getListField<String>('tags');
   set tags(final List<String> value) => setListField<String>('tags', value);
 
-  DateTime get criadoEm => getField<DateTime>('criado_em')!;
-  set criadoEm(final DateTime value) => setField<DateTime>('criado_em', value);
+  DateTime get criadoEm => getField<DateTime>('created_at')!;
+  set criadoEm(final DateTime value) => setField<DateTime>('created_at', value);
 }

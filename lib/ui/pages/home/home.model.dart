@@ -45,7 +45,7 @@ class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       final recentResponse = await EntradasHumorTable().queryRows(
         queryFn: (q) => q
             .eq('user_id', userId)
-            .order('criado_em', ascending: false)
+            .order('created_at', ascending: false)
             .limit(10),
       );
       recentEntries = recentResponse;
@@ -56,8 +56,8 @@ class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       final weeklyResponse = await EntradasHumorTable().queryRows(
         queryFn: (q) => q
             .eq('user_id', userId)
-            .gte('criado_em', sevenDaysAgo.toIso8601String())
-            .order('criado_em', ascending: true),
+            .gte('created_at', sevenDaysAgo.toIso8601String())
+            .order('created_at', ascending: true),
       );
       weeklyEntries = weeklyResponse;
 
@@ -66,8 +66,8 @@ class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       final annualResponse = await EntradasHumorTable().queryRows(
         queryFn: (q) => q
             .eq('user_id', userId)
-            .gte('criado_em', startOfYear.toIso8601String())
-            .order('criado_em', ascending: true),
+            .gte('created_at', startOfYear.toIso8601String())
+            .order('created_at', ascending: true),
       );
       annualEntries = annualResponse;
 
@@ -95,7 +95,7 @@ class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         'nota': nota,
         'nota_texto': texto,
         'tags': tags,
-        'criado_em': DateTime.now().toIso8601String(),
+        'created_at': DateTime.now().toIso8601String(),
       });
       await loadData(); // Refresh and notify listeners
     } catch (e) {

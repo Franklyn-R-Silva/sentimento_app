@@ -1,0 +1,29 @@
+# Indica que este é o arquivo de configuração raiz
+root = true
+
+# Configurações globais para todos os arquivos
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Configurações específicas para arquivos Dart (Padrão Flutter)
+[*.dart]
+# O padrão oficial do Dart é 80, mas muitos times usas 100 ou 120.
+# O formatador do Flutter respeita isso para quebras de linha.
+max_line_length = 120
+
+# Configurações para arquivos YAML (pubspec.yaml, etc)
+[*.{yaml,yml}]
+indent_size = 2
+
+# Configurações para arquivos Markdown
+[*.md]
+trim_trailing_whitespace = false
+
+# Configurações para arquivos JSON
+[*.json]
+indent_size = 2

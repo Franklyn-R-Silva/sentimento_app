@@ -77,7 +77,7 @@ class JournalModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       if (_searchQuery.isNotEmpty) {
         final query = _searchQuery.toLowerCase();
         final text = entry.notaTexto?.toLowerCase() ?? '';
-        final tags = entry.tags.join(' ').toLowerCase() ?? '';
+        final tags = entry.tags.join(' ').toLowerCase();
         if (!text.contains(query) && !tags.contains(query)) {
           return false;
         }

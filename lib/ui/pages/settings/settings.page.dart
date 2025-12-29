@@ -245,7 +245,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                     title: 'Apagar Dados',
                     subtitle: 'Remover todos os registros',
                     onTap: () {
-                      showDialog(
+                      showDialog<void>(
                         context: context,
                         builder: (context) => AlertDialog(
                           shape: RoundedRectangleBorder(

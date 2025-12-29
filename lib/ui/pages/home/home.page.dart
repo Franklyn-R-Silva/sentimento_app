@@ -260,7 +260,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     final textController = TextEditingController();
     final theme = FlutterFlowTheme.of(context);
 
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

@@ -143,7 +143,7 @@ class AppDrawer extends StatelessWidget {
   }
 
   void _showBreathingExercise(BuildContext context, FlutterFlowTheme theme) {
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -161,7 +161,7 @@ class AppDrawer extends StatelessWidget {
       'Você é importante e faz diferença ⭐',
     ];
 
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: theme.secondaryBackground,
@@ -201,7 +201,7 @@ class AppDrawer extends StatelessWidget {
   }
 
   void _showEmergencyDialog(BuildContext context, FlutterFlowTheme theme) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: theme.secondaryBackground,

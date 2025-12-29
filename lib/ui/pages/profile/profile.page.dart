@@ -136,7 +136,7 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                           value ? ThemeMode.dark : ThemeMode.light,
                         );
                       },
-                      activeColor: theme.primary,
+                      activeTrackColor: theme.primary,
                     ),
                   ),
 
@@ -146,7 +146,7 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                     trailing: Switch.adaptive(
                       value: model.notificationsEnabled,
                       onChanged: (value) => model.notificationsEnabled = value,
-                      activeColor: theme.primary,
+                      activeTrackColor: theme.primary,
                     ),
                   ),
 

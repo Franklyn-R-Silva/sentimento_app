@@ -37,7 +37,7 @@ class StatsModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     isLoading = true;
     try {
       // TODO: Load real stats from Supabase
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future<void>.delayed(const Duration(milliseconds: 500));
 
       _averageMood = 3.5;
       _totalEntries = 42;

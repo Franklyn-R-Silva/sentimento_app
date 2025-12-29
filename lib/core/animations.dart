@@ -108,7 +108,7 @@ class TiltEffect extends Effect<Offset> {
     final animation = buildAnimation(controller, entry);
     return getOptimizedBuilder<Offset>(
       animation: animation,
-      builder: (final _, final __) => Transform(
+      builder: (final context, final child) => Transform(
         transform: Matrix4.identity()
           ..setEntry(3, 2, 0.001)
           ..rotateX(animation.value.dx)

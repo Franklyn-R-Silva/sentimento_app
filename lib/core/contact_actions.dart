@@ -195,7 +195,7 @@ class FlutterFlowContactActions {
     final String? whatsappMessage,
     final String? smsMessage,
   }) {
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (final context) => _ContactActionsBottomSheet(
@@ -257,7 +257,7 @@ class FlutterFlowContactActions {
     final String? subject,
     final String? body,
   }) {
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (final context) => _ContactActionsBottomSheet(

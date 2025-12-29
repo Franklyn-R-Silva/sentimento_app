@@ -215,19 +215,28 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                         ),
                         child: FFButtonWidget(
                           onPressed: () async {
-                            final user = await authManager.signInWithEmail(
-                              context,
-                              model.emailAddressController!.text,
-                              model.passwordController!.text,
-                            );
-                            if (user == null) {
-                              return;
-                            }
-                            if (context.mounted) {
-                              context.goNamedAuth('HomePage', context.mounted);
+                            if (model.isLoading) return;
+                            model.isLoading = true;
+                            try {
+                              final user = await authManager.signInWithEmail(
+                                context,
+                                model.emailAddressController!.text,
+                                model.passwordController!.text,
+                              );
+                              if (user == null) {
+                                return;
+                              }
+                              if (context.mounted) {
+                                context.goNamedAuth(
+                                  'HomePage',
+                                  context.mounted,
+                                );
+                              }
+                            } finally {
+                              model.isLoading = false;
                             }
                           },
-                          text: 'Entrar',
+                          text: model.isLoading ? 'Carregando...' : 'Entrar',
                           options: FFButtonOptions(
                             width: double.infinity,
                             height: 50,
@@ -267,20 +276,31 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                         ),
                         child: FFButtonWidget(
                           onPressed: () async {
-                            final user = await authManager
-                                .createAccountWithEmail(
-                                  context,
-                                  model.emailAddressController!.text,
-                                  model.passwordController!.text,
+                            if (model.isLoading) return;
+                            model.isLoading = true;
+                            try {
+                              final user = await authManager
+                                  .createAccountWithEmail(
+                                    context,
+                                    model.emailAddressController!.text,
+                                    model.passwordController!.text,
+                                  );
+                              if (user == null) {
+                                return;
+                              }
+                              if (context.mounted) {
+                                context.goNamedAuth(
+                                  'HomePage',
+                                  context.mounted,
                                 );
-                            if (user == null) {
-                              return;
-                            }
-                            if (context.mounted) {
-                              context.goNamedAuth('HomePage', context.mounted);
+                              }
+                            } finally {
+                              model.isLoading = false;
                             }
                           },
-                          text: 'Criar Conta',
+                          text: model.isLoading
+                              ? 'Criando Conta...'
+                              : 'Criar Conta',
                           options: FFButtonOptions(
                             width: double.infinity,
                             height: 50,

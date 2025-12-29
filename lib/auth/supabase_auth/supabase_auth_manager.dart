@@ -147,6 +147,7 @@ class SupabaseAuthManager extends AuthManager with EmailSignInManager {
     final Future<User?> Function() signInFunc,
   ) async {
     try {
+      logger.i('Tentando realizar login/criação de conta...');
       final user = await signInFunc();
       final authUser = user == null ? null : SentimentoAppSupabaseUser(user);
 
@@ -155,11 +156,15 @@ class SupabaseAuthManager extends AuthManager with EmailSignInManager {
       // but adding here too in case of a race condition where the user stream
       // doesn't assign the currentUser in time.
       if (authUser != null) {
+        logger.i('Login realizado com sucesso! User UID: ${authUser.uid}');
         currentUser = authUser;
         AppStateNotifier.instance.update(authUser);
+      } else {
+        logger.w('Login falhou ou retornou usuário nulo.');
       }
       return authUser;
     } on AuthException catch (e) {
+      logger.e('Erro de Autenticação Supabase: ${e.message}');
       final errorMsg = e.message.contains('User already registered')
           ? 'Error: The email is already in use by a different account'
           : 'Error: ${e.message}';
@@ -169,6 +174,9 @@ class SupabaseAuthManager extends AuthManager with EmailSignInManager {
           context,
         ).showSnackBar(SnackBar(content: Text(errorMsg)));
       }
+      return null;
+    } catch (e) {
+      logger.e('Erro desconhecido no login: $e');
       return null;
     }
   }

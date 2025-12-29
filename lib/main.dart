@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:logger/logger.dart';
 import 'package:sentimento_app/auth/supabase_auth/supabase_user_provider.dart';
 import 'package:sentimento_app/auth/supabase_auth/auth_util.dart';
 import 'package:sentimento_app/backend/supabase.dart';
@@ -10,7 +11,13 @@ import 'package:sentimento_app/core/nav/nav.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SupaFlow.initialize();
+  final logger = Logger();
+  try {
+    await SupaFlow.initialize();
+    logger.i('Supabase initialize com sucesso!');
+  } catch (e) {
+    logger.e('Erro ao iniciar Supabase: $e');
+  }
 
   await FlutterFlowTheme.initialize();
 

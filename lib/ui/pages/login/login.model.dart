@@ -20,6 +20,13 @@ class LoginModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     notifyListeners();
   }
 
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+  set isLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
+
   String? Function(BuildContext, String?)? passwordControllerValidator;
 
   /// Initialization and disposal methods.

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:sentimento_app/backend/supabase.dart';
+import 'package:sentimento_app/backend/tables/entradas_humor.dart';
 import 'package:sentimento_app/core/model.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class StatsModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   final unfocusNode = FocusNode();
 
-  // Mock data for now - will be connected to real data later
   double _averageMood = 0;
   double get averageMood => _averageMood;
 
@@ -13,6 +15,9 @@ class StatsModel extends FlutterFlowModel<Widget> with ChangeNotifier {
 
   int _currentStreak = 0;
   int get currentStreak => _currentStreak;
+
+  int _longestStreak = 0;
+  int get longestStreak => _longestStreak;
 
   Map<int, int> _moodDistribution = {};
   Map<int, int> get moodDistribution => _moodDistribution;
@@ -36,17 +41,108 @@ class StatsModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   Future<void> loadStats() async {
     isLoading = true;
     try {
-      // TODO: Load real stats from Supabase
-      await Future<void>.delayed(const Duration(milliseconds: 500));
+      final supabase = Supabase.instance.client;
+      final userId = supabase.auth.currentUser?.id;
 
-      _averageMood = 3.5;
-      _totalEntries = 42;
-      _currentStreak = 7;
-      _moodDistribution = {1: 5, 2: 8, 3: 15, 4: 10, 5: 4};
+      if (userId == null) {
+        isLoading = false;
+        return;
+      }
+
+      // Fetch all entries for the user
+      final entries = await EntradasHumorTable().queryRows(
+        queryFn: (q) =>
+            q.eq('user_id', userId).order('created_at', ascending: true),
+      );
+
+      if (entries.isEmpty) {
+        _averageMood = 0;
+        _totalEntries = 0;
+        _currentStreak = 0;
+        _longestStreak = 0;
+        _moodDistribution = {};
+        notifyListeners();
+        return;
+      }
+
+      // Calculate total entries
+      _totalEntries = entries.length;
+
+      // Calculate average mood
+      final validMoods = entries.where((e) => e.nota != null);
+      if (validMoods.isNotEmpty) {
+        _averageMood =
+            validMoods.map((e) => e.nota!).reduce((a, b) => a + b) /
+            validMoods.length;
+      }
+
+      // Calculate mood distribution
+      _moodDistribution = {};
+      for (final entry in entries) {
+        final mood = entry.nota ?? 3;
+        _moodDistribution[mood] = (_moodDistribution[mood] ?? 0) + 1;
+      }
+
+      // Calculate streaks
+      final streaks = _calculateStreaks(entries);
+      _currentStreak = streaks['current'] ?? 0;
+      _longestStreak = streaks['longest'] ?? 0;
 
       notifyListeners();
+    } catch (e) {
+      debugPrint('Error loading stats: $e');
     } finally {
       isLoading = false;
     }
+  }
+
+  /// Calculates current and longest streaks from entries
+  Map<String, int> _calculateStreaks(List<EntradasHumorRow> entries) {
+    if (entries.isEmpty) return {'current': 0, 'longest': 0};
+
+    // Get unique dates (only date part, no time)
+    final dates =
+        entries
+            .where((e) => e.criadoEm != null)
+            .map(
+              (e) => DateTime(
+                e.criadoEm!.year,
+                e.criadoEm!.month,
+                e.criadoEm!.day,
+              ),
+            )
+            .toSet()
+            .toList()
+          ..sort();
+
+    if (dates.isEmpty) return {'current': 0, 'longest': 0};
+
+    int longestStreak = 1;
+    int currentStreak = 1;
+
+    for (int i = 1; i < dates.length; i++) {
+      final diff = dates[i].difference(dates[i - 1]).inDays;
+      if (diff == 1) {
+        currentStreak++;
+        if (currentStreak > longestStreak) {
+          longestStreak = currentStreak;
+        }
+      } else {
+        currentStreak = 1;
+      }
+    }
+
+    // Check if current streak is still active (last entry was today or yesterday)
+    final today = DateTime.now();
+    final todayDate = DateTime(today.year, today.month, today.day);
+    final lastEntryDate = dates.last;
+    final daysSinceLastEntry = todayDate.difference(lastEntryDate).inDays;
+
+    if (daysSinceLastEntry > 1) {
+      // Streak is broken
+      currentStreak = 0;
+    }
+
+    return {'current': currentStreak, 'longest': longestStreak};
   }
 }

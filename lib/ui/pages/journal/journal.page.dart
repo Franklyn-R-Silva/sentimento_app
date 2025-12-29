@@ -35,6 +35,127 @@ class _JournalPageWidgetState extends State<JournalPageWidget> {
     super.dispose();
   }
 
+  void _showEntryDetail(BuildContext context, dynamic entry) {
+    final theme = FlutterFlowTheme.of(context);
+    final emojis = ['😢', '😟', '😐', '🙂', '😄'];
+    final mood = (entry.nota ?? 3) - 1;
+    final emoji = emojis[mood.clamp(0, 4)];
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: theme.secondaryBackground,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Handle bar
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: theme.alternate,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Mood emoji and date
+            Row(
+              children: [
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: theme.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Center(
+                    child: Text(emoji, style: const TextStyle(fontSize: 32)),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Humor: ${entry.nota ?? 3}/5',
+                        style: theme.titleMedium,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        entry.criadoEm != null
+                            ? '${entry.criadoEm!.day}/${entry.criadoEm!.month}/${entry.criadoEm!.year} às ${entry.criadoEm!.hour}:${entry.criadoEm!.minute.toString().padLeft(2, '0')}'
+                            : 'Data não disponível',
+                        style: theme.labelMedium.override(
+                          color: theme.secondaryText,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            if (entry.notaTexto != null && entry.notaTexto!.isNotEmpty) ...[
+              const SizedBox(height: 24),
+              Text(
+                'Nota:',
+                style: theme.labelMedium.override(color: theme.secondaryText),
+              ),
+              const SizedBox(height: 8),
+              Text(entry.notaTexto!, style: theme.bodyMedium),
+            ],
+
+            if (entry.tags != null && entry.tags!.isNotEmpty) ...[
+              const SizedBox(height: 24),
+              Text(
+                'Tags:',
+                style: theme.labelMedium.override(color: theme.secondaryText),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: (entry.tags as List<dynamic>)
+                    .map<Widget>(
+                      (tag) => Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: theme.primary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Text(
+                          tag.toString(),
+                          style: theme.labelMedium.override(
+                            color: theme.primary,
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ],
+
+            const SizedBox(height: 32),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<JournalModel>.value(
@@ -139,9 +260,7 @@ class _JournalPageWidgetState extends State<JournalPageWidget> {
                             final entry = model.filteredEntries[index];
                             return MoodCard(
                               entry: entry,
-                              onTap: () {
-                                // TODO: Open entry detail
-                              },
+                              onTap: () => _showEntryDetail(context, entry),
                             );
                           },
                         ),

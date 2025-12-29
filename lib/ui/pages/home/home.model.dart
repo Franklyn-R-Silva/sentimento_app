@@ -12,6 +12,9 @@ class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   List<EntradasHumorRow> weeklyEntries = [];
   List<EntradasHumorRow> annualEntries = [];
 
+  int _longestStreak = 0;
+  int get longestStreak => _longestStreak;
+
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   set isLoading(bool value) {
@@ -71,6 +74,9 @@ class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       );
       annualEntries = annualResponse;
 
+      // Calculate longest streak
+      _longestStreak = _calculateLongestStreak(annualEntries);
+
       notifyListeners();
     } catch (e) {
       debugPrint('Error loading home data: $e');
@@ -106,5 +112,44 @@ class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         ).showSnackBar(SnackBar(content: Text('Erro ao salvar: $e')));
       }
     }
+  }
+
+  /// Calculates the longest streak of consecutive days with entries
+  int _calculateLongestStreak(List<EntradasHumorRow> entries) {
+    if (entries.isEmpty) return 0;
+
+    // Get unique dates (only date part, no time)
+    final dates =
+        entries
+            .where((e) => e.criadoEm != null)
+            .map(
+              (e) => DateTime(
+                e.criadoEm!.year,
+                e.criadoEm!.month,
+                e.criadoEm!.day,
+              ),
+            )
+            .toSet()
+            .toList()
+          ..sort();
+
+    if (dates.isEmpty) return 0;
+
+    int longestStreak = 1;
+    int currentStreak = 1;
+
+    for (int i = 1; i < dates.length; i++) {
+      final diff = dates[i].difference(dates[i - 1]).inDays;
+      if (diff == 1) {
+        currentStreak++;
+        if (currentStreak > longestStreak) {
+          longestStreak = currentStreak;
+        }
+      } else {
+        currentStreak = 1;
+      }
+    }
+
+    return longestStreak;
   }
 }

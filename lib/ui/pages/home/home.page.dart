@@ -137,7 +137,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                               // Streak widget
                               MoodStreak(
                                 streakDays: _calculateStreak(model),
-                                longestStreak: 14, // TODO: Calculate from data
+                                longestStreak: model.longestStreak,
                               ),
 
                               const SizedBox(height: 24),

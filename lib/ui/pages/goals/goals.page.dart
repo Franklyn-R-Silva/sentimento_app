@@ -397,6 +397,7 @@ class _GoalsPageWidgetState extends State<GoalsPageWidget>
                 onPressed: () => _showAddGoalSheet(context),
                 backgroundColor: theme.primary,
                 elevation: 8,
+                heroTag: 'add_goal_fab',
                 icon: const Icon(Icons.add_rounded, color: Colors.white),
                 label: Text(
                   'Nova Meta',

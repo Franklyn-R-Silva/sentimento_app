@@ -65,6 +65,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
               onPressed: () => _showAddMoodSheet(context),
               backgroundColor: theme.primary,
               elevation: 8,
+              heroTag: 'home_add_mood_fab',
               icon: const Icon(Icons.add_rounded, color: Colors.white),
               label: Text(
                 'Registrar',

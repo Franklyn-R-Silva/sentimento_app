@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:sentimento_app/backend/tables/entradas_humor.dart';
+import 'package:sentimento_app/backend/services/data_refresh_service.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/core/model.dart';
 import 'package:sentimento_app/ui/pages/home/widgets/mood_card.dart';
@@ -30,7 +32,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => HomeModel());
-    _loadData();
+    _model.loadData();
+    DataRefreshService.instance.addListener(_onDataRefresh);
   }
 
   Future<void> _loadData() async {
@@ -39,8 +42,15 @@ class _HomePageWidgetState extends State<HomePageWidget> {
 
   @override
   void dispose() {
+    DataRefreshService.instance.removeListener(_onDataRefresh);
     _model.dispose();
     super.dispose();
+  }
+
+  void _onDataRefresh() {
+    if (mounted) {
+      _model.loadData();
+    }
   }
 
   String _getGreeting() {

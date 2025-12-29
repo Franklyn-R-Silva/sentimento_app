@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sentimento_app/backend/tables/entradas_humor.dart';
+import 'package:sentimento_app/backend/services/data_refresh_service.dart';
 import 'package:sentimento_app/core/model.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/ui/pages/home/widgets/mood_card.dart';
@@ -180,9 +181,10 @@ class _JournalPageWidgetState extends State<JournalPageWidget> {
                       if (confirm == true && context.mounted) {
                         debugPrint('Usuário confirmou exclusão. Iniciando...');
                         try {
-                          // Use _model directly since it's a state variable
                           await _model.deleteEntry(entry.id);
                           if (context.mounted) Navigator.pop(context);
+                          // Notify other pages to refresh
+                          DataRefreshService.instance.triggerRefresh();
                         } catch (e) {
                           debugPrint('Exceção capturada na UI ao excluir: $e');
                           if (context.mounted) {
@@ -241,10 +243,11 @@ class _JournalPageWidgetState extends State<JournalPageWidget> {
 
                       if (newText != null && context.mounted) {
                         try {
-                          // Use _model directly
                           await _model.updateEntry(entry, newText);
                           if (context.mounted)
                             Navigator.pop(context); // Close sheet
+                          // Notify other pages to refresh
+                          DataRefreshService.instance.triggerRefresh();
                         } catch (e) {
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(

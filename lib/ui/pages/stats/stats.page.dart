@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:sentimento_app/core/model.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/ui/shared/widgets/gradient_card.dart';
+import 'package:sentimento_app/backend/services/data_refresh_service.dart';
 import 'package:sentimento_app/ui/shared/widgets/mood_indicator.dart';
 import 'stats.model.dart';
 
@@ -27,12 +28,20 @@ class _StatsPageWidgetState extends State<StatsPageWidget> {
     super.initState();
     _model = createModel(context, () => StatsModel());
     _model.loadStats();
+    DataRefreshService.instance.addListener(_onDataRefresh);
   }
 
   @override
   void dispose() {
+    DataRefreshService.instance.removeListener(_onDataRefresh);
     _model.dispose();
     super.dispose();
+  }
+
+  void _onDataRefresh() {
+    if (mounted) {
+      _model.loadStats();
+    }
   }
 
   @override

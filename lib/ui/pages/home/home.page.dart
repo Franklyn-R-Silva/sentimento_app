@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/core/widgets.dart';
 import 'package:sentimento_app/core/model.dart';
@@ -28,7 +29,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
 
   Future<void> _loadData() async {
     await _model.loadData();
-    if (mounted) setState(() {});
   }
 
   @override
@@ -39,123 +39,153 @@ class _HomePageWidgetState extends State<HomePageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            await showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent,
-              builder: (context) => _buildAddMoodSheet(context),
-            );
-          },
-          backgroundColor: FlutterFlowTheme.of(context).primary,
-          elevation: 8,
-          child: Icon(
-            Icons.add,
-            color: FlutterFlowTheme.of(context).info,
-            size: 24,
-          ),
-        ),
-        appBar: AppBar(
-          backgroundColor: FlutterFlowTheme.of(context).primary,
-          automaticallyImplyLeading: false,
-          title: Text(
-            'Dashboard',
-            style: FlutterFlowTheme.of(context).headlineMedium.override(
-              fontFamily: 'Inter Tight',
-              color: Colors.white,
-              fontSize: 22,
-            ),
-          ),
-          actions: [],
-          centerTitle: false,
-          elevation: 2,
-        ),
-        body: SafeArea(
-          top: true,
-          child: _model.isLoading
-              ? Center(child: CircularProgressIndicator())
-              : SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                        child: Text(
-                          'Humor Semanal',
-                          style: FlutterFlowTheme.of(context).titleMedium,
-                        ),
-                      ),
-                      Container(
-                        height: 200,
-                        padding: EdgeInsets.all(16),
-                        child: _buildWeeklyChart(),
-                      ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                        child: Text(
-                          'Média Anual',
-                          style: FlutterFlowTheme.of(context).titleMedium,
-                        ),
-                      ),
-                      Container(
-                        height: 200,
-                        padding: EdgeInsets.all(16),
-                        child: _buildAnnualChart(),
-                      ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(16, 24, 16, 8),
-                        child: Text(
-                          'Entradas Recentes',
-                          style: FlutterFlowTheme.of(context).titleMedium,
-                        ),
-                      ),
-                      ListView.builder(
-                        padding: EdgeInsets.zero,
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: _model.recentEntries.length,
-                        itemBuilder: (context, index) {
-                          final entry = _model.recentEntries[index];
-                          return ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: _getColorForMood(entry.nota),
-                              radius: 16,
-                              child: Text(
-                                _getEmojiForMood(entry.nota),
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ),
-                            title: Text(
-                              DateFormat(
-                                'dd/MM/yyyy HH:mm',
-                              ).format(entry.criadoEm),
-                              style: FlutterFlowTheme.of(context).bodyMedium,
-                            ),
-                            subtitle: Text(
-                              entry.notaTexto ?? '',
-                              style: FlutterFlowTheme.of(context).bodySmall,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            trailing: Text(
-                              'Nota: ${entry.nota}',
-                              style: FlutterFlowTheme.of(context).bodySmall,
-                            ),
-                          );
-                        },
-                      ),
-                    ],
+    return ChangeNotifierProvider<HomeModel>.value(
+      value: _model,
+      child: Consumer<HomeModel>(
+        builder: (context, model, child) {
+          return GestureDetector(
+            onTap: () => model.unfocusNode.canRequestFocus
+                ? FocusScope.of(context).requestFocus(model.unfocusNode)
+                : FocusScope.of(context).unfocus(),
+            child: Scaffold(
+              key: scaffoldKey,
+              backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+              floatingActionButton: FloatingActionButton(
+                onPressed: () async {
+                  await showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) => _buildAddMoodSheet(context),
+                  );
+                },
+                backgroundColor: FlutterFlowTheme.of(context).primary,
+                elevation: 8,
+                child: Icon(
+                  Icons.add,
+                  color: FlutterFlowTheme.of(context).info,
+                  size: 24,
+                ),
+              ),
+              appBar: AppBar(
+                backgroundColor: FlutterFlowTheme.of(context).primary,
+                automaticallyImplyLeading: false,
+                title: Text(
+                  'Dashboard',
+                  style: FlutterFlowTheme.of(context).headlineMedium.override(
+                    fontFamily: 'Inter Tight',
+                    color: Colors.white,
+                    fontSize: 22,
                   ),
                 ),
-        ),
+                actions: [],
+                centerTitle: false,
+                elevation: 2,
+              ),
+              body: SafeArea(
+                top: true,
+                child: model.isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Padding(
+                              padding: EdgeInsetsDirectional.fromSTEB(
+                                16,
+                                16,
+                                16,
+                                0,
+                              ),
+                              child: Text(
+                                'Humor Semanal',
+                                style: FlutterFlowTheme.of(context).titleMedium,
+                              ),
+                            ),
+                            Container(
+                              height: 200,
+                              padding: EdgeInsets.all(16),
+                              child: _buildWeeklyChart(),
+                            ),
+                            Padding(
+                              padding: EdgeInsetsDirectional.fromSTEB(
+                                16,
+                                16,
+                                16,
+                                0,
+                              ),
+                              child: Text(
+                                'Média Anual',
+                                style: FlutterFlowTheme.of(context).titleMedium,
+                              ),
+                            ),
+                            Container(
+                              height: 200,
+                              padding: EdgeInsets.all(16),
+                              child: _buildAnnualChart(),
+                            ),
+                            Padding(
+                              padding: EdgeInsetsDirectional.fromSTEB(
+                                16,
+                                24,
+                                16,
+                                8,
+                              ),
+                              child: Text(
+                                'Entradas Recentes',
+                                style: FlutterFlowTheme.of(context).titleMedium,
+                              ),
+                            ),
+                            ListView.builder(
+                              padding: EdgeInsets.zero,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: model.recentEntries.length,
+                              itemBuilder: (context, index) {
+                                final entry = model.recentEntries[index];
+                                return ListTile(
+                                  leading: CircleAvatar(
+                                    backgroundColor: _getColorForMood(
+                                      entry.nota,
+                                    ),
+                                    radius: 16,
+                                    child: Text(
+                                      _getEmojiForMood(entry.nota),
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                  title: Text(
+                                    DateFormat(
+                                      'dd/MM/yyyy HH:mm',
+                                    ).format(entry.criadoEm),
+                                    style: FlutterFlowTheme.of(
+                                      context,
+                                    ).bodyMedium,
+                                  ),
+                                  subtitle: Text(
+                                    entry.notaTexto ?? '',
+                                    style: FlutterFlowTheme.of(
+                                      context,
+                                    ).bodySmall,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  trailing: Text(
+                                    'Nota: ${entry.nota}',
+                                    style: FlutterFlowTheme.of(
+                                      context,
+                                    ).bodySmall,
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -317,8 +347,9 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                     textController.text,
                     [],
                   );
-                  Navigator.pop(context);
-                  _loadData(); // Refresh UI
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
                 },
                 text: 'Salvar',
                 options: FFButtonOptions(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sentimento_app/core/model.dart';
 
-class LoginModel extends FlutterFlowModel<Widget> {
+class LoginModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   ///  State fields for stateful widgets in this page.
 
   final unfocusNode = FocusNode();
@@ -12,15 +12,20 @@ class LoginModel extends FlutterFlowModel<Widget> {
   // State field(s) for password widget.
   FocusNode? passwordFocusNode;
   TextEditingController? passwordController;
-  late bool passwordVisibility;
+
+  bool _passwordVisibility = false;
+  bool get passwordVisibility => _passwordVisibility;
+  set passwordVisibility(bool value) {
+    _passwordVisibility = value;
+    notifyListeners();
+  }
+
   String? Function(BuildContext, String?)? passwordControllerValidator;
 
   /// Initialization and disposal methods.
 
   @override
-  void initState(BuildContext context) {
-    passwordVisibility = false;
-  }
+  void initState(BuildContext context) {}
 
   @override
   void dispose() {
@@ -30,6 +35,7 @@ class LoginModel extends FlutterFlowModel<Widget> {
 
     passwordFocusNode?.dispose();
     passwordController?.dispose();
+    super.dispose();
   }
 
   /// Action blocks are added here.

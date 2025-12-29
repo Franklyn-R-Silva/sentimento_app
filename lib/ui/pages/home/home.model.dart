@@ -4,7 +4,7 @@ import 'package:sentimento_app/backend/tables/entradas_humor.dart';
 import 'package:sentimento_app/core/model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class HomeModel extends FlutterFlowModel<Widget> {
+class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   /// State fields for stateful widgets in this page.
   final unfocusNode = FocusNode();
 
@@ -12,7 +12,12 @@ class HomeModel extends FlutterFlowModel<Widget> {
   List<EntradasHumorRow> weeklyEntries = [];
   List<EntradasHumorRow> annualEntries = [];
 
-  bool isLoading = false;
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+  set isLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
 
   /// Initialization and disposal methods.
 
@@ -22,16 +27,13 @@ class HomeModel extends FlutterFlowModel<Widget> {
   @override
   void dispose() {
     unfocusNode.dispose();
+    super.dispose();
   }
 
   /// Action blocks are added here.
 
   Future<void> loadData() async {
     isLoading = true;
-    // Notify if extending ChangeNotifier, or use setState in page
-    // For now we just fetch, page will handle state update via FutureBuilder or similar,
-    // but better if we store state here and page observes.
-    // FlutterFlow models usually store state.
 
     try {
       final supabase = Supabase.instance.client;
@@ -68,6 +70,8 @@ class HomeModel extends FlutterFlowModel<Widget> {
             .order('criado_em', ascending: true),
       );
       annualEntries = annualResponse;
+
+      notifyListeners();
     } catch (e) {
       debugPrint('Error loading home data: $e');
     } finally {
@@ -93,12 +97,14 @@ class HomeModel extends FlutterFlowModel<Widget> {
         'tags': tags,
         'criado_em': DateTime.now().toIso8601String(),
       });
-      await loadData(); // Refresh
+      await loadData(); // Refresh and notify listeners
     } catch (e) {
       debugPrint('Error adding entry: $e');
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Erro ao salvar: $e')));
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Erro ao salvar: $e')));
+      }
     }
   }
 }

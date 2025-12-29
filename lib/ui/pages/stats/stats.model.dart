@@ -69,17 +69,15 @@ class StatsModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       _totalEntries = entries.length;
 
       // Calculate average mood
-      final validMoods = entries.where((e) => e.nota != null);
-      if (validMoods.isNotEmpty) {
+      if (entries.isNotEmpty) {
         _averageMood =
-            validMoods.map((e) => e.nota!).reduce((a, b) => a + b) /
-            validMoods.length;
+            entries.map((e) => e.nota).reduce((a, b) => a + b) / entries.length;
       }
 
       // Calculate mood distribution
       _moodDistribution = {};
       for (final entry in entries) {
-        final mood = entry.nota ?? 3;
+        final mood = entry.nota;
         _moodDistribution[mood] = (_moodDistribution[mood] ?? 0) + 1;
       }
 
@@ -103,13 +101,9 @@ class StatsModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     // Get unique dates (only date part, no time)
     final dates =
         entries
-            .where((e) => e.criadoEm != null)
             .map(
-              (e) => DateTime(
-                e.criadoEm!.year,
-                e.criadoEm!.month,
-                e.criadoEm!.day,
-              ),
+              (e) =>
+                  DateTime(e.criadoEm.year, e.criadoEm.month, e.criadoEm.day),
             )
             .toSet()
             .toList()

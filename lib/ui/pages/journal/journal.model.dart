@@ -96,8 +96,10 @@ class JournalModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   }
 
   Future<void> deleteEntry(String id) async {
+    debugPrint('Tentando excluir entrada com ID: $id');
     try {
       await EntradasHumorTable().delete(matchingRows: (q) => q.eq('id', id));
+      debugPrint('Entrada excluída com sucesso do Supabase');
       _entries.removeWhere((e) => e.id == id);
       _applyFilters();
     } catch (e) {

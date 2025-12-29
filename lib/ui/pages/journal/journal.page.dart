@@ -178,6 +178,7 @@ class _JournalPageWidgetState extends State<JournalPageWidget> {
                       );
 
                       if (confirm == true && context.mounted) {
+                        debugPrint('Usuário confirmou exclusão. Iniciando...');
                         try {
                           await Provider.of<JournalModel>(
                             context,
@@ -185,6 +186,7 @@ class _JournalPageWidgetState extends State<JournalPageWidget> {
                           ).deleteEntry(entry.id);
                           if (context.mounted) Navigator.pop(context);
                         } catch (e) {
+                          debugPrint('Exceção capturada na UI ao excluir: $e');
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('Erro ao excluir: $e')),

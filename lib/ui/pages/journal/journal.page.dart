@@ -180,10 +180,8 @@ class _JournalPageWidgetState extends State<JournalPageWidget> {
                       if (confirm == true && context.mounted) {
                         debugPrint('Usuário confirmou exclusão. Iniciando...');
                         try {
-                          await Provider.of<JournalModel>(
-                            context,
-                            listen: false,
-                          ).deleteEntry(entry.id);
+                          // Use _model directly since it's a state variable
+                          await _model.deleteEntry(entry.id);
                           if (context.mounted) Navigator.pop(context);
                         } catch (e) {
                           debugPrint('Exceção capturada na UI ao excluir: $e');
@@ -243,10 +241,8 @@ class _JournalPageWidgetState extends State<JournalPageWidget> {
 
                       if (newText != null && context.mounted) {
                         try {
-                          await Provider.of<JournalModel>(
-                            context,
-                            listen: false,
-                          ).updateEntry(entry, newText);
+                          // Use _model directly
+                          await _model.updateEntry(entry, newText);
                           if (context.mounted)
                             Navigator.pop(context); // Close sheet
                         } catch (e) {

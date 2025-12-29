@@ -4,7 +4,7 @@ import 'package:sentimento_app/ui/pages/home/home.page.dart';
 import 'package:sentimento_app/ui/pages/journal/journal.page.dart';
 import 'package:sentimento_app/ui/pages/profile/profile.page.dart';
 import 'package:sentimento_app/ui/pages/stats/stats.page.dart';
-import 'package:sentimento_app/ui/widgets/app_drawer.dart';
+import 'package:sentimento_app/ui/shared/widgets/app_drawer.dart';
 import 'package:sentimento_app/ui/shared/widgets/custom_bottom_nav.dart';
 
 /// MainPage - Página principal com navegação inferior e drawer

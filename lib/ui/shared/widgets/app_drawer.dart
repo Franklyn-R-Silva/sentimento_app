@@ -451,20 +451,26 @@ class _NavItem extends StatelessWidget {
         ),
         title: Row(
           children: [
-            Text(label, style: theme.bodyMedium),
+            Flexible(
+              child: Text(
+                label,
+                style: theme.bodyMedium,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
             if (badge != null) ...[
-              const SizedBox(width: 8),
+              const SizedBox(width: 6),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   color: theme.primary,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
                   badge!,
                   style: theme.labelSmall.override(
                     color: Colors.white,
-                    fontSize: 10,
+                    fontSize: 9,
                   ),
                 ),
               ),

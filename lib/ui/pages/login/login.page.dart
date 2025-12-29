@@ -378,8 +378,8 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
       );
       if (user == null) return;
 
-      if (context.mounted) {
-        context.goNamedAuth('Main', context.mounted);
+      if (mounted) {
+        context.goNamedAuth('Main', mounted);
       }
     } finally {
       model.isLoading = false;
@@ -407,8 +407,8 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
       );
       if (user == null) return;
 
-      if (context.mounted) {
-        context.goNamedAuth('Main', context.mounted);
+      if (mounted) {
+        context.goNamedAuth('Main', mounted);
       }
     } finally {
       model.isLoading = false;

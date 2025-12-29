@@ -278,7 +278,7 @@ class _ParticlePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     for (var particle in particles) {
-      final gravity = 0.05;
+      const gravity = 0.05;
 
       // Update position based on progress
       final t = progress;
@@ -336,7 +336,7 @@ class _ParticlePainter extends CustomPainter {
 
   void _drawStar(Canvas canvas, double radius, Paint paint) {
     final path = Path();
-    final angle = math.pi / 5;
+    const angle = math.pi / 5;
 
     for (int i = 0; i < 10; i++) {
       final r = i.isEven ? radius : radius * 0.5;

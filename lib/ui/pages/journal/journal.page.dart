@@ -94,9 +94,7 @@ class _JournalPageWidgetState extends State<JournalPageWidget> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        entry.criadoEm != null
-                            ? '${entry.criadoEm!.day}/${entry.criadoEm!.month}/${entry.criadoEm!.year} às ${entry.criadoEm!.hour}:${entry.criadoEm!.minute.toString().padLeft(2, '0')}'
-                            : 'Data não disponível',
+                        '${entry.criadoEm!.day}/${entry.criadoEm!.month}/${entry.criadoEm!.year} às ${entry.criadoEm!.hour}:${entry.criadoEm!.minute.toString().padLeft(2, '0')}',
                         style: theme.labelMedium.override(
                           color: theme.secondaryText,
                         ),

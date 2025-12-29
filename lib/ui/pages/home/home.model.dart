@@ -121,13 +121,9 @@ class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     // Get unique dates (only date part, no time)
     final dates =
         entries
-            .where((e) => e.criadoEm != null)
             .map(
-              (e) => DateTime(
-                e.criadoEm!.year,
-                e.criadoEm!.month,
-                e.criadoEm!.day,
-              ),
+              (e) =>
+                  DateTime(e.criadoEm.year, e.criadoEm.month, e.criadoEm.day),
             )
             .toSet()
             .toList()

@@ -66,7 +66,7 @@ dynamic supaSerialize<T>(final T? value) {
   }
 }
 
-List? supaSerializeList<T>(final List<T>? value) =>
+List<dynamic>? supaSerializeList<T>(final List<T>? value) =>
     value?.map((final v) => supaSerialize<T>(v)).toList();
 
 T? _supaDeserialize<T>(final dynamic value) {

@@ -1,5 +1,6 @@
-// ignore_for_file: strict-raw-types
+// ignore_for_file: strict-raw-types, strict_raw_type
 // ignore_for_file: argument_type_not_assignable
+// ignore_for_file: inference_failure_on_untyped_parameter
 
 // Package imports:
 import 'package:logger/logger.dart';

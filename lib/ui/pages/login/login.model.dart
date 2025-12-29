@@ -11,7 +11,20 @@ class LoginModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   String? Function(BuildContext, String?)? emailAddressControllerValidator;
   // State field(s) for password widget.
   FocusNode? passwordFocusNode;
+
   TextEditingController? passwordController;
+
+  // New fields for Create Account
+  bool _isCreateAccount = false;
+  bool get isCreateAccount => _isCreateAccount;
+  set isCreateAccount(bool value) {
+    _isCreateAccount = value;
+    notifyListeners();
+  }
+
+  FocusNode? usernameFocusNode;
+  TextEditingController? usernameController;
+  String? Function(BuildContext, String?)? usernameControllerValidator;
 
   bool _passwordVisibility = false;
   bool get passwordVisibility => _passwordVisibility;
@@ -42,6 +55,9 @@ class LoginModel extends FlutterFlowModel<Widget> with ChangeNotifier {
 
     passwordFocusNode?.dispose();
     passwordController?.dispose();
+
+    usernameFocusNode?.dispose();
+    usernameController?.dispose();
     super.dispose();
   }
 

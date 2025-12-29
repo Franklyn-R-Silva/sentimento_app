@@ -13,6 +13,10 @@ abstract class AuthManager {
     required final String email,
     required final BuildContext context,
   });
+  Future updatePassword({
+    required final String newPassword,
+    required final BuildContext context,
+  });
   Future resetPassword({
     required final String email,
     required final BuildContext context,
@@ -31,8 +35,9 @@ mixin EmailSignInManager on AuthManager {
   Future<BaseAuthUser?> createAccountWithEmail(
     final BuildContext context,
     final String email,
-    final String password,
-  );
+    final String password, {
+    final String? username,
+  });
 }
 
 mixin AnonymousSignInManager on AuthManager {

@@ -136,11 +136,50 @@ class SupabaseAuthManager extends AuthManager with EmailSignInManager {
   Future<BaseAuthUser?> createAccountWithEmail(
     final BuildContext context,
     final String email,
-    final String password,
-  ) => _signInOrCreateAccount(
-    context,
-    () => emailCreateAccountFunc(email, password),
-  );
+    final String password, {
+    final String? username,
+  }) async {
+    try {
+      if (username != null) {
+        final exists = await checkUsernameExists(username);
+        if (exists) {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Login já existe')));
+          }
+          return null;
+        }
+      }
+
+      return _signInOrCreateAccount(
+        context,
+        () => emailCreateAccountFunc(
+          email,
+          password,
+          data: username != null ? {'username': username} : null,
+        ),
+      );
+    } catch (e) {
+      logger.e('Erro ao criar conta: $e');
+      return null;
+    }
+  }
+
+  Future<bool> checkUsernameExists(String username) async {
+    try {
+      final res = await SupaFlow.client
+          .from('app_profiles')
+          .select('id')
+          .eq('username', username)
+          .maybeSingle();
+      return res != null;
+    } catch (e) {
+      logger.e('Erro ao verificar username: $e');
+      return false; // Assumir que não existe se der erro, ou tratar melhor
+    }
+  }
 
   /// Tries to sign in or create an account using Supabase Auth.
   /// Returns the User object if sign in was successful.
@@ -168,7 +207,7 @@ class SupabaseAuthManager extends AuthManager with EmailSignInManager {
     } on AuthException catch (e) {
       logger.e('Erro de Autenticação Supabase: ${e.message}');
       final errorMsg = e.message.contains('User already registered')
-          ? 'Error: The email is already in use by a different account'
+          ? 'Email já cadastrado'
           : 'Error: ${e.message}';
       if (context.mounted) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();

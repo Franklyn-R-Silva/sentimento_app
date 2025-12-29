@@ -11,11 +11,13 @@ Future<User?> emailSignInFunc(final String email, final String password) async {
 
 Future<User?> emailCreateAccountFunc(
   final String email,
-  final String password,
-) async {
+  final String password, {
+  final Map<String, dynamic>? data,
+}) async {
   final res = await SupaFlow.client.auth.signUp(
     email: email,
     password: password,
+    data: data,
   );
 
   // If the Supabase project is configured to not let users sign in until the

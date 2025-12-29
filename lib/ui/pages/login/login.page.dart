@@ -37,6 +37,9 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
     _model.passwordController ??= TextEditingController();
     _model.passwordFocusNode ??= FocusNode();
 
+    _model.usernameController ??= TextEditingController();
+    _model.usernameFocusNode ??= FocusNode();
+
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
@@ -137,6 +140,19 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
 
                           const SizedBox(height: 48),
 
+                          // Username field (Create Account only)
+                          if (model.isCreateAccount) ...[
+                            _buildTextField(
+                              context: context,
+                              controller: model.usernameController!,
+                              focusNode: model.usernameFocusNode!,
+                              label: 'Nome de Usuário',
+                              hint: 'usuario123',
+                              icon: Icons.person_outline,
+                            ),
+                            const SizedBox(height: 16),
+                          ],
+
                           // Email field
                           _buildTextField(
                             context: context,
@@ -166,14 +182,15 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
 
                           const SizedBox(height: 24),
 
-                          // Login button
                           SizedBox(
                             width: double.infinity,
                             height: 56,
                             child: ElevatedButton(
                               onPressed: model.isLoading
                                   ? null
-                                  : () => _handleLogin(model),
+                                  : () => model.isCreateAccount
+                                        ? _handleCreateAccount(model)
+                                        : _handleLogin(model),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: theme.primary,
                                 foregroundColor: Colors.white,
@@ -195,7 +212,9 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                       ),
                                     )
                                   : Text(
-                                      'Entrar',
+                                      model.isCreateAccount
+                                          ? 'Criar Conta'
+                                          : 'Entrar',
                                       style: theme.titleSmall.override(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w600,
@@ -206,26 +225,39 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
 
                           const SizedBox(height: 16),
 
-                          // Create account button
+                          // Toggle mode button
                           SizedBox(
                             width: double.infinity,
                             height: 56,
-                            child: OutlinedButton(
-                              onPressed: model.isLoading
-                                  ? null
-                                  : () => _handleCreateAccount(model),
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: theme.primary,
-                                side: BorderSide(color: theme.primary),
+                            child: TextButton(
+                              onPressed: () {
+                                model.isCreateAccount = !model.isCreateAccount;
+                              },
+                              style: TextButton.styleFrom(
+                                foregroundColor: theme.secondaryText,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                               ),
-                              child: Text(
-                                'Criar Conta',
-                                style: theme.titleSmall.override(
-                                  color: theme.primary,
-                                  fontWeight: FontWeight.w600,
+                              child: RichText(
+                                text: TextSpan(
+                                  style: theme.bodyMedium,
+                                  children: [
+                                    TextSpan(
+                                      text: model.isCreateAccount
+                                          ? 'Já tem uma conta? '
+                                          : 'Não tem uma conta? ',
+                                    ),
+                                    TextSpan(
+                                      text: model.isCreateAccount
+                                          ? 'Faça Login'
+                                          : 'Crie uma agora',
+                                      style: TextStyle(
+                                        color: theme.primary,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -388,7 +420,8 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
 
   Future<void> _handleCreateAccount(LoginModel model) async {
     if (model.emailAddressController!.text.isEmpty ||
-        model.passwordController!.text.isEmpty) {
+        model.passwordController!.text.isEmpty ||
+        model.usernameController!.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Preencha todos os campos'),
@@ -404,6 +437,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
         context,
         model.emailAddressController!.text,
         model.passwordController!.text,
+        username: model.usernameController!.text,
       );
       if (user == null) return;
 

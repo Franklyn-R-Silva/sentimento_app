@@ -30,6 +30,11 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
     super.initState();
     _model = createModel(context, () => ProfileModel());
     _model.loadUserData();
+
+    _model.changePasswordController ??= TextEditingController();
+    _model.changePasswordFocusNode ??= FocusNode();
+    _model.confirmPasswordController ??= TextEditingController();
+    _model.confirmPasswordFocusNode ??= FocusNode();
   }
 
   @override
@@ -145,6 +150,13 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                     onTap: () {},
                   ),
 
+                  ProfileSettingsTile(
+                    icon: Icons.lock_outline_rounded,
+                    title: 'Alterar Senha',
+                    subtitle: 'Redefina sua senha de acesso',
+                    onTap: () => _showChangePasswordDialog(context, model),
+                  ),
+
                   const SizedBox(height: 32),
 
                   // Logout button
@@ -164,6 +176,58 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
           );
         },
       ),
+    );
+  }
+
+  void _showChangePasswordDialog(BuildContext context, ProfileModel model) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Alterar Senha'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: model.changePasswordController,
+                  focusNode: model.changePasswordFocusNode,
+                  decoration: const InputDecoration(
+                    labelText: 'Nova Senha',
+                    hintText: 'Mínimo 6 caracteres',
+                  ),
+                  obscureText: true,
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: model.confirmPasswordController,
+                  focusNode: model.confirmPasswordFocusNode,
+                  decoration: const InputDecoration(
+                    labelText: 'Confirmar Senha',
+                    hintText: 'Repita a nova senha',
+                  ),
+                  obscureText: true,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () async {
+                await model.updatePassword(context);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('Salvar'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

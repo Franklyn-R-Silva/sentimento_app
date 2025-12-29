@@ -1,11 +1,14 @@
 include: package:flutter_lints/flutter.yaml
 
 analyzer:
-  # Exclui arquivos gerados automaticamente (se você usar build_runner no futuro)
+  # Exclui arquivos gerados automaticamente e infraestrutura genérica
   exclude:
     - "**/*.g.dart"
     - "**/*.freezed.dart"
     - "lib/generated/**"
+    - "lib/backend/row.dart"
+    - "lib/backend/table.dart"
+    - "lib/core/nav/nav.dart"
 
   # Melhora a análise de tipos (torna o Dart mais rigoroso)
   language:

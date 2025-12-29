@@ -307,7 +307,7 @@ class _FlutterFlowInfiniteScrollPaginationState<T>
   }
 
   Future<void> _onRefresh() async {
-    HapticFeedback.mediumImpact();
+    await HapticFeedback.mediumImpact();
     widget.onRefresh?.call();
     await _controller.refresh(widget.loadMore);
   }

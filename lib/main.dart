@@ -32,7 +32,7 @@ void main() async {
   await FlutterFlowTheme.initialize();
 
   final appState = AppStateNotifier.instance;
-  appState.initializePersistedState();
+  await appState.initializePersistedState();
 
   runApp(
     ChangeNotifierProvider(create: (context) => appState, child: const MyApp()),

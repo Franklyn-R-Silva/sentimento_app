@@ -32,7 +32,7 @@ class ProfileModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     final user = Supabase.instance.client.auth.currentUser;
     _userEmail = user?.email;
     _userName =
-        user?.userMetadata?['name'] ??
+        (user?.userMetadata?['name'] as String?) ??
         user?.email?.split('@').first ??
         'Usuário';
     notifyListeners();

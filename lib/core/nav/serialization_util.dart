@@ -63,9 +63,9 @@ String? serializeParam(
       case ParamType.double:
         data = param.toString();
       case ParamType.String:
-        data = param;
+        data = param as String;
       case ParamType.bool:
-        data = param ? 'true' : 'false';
+        data = (param as bool) ? 'true' : 'false';
       case ParamType.DateTime:
         data = (param as DateTime).millisecondsSinceEpoch.toString();
       case ParamType.DateTimeRange:

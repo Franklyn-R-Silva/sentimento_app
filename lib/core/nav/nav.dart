@@ -7,10 +7,13 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:provider/provider.dart';
 import 'package:sentimento_app/auth/base_auth_user_provider.dart';
-import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/core/util.dart';
 import 'package:sentimento_app/ui/pages/home/home.page.dart';
+import 'package:sentimento_app/ui/pages/journal/journal.page.dart';
 import 'package:sentimento_app/ui/pages/login/login.page.dart';
+import 'package:sentimento_app/ui/pages/main/main.page.dart';
+import 'package:sentimento_app/ui/pages/profile/profile.page.dart';
+import 'package:sentimento_app/ui/pages/stats/stats.page.dart';
 
 // Project imports:
 
@@ -86,21 +89,45 @@ GoRouter createRouter(final AppStateNotifier appStateNotifier) => GoRouter(
   refreshListenable: appStateNotifier,
   navigatorKey: appNavigatorKey,
   errorBuilder: (final context, final state) => appStateNotifier.loggedIn
-      ? const HomePageWidget()
+      ? const MainPageWidget()
       : const LoginPageWidget(),
   routes: [
     FFRoute(
       name: '_initialize',
       path: '/',
       builder: (final context, final _) => appStateNotifier.loggedIn
-          ? const HomePageWidget()
+          ? const MainPageWidget()
           : const LoginPageWidget(),
     ),
     FFRoute(
-      name: 'HomePage',
-      path: '/home',
+      name: MainPageWidget.routeName,
+      path: MainPageWidget.routePath,
+      requireAuth: true,
+      builder: (final context, final params) => const MainPageWidget(),
+    ),
+    FFRoute(
+      name: HomePageWidget.routeName,
+      path: HomePageWidget.routePath,
       requireAuth: true,
       builder: (final context, final params) => const HomePageWidget(),
+    ),
+    FFRoute(
+      name: JournalPageWidget.routeName,
+      path: JournalPageWidget.routePath,
+      requireAuth: true,
+      builder: (final context, final params) => const JournalPageWidget(),
+    ),
+    FFRoute(
+      name: StatsPageWidget.routeName,
+      path: StatsPageWidget.routePath,
+      requireAuth: true,
+      builder: (final context, final params) => const StatsPageWidget(),
+    ),
+    FFRoute(
+      name: ProfilePageWidget.routeName,
+      path: ProfilePageWidget.routePath,
+      requireAuth: true,
+      builder: (final context, final params) => const ProfilePageWidget(),
     ),
     FFRoute(
       name: 'Login',

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sentimento_app/auth/supabase_auth/auth_util.dart';
 import 'package:sentimento_app/core/theme.dart';
-import 'package:sentimento_app/core/widgets.dart';
 import 'package:sentimento_app/core/model.dart';
 import 'package:sentimento_app/core/nav/nav.dart';
 import 'login.model.dart';
@@ -12,12 +11,18 @@ export 'login.model.dart';
 class LoginPageWidget extends StatefulWidget {
   const LoginPageWidget({super.key});
 
+  static const String routeName = 'Login';
+  static const String routePath = '/login';
+
   @override
   State<LoginPageWidget> createState() => _LoginPageWidgetState();
 }
 
-class _LoginPageWidgetState extends State<LoginPageWidget> {
+class _LoginPageWidgetState extends State<LoginPageWidget>
+    with SingleTickerProviderStateMixin {
   late LoginModel _model;
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -31,10 +36,20 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
 
     _model.passwordController ??= TextEditingController();
     _model.passwordFocusNode ??= FocusNode();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
+    _animationController.forward();
   }
 
   @override
   void dispose() {
+    _animationController.dispose();
     _model.dispose();
     super.dispose();
   }
@@ -45,303 +60,393 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
       value: _model,
       child: Consumer<LoginModel>(
         builder: (context, model, child) {
+          final theme = FlutterFlowTheme.of(context);
+
           return GestureDetector(
-            onTap: () => model.unfocusNode.canRequestFocus
-                ? FocusScope.of(context).requestFocus(model.unfocusNode)
-                : FocusScope.of(context).unfocus(),
+            onTap: () => FocusScope.of(context).unfocus(),
             child: Scaffold(
               key: scaffoldKey,
-              backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-              body: SafeArea(
-                top: true,
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(24, 24, 24, 24),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Sentimento',
-                        style: FlutterFlowTheme.of(context).displaySmall
-                            .override(
-                              fontFamily: 'Inter Tight',
-                              color: FlutterFlowTheme.of(context).primary,
-                            ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(
-                          0,
-                          12,
-                          0,
-                          24,
-                        ),
-                        child: Text(
-                          'Bem-vindo de volta',
-                          style: FlutterFlowTheme.of(context).labelLarge,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(
-                          0,
-                          0,
-                          0,
-                          16,
-                        ),
-                        child: TextFormField(
-                          controller: model.emailAddressController,
-                          focusNode: model.emailAddressFocusNode,
-                          autofocus: true,
-                          obscureText: false,
-                          decoration: InputDecoration(
-                            labelText: 'Endereço de Email',
-                            labelStyle: FlutterFlowTheme.of(
-                              context,
-                            ).labelMedium,
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: FlutterFlowTheme.of(context).alternate,
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: FlutterFlowTheme.of(context).primary,
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: FlutterFlowTheme.of(context).error,
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: FlutterFlowTheme.of(context).error,
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            filled: true,
-                            fillColor: FlutterFlowTheme.of(
-                              context,
-                            ).secondaryBackground,
-                          ),
-                          style: FlutterFlowTheme.of(context).bodyMedium,
-                          keyboardType: TextInputType.emailAddress,
-                          validator: model.emailAddressControllerValidator
-                              .asValidator(context),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(
-                          0,
-                          0,
-                          0,
-                          16,
-                        ),
-                        child: TextFormField(
-                          controller: model.passwordController,
-                          focusNode: model.passwordFocusNode,
-                          autofocus: false,
-                          obscureText: !model.passwordVisibility,
-                          decoration: InputDecoration(
-                            labelText: 'Senha',
-                            labelStyle: FlutterFlowTheme.of(
-                              context,
-                            ).labelMedium,
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: FlutterFlowTheme.of(context).alternate,
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: FlutterFlowTheme.of(context).primary,
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: FlutterFlowTheme.of(context).error,
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: FlutterFlowTheme.of(context).error,
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            filled: true,
-                            fillColor: FlutterFlowTheme.of(
-                              context,
-                            ).secondaryBackground,
-                            suffixIcon: InkWell(
-                              onTap: () => model.passwordVisibility =
-                                  !model.passwordVisibility,
-                              focusNode: FocusNode(skipTraversal: true),
-                              child: Icon(
-                                model.passwordVisibility
-                                    ? Icons.visibility_outlined
-                                    : Icons.visibility_off_outlined,
-                                color: FlutterFlowTheme.of(
-                                  context,
-                                ).secondaryText,
-                                size: 24,
-                              ),
-                            ),
-                          ),
-                          style: FlutterFlowTheme.of(context).bodyMedium,
-                          validator: model.passwordControllerValidator
-                              .asValidator(context),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(
-                          0,
-                          0,
-                          0,
-                          16,
-                        ),
-                        child: FFButtonWidget(
-                          onPressed: () async {
-                            if (model.isLoading) return;
-                            model.isLoading = true;
-                            try {
-                              final user = await authManager.signInWithEmail(
-                                context,
-                                model.emailAddressController!.text,
-                                model.passwordController!.text,
-                              );
-                              if (user == null) {
-                                return;
-                              }
-                              if (context.mounted) {
-                                context.goNamedAuth(
-                                  'HomePage',
-                                  context.mounted,
-                                );
-                              }
-                            } finally {
-                              model.isLoading = false;
-                            }
-                          },
-                          text: model.isLoading ? 'Carregando...' : 'Entrar',
-                          options: FFButtonOptions(
-                            width: double.infinity,
-                            height: 50,
-                            padding: const EdgeInsetsDirectional.fromSTEB(
-                              0,
-                              0,
-                              0,
-                              0,
-                            ),
-                            iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                              0,
-                              0,
-                              0,
-                              0,
-                            ),
-                            color: FlutterFlowTheme.of(context).primary,
-                            textStyle: FlutterFlowTheme.of(context).titleSmall
-                                .override(
-                                  fontFamily: 'Inter Tight',
-                                  color: Colors.white,
-                                ),
-                            elevation: 3,
-                            borderSide: const BorderSide(
-                              color: Colors.transparent,
-                              width: 1,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(
-                          0,
-                          0,
-                          0,
-                          16,
-                        ),
-                        child: FFButtonWidget(
-                          onPressed: () async {
-                            if (model.isLoading) return;
-                            model.isLoading = true;
-                            try {
-                              final user = await authManager
-                                  .createAccountWithEmail(
-                                    context,
-                                    model.emailAddressController!.text,
-                                    model.passwordController!.text,
-                                  );
-                              if (user == null) {
-                                return;
-                              }
-                              if (context.mounted) {
-                                context.goNamedAuth(
-                                  'HomePage',
-                                  context.mounted,
-                                );
-                              }
-                            } finally {
-                              model.isLoading = false;
-                            }
-                          },
-                          text: model.isLoading
-                              ? 'Criando Conta...'
-                              : 'Criar Conta',
-                          options: FFButtonOptions(
-                            width: double.infinity,
-                            height: 50,
-                            padding: const EdgeInsetsDirectional.fromSTEB(
-                              0,
-                              0,
-                              0,
-                              0,
-                            ),
-                            iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                              0,
-                              0,
-                              0,
-                              0,
-                            ),
-                            color: FlutterFlowTheme.of(
-                              context,
-                            ).secondaryBackground,
-                            textStyle: FlutterFlowTheme.of(context).titleSmall
-                                .override(
-                                  fontFamily: 'Inter Tight',
-                                  color: FlutterFlowTheme.of(
-                                    context,
-                                  ).primaryText,
-                                ),
-                            elevation: 0,
-                            borderSide: BorderSide(
-                              color: FlutterFlowTheme.of(context).alternate,
-                              width: 1,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
+              body: Container(
+                width: double.infinity,
+                height: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      theme.primary.withOpacity(0.1),
+                      theme.primaryBackground,
+                      theme.secondary.withOpacity(0.05),
                     ],
+                  ),
+                ),
+                child: SafeArea(
+                  child: FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 60),
+
+                          // Logo/Icon
+                          Container(
+                            width: 100,
+                            height: 100,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [theme.primary, theme.secondary],
+                              ),
+                              borderRadius: BorderRadius.circular(28),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: theme.primary.withOpacity(0.4),
+                                  blurRadius: 24,
+                                  offset: const Offset(0, 8),
+                                ),
+                              ],
+                            ),
+                            child: const Center(
+                              child: Text('😊', style: TextStyle(fontSize: 48)),
+                            ),
+                          ),
+
+                          const SizedBox(height: 32),
+
+                          // App name
+                          Text(
+                            'Sentimento',
+                            style: theme.displaySmall.override(
+                              fontFamily: 'Inter Tight',
+                              color: theme.primary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+
+                          const SizedBox(height: 8),
+
+                          Text(
+                            'Acompanhe seu humor diariamente',
+                            style: theme.bodyMedium.override(
+                              color: theme.secondaryText,
+                            ),
+                          ),
+
+                          const SizedBox(height: 48),
+
+                          // Email field
+                          _buildTextField(
+                            context: context,
+                            controller: model.emailAddressController!,
+                            focusNode: model.emailAddressFocusNode!,
+                            label: 'Email',
+                            hint: 'seu@email.com',
+                            icon: Icons.email_outlined,
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          // Password field
+                          _buildTextField(
+                            context: context,
+                            controller: model.passwordController!,
+                            focusNode: model.passwordFocusNode!,
+                            label: 'Senha',
+                            hint: '••••••••',
+                            icon: Icons.lock_outline_rounded,
+                            isPassword: true,
+                            passwordVisible: model.passwordVisibility,
+                            onTogglePassword: () => model.passwordVisibility =
+                                !model.passwordVisibility,
+                          ),
+
+                          const SizedBox(height: 24),
+
+                          // Login button
+                          SizedBox(
+                            width: double.infinity,
+                            height: 56,
+                            child: ElevatedButton(
+                              onPressed: model.isLoading
+                                  ? null
+                                  : () => _handleLogin(model),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: theme.primary,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                elevation: 0,
+                              ),
+                              child: model.isLoading
+                                  ? const SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                              Colors.white,
+                                            ),
+                                      ),
+                                    )
+                                  : Text(
+                                      'Entrar',
+                                      style: theme.titleSmall.override(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          // Create account button
+                          SizedBox(
+                            width: double.infinity,
+                            height: 56,
+                            child: OutlinedButton(
+                              onPressed: model.isLoading
+                                  ? null
+                                  : () => _handleCreateAccount(model),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: theme.primary,
+                                side: BorderSide(color: theme.primary),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                              ),
+                              child: Text(
+                                'Criar Conta',
+                                style: theme.titleSmall.override(
+                                  color: theme.primary,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 32),
+
+                          // Divider
+                          Row(
+                            children: [
+                              Expanded(child: Divider(color: theme.alternate)),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: Text(
+                                  'ou continue com',
+                                  style: theme.labelSmall.override(
+                                    color: theme.secondaryText,
+                                  ),
+                                ),
+                              ),
+                              Expanded(child: Divider(color: theme.alternate)),
+                            ],
+                          ),
+
+                          const SizedBox(height: 24),
+
+                          // Social login buttons (UI only)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              _SocialButton(
+                                icon: Icons.g_mobiledata_rounded,
+                                label: 'Google',
+                                onTap: () {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: const Text('Em breve!'),
+                                      backgroundColor: theme.primary,
+                                    ),
+                                  );
+                                },
+                              ),
+                              const SizedBox(width: 16),
+                              _SocialButton(
+                                icon: Icons.apple_rounded,
+                                label: 'Apple',
+                                onTap: () {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: const Text('Em breve!'),
+                                      backgroundColor: theme.primary,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 40),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required BuildContext context,
+    required TextEditingController controller,
+    required FocusNode focusNode,
+    required String label,
+    required String hint,
+    required IconData icon,
+    TextInputType? keyboardType,
+    bool isPassword = false,
+    bool passwordVisible = false,
+    VoidCallback? onTogglePassword,
+  }) {
+    final theme = FlutterFlowTheme.of(context);
+
+    return TextFormField(
+      controller: controller,
+      focusNode: focusNode,
+      obscureText: isPassword && !passwordVisible,
+      keyboardType: keyboardType,
+      style: theme.bodyMedium,
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        labelStyle: theme.labelMedium.override(color: theme.secondaryText),
+        hintStyle: theme.bodyMedium.override(
+          color: theme.secondaryText.withOpacity(0.5),
+        ),
+        prefixIcon: Icon(icon, color: theme.secondaryText),
+        suffixIcon: isPassword
+            ? IconButton(
+                icon: Icon(
+                  passwordVisible
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
+                  color: theme.secondaryText,
+                ),
+                onPressed: onTogglePassword,
+              )
+            : null,
+        filled: true,
+        fillColor: theme.secondaryBackground,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: theme.primary, width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 18,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _handleLogin(LoginModel model) async {
+    if (model.emailAddressController!.text.isEmpty ||
+        model.passwordController!.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Preencha todos os campos'),
+          backgroundColor: FlutterFlowTheme.of(context).error,
+        ),
+      );
+      return;
+    }
+
+    model.isLoading = true;
+    try {
+      final user = await authManager.signInWithEmail(
+        context,
+        model.emailAddressController!.text,
+        model.passwordController!.text,
+      );
+      if (user == null) return;
+
+      if (context.mounted) {
+        context.goNamedAuth('Main', context.mounted);
+      }
+    } finally {
+      model.isLoading = false;
+    }
+  }
+
+  Future<void> _handleCreateAccount(LoginModel model) async {
+    if (model.emailAddressController!.text.isEmpty ||
+        model.passwordController!.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Preencha todos os campos'),
+          backgroundColor: FlutterFlowTheme.of(context).error,
+        ),
+      );
+      return;
+    }
+
+    model.isLoading = true;
+    try {
+      final user = await authManager.createAccountWithEmail(
+        context,
+        model.emailAddressController!.text,
+        model.passwordController!.text,
+      );
+      if (user == null) return;
+
+      if (context.mounted) {
+        context.goNamedAuth('Main', context.mounted);
+      }
+    } finally {
+      model.isLoading = false;
+    }
+  }
+}
+
+class _SocialButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  const _SocialButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FlutterFlowTheme.of(context);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        decoration: BoxDecoration(
+          color: theme.secondaryBackground,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: theme.alternate),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: theme.primaryText, size: 24),
+            const SizedBox(width: 8),
+            Text(label, style: theme.labelMedium),
+          ],
+        ),
       ),
     );
   }

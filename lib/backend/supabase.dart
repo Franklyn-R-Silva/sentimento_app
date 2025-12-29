@@ -3,8 +3,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 export './database.dart';
 
-String _kSupabaseUrl = 'https://';
-String _kSupabaseAnonKey = '';
+String _kSupabaseUrl = String.fromEnvironment('SUPABASE_URL');
+String _kSupabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
 
 class SupaFlow {
   SupaFlow._();

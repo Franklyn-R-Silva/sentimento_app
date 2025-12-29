@@ -1,5 +1,3 @@
-// ignore_for_file: use_setters_to_change_properties, avoid_positional_boolean_parameters
-
 // Dart imports:
 import 'dart:async';
 
@@ -8,12 +6,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:provider/provider.dart';
-
-// Project imports:
 import 'package:sentimento_app/auth/base_auth_user_provider.dart';
+import 'package:sentimento_app/core/theme.dart';
+import 'package:sentimento_app/core/util.dart';
 import 'package:sentimento_app/ui/pages/home/home.page.dart';
 import 'package:sentimento_app/ui/pages/login/login.page.dart';
-import 'package:sentimento_app/core/util.dart';
+
+// Project imports:
 
 export 'package:go_router/go_router.dart';
 export 'serialization_util.dart';
@@ -56,6 +55,7 @@ class AppStateNotifier extends ChangeNotifier {
 
   /// Mark as not needing to notify on a sign in / out when we intend
   /// to perform subsequent actions (such as navigation) afterwards.
+  // ignore: avoid_positional_boolean_parameters, use_setters_to_change_properties
   void updateNotifyOnAuthChange(final bool notify) =>
       notifyOnAuthChange = notify;
 
@@ -121,6 +121,7 @@ extension NavParamExtensions on Map<String, String?> {
 extension NavigationExtensions on BuildContext {
   void goNamedAuth(
     final String name,
+    // ignore: avoid_positional_boolean_parameters
     final bool mounted, {
     final Map<String, String> pathParameters = const <String, String>{},
     final Map<String, String> queryParameters = const <String, String>{},
@@ -137,6 +138,7 @@ extension NavigationExtensions on BuildContext {
 
   void pushNamedAuth(
     final String name,
+    // ignore: avoid_positional_boolean_parameters
     final bool mounted, {
     final Map<String, String> pathParameters = const <String, String>{},
     final Map<String, String> queryParameters = const <String, String>{},
@@ -164,10 +166,12 @@ extension NavigationExtensions on BuildContext {
 
 extension GoRouterExtensions on GoRouter {
   AppStateNotifier get appState => AppStateNotifier.instance;
+  // ignore: avoid_positional_boolean_parameters
   void prepareAuthEvent([final bool ignoreRedirect = false]) =>
       appState.hasRedirect() && !ignoreRedirect
       ? null
       : appState.updateNotifyOnAuthChange(false);
+  // ignore: avoid_positional_boolean_parameters
   bool shouldRedirect(final bool ignoreRedirect) =>
       !ignoreRedirect && appState.hasRedirect();
   void clearRedirectLocation() => appState.clearRedirectLocation();
@@ -272,7 +276,7 @@ class FFRoute {
 
       if (requireAuth && !appStateNotifier.loggedIn) {
         appStateNotifier.setRedirectLocationIfUnset(state.uri.toString());
-        return '/loginPage';
+        return '/login';
       }
       return null;
     },
@@ -285,12 +289,7 @@ class FFRoute {
               builder: (final context, final _) => builder(context, ffParams),
             )
           : builder(context, ffParams);
-      final child = appStateNotifier.loading
-          ? Container(
-              color: Colors.white,
-              child: const Center(child: CircularProgressIndicator()),
-            )
-          : page;
+      final child = page;
 
       final transitionInfo = state.transitionInfo;
       return transitionInfo.hasTransition
@@ -342,6 +341,7 @@ class TransitionInfo {
 }
 
 class RootPageContext {
+  // ignore: avoid_positional_boolean_parameters
   const RootPageContext(this.isRootPage, [this.errorRoute]);
   final bool isRootPage;
   final String? errorRoute;

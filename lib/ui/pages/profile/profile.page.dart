@@ -5,6 +5,10 @@ import 'package:sentimento_app/core/nav/nav.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/main.dart';
 import 'profile.model.dart';
+import 'widgets/profile_header.dart';
+import 'widgets/profile_settings_tile.dart';
+import 'widgets/profile_section_title.dart';
+import 'widgets/profile_logout_button.dart';
 
 export 'profile.model.dart';
 
@@ -59,74 +63,18 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
               child: Column(
                 children: [
                   // Profile header
-                  Container(
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          theme.primary.withValues(alpha: 0.2),
-                          theme.secondary.withValues(alpha: 0.1),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Column(
-                      children: [
-                        // Avatar
-                        Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [theme.primary, theme.secondary],
-                            ),
-                            borderRadius: BorderRadius.circular(24),
-                            boxShadow: [
-                              BoxShadow(
-                                color: theme.primary.withValues(alpha: 0.4),
-                                blurRadius: 16,
-                                offset: const Offset(0, 6),
-                              ),
-                            ],
-                          ),
-                          child: Center(
-                            child: Text(
-                              (model.userName?.isNotEmpty ?? false)
-                                  ? model.userName![0].toUpperCase()
-                                  : 'U',
-                              style: theme.displaySmall.override(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          model.userName ?? 'Usuário',
-                          style: theme.titleLarge,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          model.userEmail ?? '',
-                          style: theme.labelMedium.override(
-                            color: theme.secondaryText,
-                          ),
-                        ),
-                      ],
-                    ),
+                  ProfileHeader(
+                    userName: model.userName,
+                    userEmail: model.userEmail,
                   ),
 
                   const SizedBox(height: 24),
 
                   // Settings section
-                  _SectionTitle(title: 'Configurações', theme: theme),
+                  const ProfileSectionTitle(title: 'Configurações'),
                   const SizedBox(height: 12),
 
-                  _SettingsTile(
+                  ProfileSettingsTile(
                     icon: Icons.dark_mode_rounded,
                     title: 'Modo Escuro',
                     trailing: Switch.adaptive(
@@ -140,7 +88,7 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                     ),
                   ),
 
-                  _SettingsTile(
+                  ProfileSettingsTile(
                     icon: Icons.notifications_rounded,
                     title: 'Notificações',
                     trailing: Switch.adaptive(
@@ -153,10 +101,10 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                   const SizedBox(height: 24),
 
                   // Data section
-                  _SectionTitle(title: 'Dados', theme: theme),
+                  const ProfileSectionTitle(title: 'Dados'),
                   const SizedBox(height: 12),
 
-                  _SettingsTile(
+                  ProfileSettingsTile(
                     icon: Icons.download_rounded,
                     title: 'Exportar Dados',
                     subtitle: 'Baixe seus registros de humor',
@@ -170,7 +118,7 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                     },
                   ),
 
-                  _SettingsTile(
+                  ProfileSettingsTile(
                     icon: Icons.bar_chart_rounded,
                     title: 'Estatísticas Avançadas',
                     subtitle: 'Veja análises detalhadas',
@@ -182,16 +130,16 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                   const SizedBox(height: 24),
 
                   // About section
-                  _SectionTitle(title: 'Sobre', theme: theme),
+                  const ProfileSectionTitle(title: 'Sobre'),
                   const SizedBox(height: 12),
 
-                  const _SettingsTile(
+                  const ProfileSettingsTile(
                     icon: Icons.info_outline_rounded,
                     title: 'Versão do App',
                     subtitle: '1.0.0',
                   ),
 
-                  _SettingsTile(
+                  ProfileSettingsTile(
                     icon: Icons.privacy_tip_outlined,
                     title: 'Política de Privacidade',
                     onTap: () {},
@@ -200,26 +148,13 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                   const SizedBox(height: 32),
 
                   // Logout button
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      onPressed: () async {
-                        await model.signOut(context);
-                        if (context.mounted) {
-                          context.goNamed('Login');
-                        }
-                      },
-                      icon: const Icon(Icons.logout_rounded),
-                      label: const Text('Sair'),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: theme.error,
-                        side: BorderSide(color: theme.error),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                    ),
+                  ProfileLogoutButton(
+                    onPressed: () async {
+                      await model.signOut(context);
+                      if (context.mounted) {
+                        context.goNamed('Login');
+                      }
+                    },
                   ),
 
                   const SizedBox(height: 100),
@@ -228,78 +163,6 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class _SectionTitle extends StatelessWidget {
-  final String title;
-  final FlutterFlowTheme theme;
-
-  const _SectionTitle({required this.title, required this.theme});
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Text(
-        title,
-        style: theme.titleSmall.override(color: theme.secondaryText),
-      ),
-    );
-  }
-}
-
-class _SettingsTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String? subtitle;
-  final Widget? trailing;
-  final VoidCallback? onTap;
-
-  const _SettingsTile({
-    required this.icon,
-    required this.title,
-    this.subtitle,
-    this.trailing,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = FlutterFlowTheme.of(context);
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: theme.secondaryBackground,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: ListTile(
-        onTap: onTap,
-        leading: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: theme.primary.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Icon(icon, color: theme.primary, size: 20),
-        ),
-        title: Text(title, style: theme.bodyMedium),
-        subtitle: subtitle != null
-            ? Text(
-                subtitle!,
-                style: theme.labelSmall.override(color: theme.secondaryText),
-              )
-            : null,
-        trailing:
-            trailing ??
-            (onTap != null
-                ? Icon(Icons.chevron_right_rounded, color: theme.secondaryText)
-                : null),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
     );
   }

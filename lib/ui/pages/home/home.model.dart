@@ -15,6 +15,9 @@ class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   int _longestStreak = 0;
   int get longestStreak => _longestStreak;
 
+  int _currentStreak = 0;
+  int get currentStreak => _currentStreak;
+
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   set isLoading(bool value) {
@@ -81,8 +84,9 @@ class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       );
       annualEntries = annualResponse;
 
-      // Calculate longest streak
+      // Calculate streaks
       _longestStreak = _calculateLongestStreak(annualEntries);
+      _currentStreak = _calculateCurrentStreak(recentEntries);
 
       notifyListeners();
     } catch (e) {
@@ -162,5 +166,42 @@ class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     }
 
     return longestStreak;
+  }
+
+  int _calculateCurrentStreak(List<EntradasHumorRow> entries) {
+    if (entries.isEmpty) return 0;
+
+    int streak = 0;
+    DateTime? lastDate;
+
+    for (var entry in entries) {
+      final entryDate = DateTime(
+        entry.criadoEm.year,
+        entry.criadoEm.month,
+        entry.criadoEm.day,
+      );
+
+      if (lastDate == null) {
+        final today = DateTime.now();
+        final todayDate = DateTime(today.year, today.month, today.day);
+        if (entryDate == todayDate ||
+            entryDate == todayDate.subtract(const Duration(days: 1))) {
+          streak = 1;
+          lastDate = entryDate;
+        } else {
+          break;
+        }
+      } else {
+        final diff = lastDate.difference(entryDate).inDays;
+        if (diff == 1) {
+          streak++;
+          lastDate = entryDate;
+        } else if (diff > 1) {
+          break;
+        }
+      }
+    }
+
+    return streak;
   }
 }

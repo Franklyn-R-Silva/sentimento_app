@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:sentimento_app/backend/tables/entradas_humor.dart';
+
 import 'package:sentimento_app/backend/services/data_refresh_service.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/core/model.dart';
 import 'package:sentimento_app/ui/pages/home/widgets/mood_card.dart';
-import 'package:sentimento_app/ui/pages/home/widgets/mood_selector.dart';
 import 'package:sentimento_app/ui/pages/home/widgets/mood_streak.dart';
 import 'package:sentimento_app/ui/pages/home/widgets/weekly_chart.dart';
+import 'package:sentimento_app/ui/pages/home/widgets/home_header.dart';
+import 'package:sentimento_app/ui/pages/home/widgets/home_empty_state.dart';
+import 'package:sentimento_app/ui/pages/home/widgets/home_add_mood_sheet.dart';
 import 'package:sentimento_app/ui/shared/widgets/gradient_card.dart';
 import 'home.model.dart';
 
@@ -53,13 +54,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     }
   }
 
-  String _getGreeting() {
-    final hour = DateTime.now().hour;
-    if (hour < 12) return 'Bom dia';
-    if (hour < 18) return 'Boa tarde';
-    return 'Boa noite';
-  }
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<HomeModel>.value(
@@ -99,55 +93,13 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               // Header with greeting
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '${_getGreeting()} 👋',
-                                        style: theme.headlineSmall,
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        DateFormat(
-                                          "EEEE, d 'de' MMMM",
-                                          'pt_BR',
-                                        ).format(DateTime.now()),
-                                        style: theme.labelMedium.override(
-                                          color: theme.secondaryText,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  // Mood indicator
-                                  if (model.recentEntries.isNotEmpty)
-                                    Container(
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        color: theme.primary.withValues(
-                                          alpha: 0.1,
-                                        ),
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                      child: Text(
-                                        _getEmojiForMood(
-                                          model.recentEntries.first.nota,
-                                        ),
-                                        style: const TextStyle(fontSize: 32),
-                                      ),
-                                    ),
-                                ],
-                              ),
+                              HomeHeader(recentEntries: model.recentEntries),
 
                               const SizedBox(height: 24),
 
                               // Streak widget
                               MoodStreak(
-                                streakDays: _calculateStreak(model),
+                                streakDays: model.currentStreak,
                                 longestStreak: model.longestStreak,
                               ),
 
@@ -190,7 +142,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                               const SizedBox(height: 8),
 
                               if (model.recentEntries.isEmpty)
-                                _EmptyEntriesState(theme: theme)
+                                const HomeEmptyState()
                               else
                                 ...model.recentEntries
                                     .take(5)
@@ -212,200 +164,17 @@ class _HomePageWidgetState extends State<HomePageWidget> {
     );
   }
 
-  int _calculateStreak(HomeModel model) {
-    if (model.recentEntries.isEmpty) return 0;
-
-    int streak = 0;
-    DateTime? lastDate;
-
-    for (var entry in model.recentEntries) {
-      final entryDate = DateTime(
-        entry.criadoEm.year,
-        entry.criadoEm.month,
-        entry.criadoEm.day,
-      );
-
-      if (lastDate == null) {
-        final today = DateTime.now();
-        final todayDate = DateTime(today.year, today.month, today.day);
-        if (entryDate == todayDate ||
-            entryDate == todayDate.subtract(const Duration(days: 1))) {
-          streak = 1;
-          lastDate = entryDate;
-        } else {
-          break;
-        }
-      } else {
-        final diff = lastDate.difference(entryDate).inDays;
-        if (diff == 1) {
-          streak++;
-          lastDate = entryDate;
-        } else if (diff > 1) {
-          break;
-        }
-      }
-    }
-
-    return streak;
-  }
-
-  String _getEmojiForMood(int mood) {
-    switch (mood) {
-      case 1:
-        return '😢';
-      case 2:
-        return '😟';
-      case 3:
-        return '😐';
-      case 4:
-        return '🙂';
-      case 5:
-        return '😄';
-      default:
-        return '😐';
-    }
-  }
-
   void _showAddMoodSheet(BuildContext context) {
-    int selectedMood = 3;
-    final textController = TextEditingController();
-    final theme = FlutterFlowTheme.of(context);
-
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) {
-          return Container(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            decoration: BoxDecoration(
-              color: theme.secondaryBackground,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(24),
-              ),
-            ),
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Handle
-                    Container(
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: theme.alternate,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Mood selector
-                    MoodSelector(
-                      selectedMood: selectedMood,
-                      onMoodSelected: (mood) =>
-                          setState(() => selectedMood = mood),
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    // Note input
-                    TextField(
-                      controller: textController,
-                      maxLines: 3,
-                      decoration: InputDecoration(
-                        hintText: 'Como foi seu dia? (opcional)',
-                        hintStyle: theme.bodyMedium.override(
-                          color: theme.secondaryText,
-                        ),
-                        filled: true,
-                        fillColor: theme.primaryBackground,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.all(16),
-                      ),
-                      style: theme.bodyMedium,
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    // Save button
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (_model.isAddingEntry) return;
-
-                          Navigator.pop(context);
-
-                          _model.addEntry(
-                            context,
-                            selectedMood,
-                            textController.text.isEmpty
-                                ? null
-                                : textController.text,
-                            [],
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: theme.primary,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                        ),
-                        child: Text(
-                          'Salvar Registro',
-                          style: theme.titleSmall.override(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
+      builder: (context) => HomeAddMoodSheet(
+        onSave: (mood, note) {
+          if (_model.isAddingEntry) return;
+          Navigator.pop(context);
+          _model.addEntry(context, mood, note, []);
         },
-      ),
-    );
-  }
-}
-
-class _EmptyEntriesState extends StatelessWidget {
-  final FlutterFlowTheme theme;
-
-  const _EmptyEntriesState({required this.theme});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        color: theme.secondaryBackground,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        children: [
-          Icon(
-            Icons.sentiment_satisfied_alt_rounded,
-            size: 64,
-            color: theme.primary.withValues(alpha: 0.5),
-          ),
-          const SizedBox(height: 16),
-          Text('Nenhum registro ainda', style: theme.titleMedium),
-          const SizedBox(height: 8),
-          Text(
-            'Toque no botão "Registrar" para adicionar seu primeiro registro de humor!',
-            textAlign: TextAlign.center,
-            style: theme.bodySmall.override(color: theme.secondaryText),
-          ),
-        ],
       ),
     );
   }

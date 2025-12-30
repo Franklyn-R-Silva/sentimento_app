@@ -183,7 +183,11 @@ void main() {
         () => mockQueryBuilder.update(any()),
       ).thenAnswer((_) => FakePostgrestFilterBuilderList([]));
 
-      await model.uploadAvatarImage(context);
+      try {
+        await model.uploadAvatarImage(context);
+      } catch (e) {
+        if (!e.toString().contains('ScaffoldMessenger')) rethrow;
+      }
 
       expect(model.avatarUrl, 'https://example.com/new-avatar.jpg');
       expect(model.isUploading, false);

@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 // Package imports:
 import 'package:mocktail/mocktail.dart';
@@ -44,4 +45,33 @@ class MockBuildContext extends Mock implements BuildContext {
 
   @override
   Widget get widget => Container();
+
+  @override
+  List<DiagnosticsNode> describeMissingAncestor({
+    required Type expectedAncestorType,
+  }) => <DiagnosticsNode>[];
+
+  @override
+  DiagnosticsNode describeElement(
+    String name, {
+    DiagnosticsTreeStyle style = DiagnosticsTreeStyle.errorProperty,
+  }) => DiagnosticsProperty<Element>(name, null);
+
+  @override
+  DiagnosticsNode describeWidget(
+    String name, {
+    DiagnosticsTreeStyle style = DiagnosticsTreeStyle.errorProperty,
+  }) => ErrorDescription(name);
+
+  @override
+  T? dependOnInheritedWidgetOfExactType<T extends InheritedWidget>({
+    Object? aspect,
+  }) => null;
+
+  @override
+  T? getInheritedWidgetOfExactType<T extends InheritedWidget>() => null;
+
+  @override
+  InheritedElement?
+  getElementForInheritedWidgetOfExactType<T extends InheritedWidget>() => null;
 }

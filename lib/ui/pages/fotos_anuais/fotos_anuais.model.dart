@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sentimento_app/backend/supabase.dart';
-import 'package:sentimento_app/backend/tables/fotos_anuais.dart';
 import 'package:sentimento_app/core/model.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:typed_data';
 
 class FotosAnuaisModel extends FlutterFlowModel<Widget> with ChangeNotifier {

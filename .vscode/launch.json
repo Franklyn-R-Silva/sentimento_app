@@ -1,0 +1,34 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+
+    {
+      "name": "📱 Flutter - Android (Celular)",
+      "request": "launch",
+      "type": "dart",
+      "deviceId": "android"
+    },
+
+    {
+      "name": "🌐 Flutter - Chrome",
+      "request": "launch",
+      "type": "dart",
+      "deviceId": "chrome"
+    },
+
+    {
+      "name": "🌍 Flutter - Web Server",
+      "request": "launch",
+      "type": "dart",
+      "deviceId": "web-server"
+    },
+
+    {
+      "name": "🖥️ Flutter - Windows Desktop",
+      "request": "launch",
+      "type": "dart",
+      "deviceId": "windows"
+    }
+
+  ]
+}

@@ -71,6 +71,11 @@ class SentimentoAppSupabaseUser extends BaseAuthUser {
 /// user is already authenticated. So we add a default null user to the stream,
 /// if we need to interact with the [currentUser] before logging in.
 Stream<BaseAuthUser> sentimentoAppSupabaseUserStream() {
+  final user = SupaFlow.client.auth.currentUser;
+  if (currentUser == null && user != null) {
+    currentUser = SentimentoAppSupabaseUser(user);
+  }
+
   final supabaseAuthStream = SupaFlow.client.auth.onAuthStateChange.debounce(
     (final authState) => authState.event == AuthChangeEvent.tokenRefreshed
         ? TimerStream(authState, const Duration(seconds: 1))
@@ -80,7 +85,9 @@ Stream<BaseAuthUser> sentimentoAppSupabaseUserStream() {
           ? Stream<AuthState?>.value(null).concatWith([supabaseAuthStream])
           : supabaseAuthStream)
       .map<BaseAuthUser>((final authState) {
-        currentUser = SentimentoAppSupabaseUser(authState?.session?.user);
+        final user =
+            authState?.session?.user ?? SupaFlow.client.auth.currentUser;
+        currentUser = SentimentoAppSupabaseUser(user);
         return currentUser!;
       });
 }

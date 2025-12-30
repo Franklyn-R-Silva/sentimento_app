@@ -32,6 +32,14 @@ void main() async {
   await FlutterFlowTheme.initialize();
 
   final appState = AppStateNotifier.instance;
+
+  // Restore session before app starts
+  final authUser = SupaFlow.client.auth.currentUser;
+  if (authUser != null) {
+    currentUser = SentimentoAppSupabaseUser(authUser);
+    appState.update(currentUser!);
+  }
+
   await appState.initializePersistedState();
 
   runApp(

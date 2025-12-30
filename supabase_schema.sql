@@ -121,6 +121,8 @@ create table public.fotos_anuais (
   frase text,
   mood_level int2 check (mood_level >= 1 and mood_level <= 5),
   tags text[],
+  lat float8,
+  lng float8,
   data_foto timestamptz default now() not null,
   criado_em timestamptz default now() not null
 );

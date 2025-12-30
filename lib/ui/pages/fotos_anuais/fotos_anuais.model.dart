@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:sentimento_app/backend/supabase.dart';
+import 'package:sentimento_app/backend/supabase.dart' hide LatLng;
+import 'package:sentimento_app/backend/tables/tables.dart';
 import 'package:sentimento_app/core/model.dart';
 import 'dart:typed_data';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:sentimento_app/core/theme.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 
 class FotosAnuaisModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   final unfocusNode = FocusNode();
@@ -30,6 +33,16 @@ class FotosAnuaisModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   Uint8List? get selectedImageBytes => _selectedImageBytes;
 
   String? _imageName;
+
+  LatLng? _currentLocation;
+  LatLng? get currentLocation => _currentLocation;
+  set currentLocation(LatLng? value) {
+    _currentLocation = value;
+    notifyListeners();
+  }
+
+  bool _isFetchingLocation = false;
+  bool get isFetchingLocation => _isFetchingLocation;
 
   bool _isUploading = false;
   bool get isUploading => _isUploading;
@@ -112,11 +125,60 @@ class FotosAnuaisModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         if (croppedFile != null) {
           _selectedImageBytes = await croppedFile.readAsBytes();
           _imageName = image.name;
+
+          // Proactively fetch location when photo is picked
+          await fetchCurrentLocation(context);
+
           notifyListeners();
         }
       }
     } catch (e) {
       debugPrint('Error picking image: $e');
+    }
+  }
+
+  Future<void> fetchCurrentLocation(BuildContext context) async {
+    _isFetchingLocation = true;
+    notifyListeners();
+
+    try {
+      bool serviceEnabled;
+      LocationPermission permission;
+
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        throw 'Os serviços de localização estão desativados.';
+      }
+
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          throw 'As permissões de localização foram negadas.';
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        throw 'As permissões de localização estão permanentemente negadas.';
+      }
+
+      final position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
+      );
+
+      _currentLocation = LatLng(position.latitude, position.longitude);
+    } catch (e) {
+      debugPrint('Location Error: $e');
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Erro de localização: $e')));
+      }
+    } finally {
+      _isFetchingLocation = false;
+      notifyListeners();
     }
   }
 
@@ -166,6 +228,8 @@ class FotosAnuaisModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         'image_url': imageUrl,
         'frase': fraseController.text.isNotEmpty ? fraseController.text : null,
         'mood_level': _moodLevel,
+        'lat': _currentLocation?.latitude,
+        'lng': _currentLocation?.longitude,
         'data_foto': _selectedDate.toIso8601String(),
       });
 
@@ -179,6 +243,7 @@ class FotosAnuaisModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       _selectedImageBytes = null;
       _imageName = null;
       _moodLevel = null;
+      _currentLocation = null;
       fraseController.clear();
       notifyListeners();
 

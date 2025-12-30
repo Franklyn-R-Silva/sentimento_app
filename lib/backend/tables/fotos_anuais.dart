@@ -34,6 +34,12 @@ class FotosAnuaisRow extends SupabaseDataRow {
   List<String> get tags => getListField<String>('tags');
   set tags(final List<String> value) => setListField<String>('tags', value);
 
+  double? get lat => getField<double>('lat');
+  set lat(final double? value) => setField<double>('lat', value);
+
+  double? get lng => getField<double>('lng');
+  set lng(final double? value) => setField<double>('lng', value);
+
   DateTime get dataFoto => getField<DateTime>('data_foto')!;
   set dataFoto(final DateTime value) => setField<DateTime>('data_foto', value);
 

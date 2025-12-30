@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 
 // Project imports:
 import 'package:sentimento_app/auth/auth_manager.dart';
@@ -31,6 +32,16 @@ class MockSupabaseStorageClient extends Mock implements SupabaseStorageClient {}
 
 class MockStorageFileApi extends Mock implements StorageFileApi {}
 
+class MockImagePicker extends Mock implements ImagePicker {}
+
+class MockXFile extends Mock implements XFile {}
+
 class FakeBuildContext extends Fake implements BuildContext {}
 
-class MockBuildContext extends Mock implements BuildContext {}
+class MockBuildContext extends Mock implements BuildContext {
+  @override
+  bool get mounted => true;
+
+  @override
+  Widget get widget => Container();
+}

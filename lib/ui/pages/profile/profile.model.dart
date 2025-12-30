@@ -11,9 +11,11 @@ import 'package:sentimento_app/core/model.dart';
 
 class ProfileModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   final SupabaseClient? supabaseClient;
-  ProfileModel({this.supabaseClient});
+  final ImagePicker? imagePicker;
+  ProfileModel({this.supabaseClient, this.imagePicker});
 
   SupabaseClient get _client => supabaseClient ?? SupaFlow.client;
+  ImagePicker get _picker => imagePicker ?? ImagePicker();
 
   final unfocusNode = FocusNode();
 
@@ -107,8 +109,7 @@ class ProfileModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   }
 
   Future<void> uploadAvatarImage(BuildContext context) async {
-    final picker = ImagePicker();
-    final image = await picker.pickImage(
+    final image = await _picker.pickImage(
       source: ImageSource.gallery,
       maxWidth: 500,
       maxHeight: 500,
@@ -129,16 +130,18 @@ class ProfileModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       final fileName = '${DateTime.now().millisecondsSinceEpoch}.$fileExt';
       final path = '${user.id}/$fileName';
 
+      final contentType =
+          fileExt.toLowerCase() == 'jpg' || fileExt.toLowerCase() == 'jpeg'
+          ? 'image/jpeg'
+          : 'image/$fileExt';
+
       // Upload to 'avatars' bucket
       await _client.storage
           .from('avatars')
           .uploadBinary(
             path,
             fileBytes,
-            fileOptions: FileOptions(
-              contentType: 'image/$fileExt',
-              upsert: true,
-            ),
+            fileOptions: FileOptions(contentType: contentType, upsert: true),
           );
 
       // Get Public URL
@@ -160,9 +163,9 @@ class ProfileModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     } catch (e) {
       debugPrint('Upload Error: $e');
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Erro ao carregar imagem: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao atualizar foto: ${e.toString()}')),
+        );
       }
     } finally {
       _isUploading = false;

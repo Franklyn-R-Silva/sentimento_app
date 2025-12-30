@@ -72,6 +72,7 @@ class SupabaseAuthManager extends AuthManager with EmailSignInManager {
     }
   }
 
+  @override
   Future updatePassword({
     required final String newPassword,
     required final BuildContext context,
@@ -152,6 +153,8 @@ class SupabaseAuthManager extends AuthManager with EmailSignInManager {
           return null;
         }
       }
+
+      if (!context.mounted) return null;
 
       return _signInOrCreateAccount(
         context,

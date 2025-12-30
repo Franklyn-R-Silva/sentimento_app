@@ -11,8 +11,6 @@ class PhotoCaptureWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = FlutterFlowTheme.of(context);
-
     return GradientCard(
       moodLevel: model.moodLevel ?? 3,
       child: Padding(
@@ -96,7 +94,7 @@ class PhotoCaptureWidget extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(

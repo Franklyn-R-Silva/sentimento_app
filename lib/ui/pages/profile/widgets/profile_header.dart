@@ -4,8 +4,18 @@ import 'package:sentimento_app/core/theme.dart';
 class ProfileHeader extends StatelessWidget {
   final String? userName;
   final String? userEmail;
+  final String? avatarUrl;
+  final bool isUploading;
+  final VoidCallback? onAvatarTap;
 
-  const ProfileHeader({super.key, this.userName, this.userEmail});
+  const ProfileHeader({
+    super.key,
+    this.userName,
+    this.userEmail,
+    this.avatarUrl,
+    this.isUploading = false,
+    this.onAvatarTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,31 +37,84 @@ class ProfileHeader extends StatelessWidget {
       child: Column(
         children: [
           // Avatar
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [theme.primary, theme.secondary],
-              ),
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: theme.primary.withValues(alpha: 0.4),
-                  blurRadius: 16,
-                  offset: const Offset(0, 6),
+          GestureDetector(
+            onTap: isUploading ? null : onAvatarTap,
+            child: Stack(
+              children: [
+                Container(
+                  width: 90,
+                  height: 90,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [theme.primary, theme.secondary],
+                    ),
+                    borderRadius: BorderRadius.circular(28),
+                    boxShadow: [
+                      BoxShadow(
+                        color: theme.primary.withValues(alpha: 0.4),
+                        blurRadius: 16,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                    image: (avatarUrl != null && avatarUrl!.isNotEmpty)
+                        ? DecorationImage(
+                            image: NetworkImage(avatarUrl!),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
+                  ),
+                  child: (avatarUrl == null || avatarUrl!.isEmpty)
+                      ? Center(
+                          child: Text(
+                            (userName?.isNotEmpty ?? false)
+                                ? userName![0].toUpperCase()
+                                : 'U',
+                            style: theme.displaySmall.override(
+                              color: Colors.white,
+                            ),
+                          ),
+                        )
+                      : null,
                 ),
+                if (isUploading)
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.4),
+                        borderRadius: BorderRadius.circular(28),
+                      ),
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 3,
+                        ),
+                      ),
+                    ),
+                  ),
+                if (!isUploading)
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: theme.primary,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: theme.primaryBackground,
+                          width: 2,
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.camera_alt_rounded,
+                        size: 14,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
               ],
-            ),
-            child: Center(
-              child: Text(
-                (userName?.isNotEmpty ?? false)
-                    ? userName![0].toUpperCase()
-                    : 'U',
-                style: theme.displaySmall.override(color: Colors.white),
-              ),
             ),
           ),
           const SizedBox(height: 16),

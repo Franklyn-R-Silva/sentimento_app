@@ -71,6 +71,9 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                   ProfileHeader(
                     userName: model.userName,
                     userEmail: model.userEmail,
+                    avatarUrl: model.avatarUrl,
+                    isUploading: model.isUploading,
+                    onAvatarTap: () => model.uploadAvatarImage(context),
                   ),
 
                   const SizedBox(height: 24),
@@ -180,7 +183,7 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
   }
 
   void _showChangePasswordDialog(BuildContext context, ProfileModel model) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) {
         return AlertDialog(

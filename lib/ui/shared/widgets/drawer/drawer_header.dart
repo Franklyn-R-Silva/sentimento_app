@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sentimento_app/core/theme.dart';
+import 'package:sentimento_app/backend/supabase.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class DrawerHeaderWidget extends StatelessWidget {
+class DrawerHeaderWidget extends StatefulWidget {
   final String userName;
   final FlutterFlowTheme theme;
 
@@ -10,6 +12,45 @@ class DrawerHeaderWidget extends StatelessWidget {
     required this.userName,
     required this.theme,
   });
+
+  @override
+  State<DrawerHeaderWidget> createState() => _DrawerHeaderWidgetState();
+}
+
+class _DrawerHeaderWidgetState extends State<DrawerHeaderWidget> {
+  String? _avatarUrl;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null) return;
+
+    try {
+      final data = await SupaFlow.client
+          .from('app_profiles')
+          .select('avatar_url')
+          .eq('id', user.id)
+          .maybeSingle();
+
+      if (mounted && data != null && data['avatar_url'] != null) {
+        setState(() {
+          _avatarUrl = data['avatar_url'] as String;
+          _isLoading = false;
+        });
+      } else if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    } catch (e) {
+      debugPrint('Error loading drawer profile: $e');
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
 
   String _getGreeting() {
     final hour = DateTime.now().hour;
@@ -27,8 +68,8 @@ class DrawerHeaderWidget extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            theme.primary.withValues(alpha: 0.2),
-            theme.secondary.withValues(alpha: 0.1),
+            widget.theme.primary.withValues(alpha: 0.2),
+            widget.theme.secondary.withValues(alpha: 0.1),
           ],
         ),
       ),
@@ -39,23 +80,35 @@ class DrawerHeaderWidget extends StatelessWidget {
             height: 56,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [theme.primary, theme.secondary],
+                colors: [widget.theme.primary, widget.theme.secondary],
               ),
               borderRadius: BorderRadius.circular(18),
               boxShadow: [
                 BoxShadow(
-                  color: theme.primary.withValues(alpha: 0.4),
+                  color: widget.theme.primary.withValues(alpha: 0.4),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
               ],
+              image: (_avatarUrl != null && _avatarUrl!.isNotEmpty)
+                  ? DecorationImage(
+                      image: NetworkImage(_avatarUrl!),
+                      fit: BoxFit.cover,
+                    )
+                  : null,
             ),
-            child: Center(
-              child: Text(
-                userName.isNotEmpty ? userName[0].toUpperCase() : 'U',
-                style: theme.headlineSmall.override(color: Colors.white),
-              ),
-            ),
+            child: (_avatarUrl == null || _avatarUrl!.isEmpty)
+                ? Center(
+                    child: Text(
+                      widget.userName.isNotEmpty
+                          ? widget.userName[0].toUpperCase()
+                          : 'U',
+                      style: widget.theme.headlineSmall.override(
+                        color: Colors.white,
+                      ),
+                    ),
+                  )
+                : null,
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -64,11 +117,13 @@ class DrawerHeaderWidget extends StatelessWidget {
               children: [
                 Text(
                   _getGreeting(),
-                  style: theme.labelMedium.override(color: theme.secondaryText),
+                  style: widget.theme.labelMedium.override(
+                    color: widget.theme.secondaryText,
+                  ),
                 ),
                 Text(
-                  userName,
-                  style: theme.titleMedium.override(
+                  widget.userName,
+                  style: widget.theme.titleMedium.override(
                     fontWeight: FontWeight.w600,
                   ),
                   overflow: TextOverflow.ellipsis,

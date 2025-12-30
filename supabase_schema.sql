@@ -186,3 +186,40 @@ using (
   (storage.foldername(name))[1] = 'users' AND
   (storage.foldername(name))[2] = auth.uid()::text
 );
+
+-- Configuração de Segurança para o Bucket de Storage (avatars)
+-- Nota: O bucket deve ser criado manualmente no painel como 'avatars'
+
+-- Permite que qualquer pessoa veja os avatares (Público)
+create policy "Avatares são visíveis publicamente"
+on storage.objects for select
+to public
+using (bucket_id = 'avatars');
+
+-- Permite que usuários autenticados façam upload apenas de seu próprio avatar
+create policy "Usuários podem fazer upload de seu próprio avatar"
+on storage.objects for insert
+to authenticated
+with check (
+  bucket_id = 'avatars' AND
+  (storage.foldername(name))[1] = auth.uid()::text
+);
+
+-- Permite que usuários atualizem seu próprio avatar
+create policy "Usuários podem atualizar seu próprio avatar"
+on storage.objects for update
+to authenticated
+using (
+  bucket_id = 'avatars' AND
+  (storage.foldername(name))[1] = auth.uid()::text
+);
+
+-- Permite que usuários deletem seu próprio avatar
+create policy "Usuários podem deletar seu próprio avatar"
+on storage.objects for delete
+to authenticated
+using (
+  bucket_id = 'avatars' AND
+  (storage.foldername(name))[1] = auth.uid()::text
+);
+

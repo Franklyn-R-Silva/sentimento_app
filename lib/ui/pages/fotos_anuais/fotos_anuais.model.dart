@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sentimento_app/backend/supabase.dart' hide LatLng;
-import 'package:sentimento_app/backend/tables/tables.dart';
 import 'package:sentimento_app/core/model.dart';
 import 'dart:typed_data';
 import 'dart:io' show Platform;
@@ -126,6 +125,7 @@ class FotosAnuaisModel extends FlutterFlowModel<Widget> with ChangeNotifier {
           _selectedImageBytes = await croppedFile.readAsBytes();
           _imageName = image.name;
 
+          if (!context.mounted) return;
           // Proactively fetch location when photo is picked
           await fetchCurrentLocation(context);
 

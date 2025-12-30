@@ -70,7 +70,7 @@ class _FotosAnuaisPageState extends State<FotosAnuaisPage> {
                     ),
                     onPressed: () async {
                       final success = await model.savePhoto(context);
-                      if (success && mounted) {
+                      if (success && context.mounted) {
                         Navigator.pop(context);
                       }
                     },

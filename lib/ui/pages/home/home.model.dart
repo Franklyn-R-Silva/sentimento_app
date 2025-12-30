@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sentimento_app/backend/supabase.dart';
-import 'package:sentimento_app/backend/tables/entradas_humor.dart';
 import 'package:sentimento_app/core/model.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   /// State fields for stateful widgets in this page.

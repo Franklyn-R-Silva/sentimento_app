@@ -1,7 +1,6 @@
 // Project imports:
 import 'package:sentimento_app/auth/supabase_auth/supabase_auth_manager.dart';
 import 'package:sentimento_app/backend/supabase.dart';
-import 'package:sentimento_app/backend/tables/app_profiles.dart';
 
 export 'supabase_auth_manager.dart';
 

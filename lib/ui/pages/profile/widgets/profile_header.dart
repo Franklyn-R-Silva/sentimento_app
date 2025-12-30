@@ -143,9 +143,19 @@ class ProfileHeader extends StatelessWidget {
   }
 
   Widget _buildInitials(FlutterFlowTheme theme) {
+    String initials = 'U';
+    if (userName != null && userName!.trim().isNotEmpty) {
+      final names = userName!.trim().split(' ');
+      if (names.length > 1) {
+        initials = (names.first[0] + names.last[0]).toUpperCase();
+      } else {
+        initials = names.first[0].toUpperCase();
+      }
+    }
+
     return Center(
       child: Text(
-        (userName?.isNotEmpty ?? false) ? userName![0].toUpperCase() : 'U',
+        initials,
         style: theme.displaySmall.override(color: Colors.white),
       ),
     );

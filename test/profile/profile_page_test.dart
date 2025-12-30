@@ -35,8 +35,6 @@ void main() {
   setUp(() {
     mockSupabase = MockSupabaseClient();
     mockQueryBuilder = MockSupabaseQueryBuilder();
-    mockFilterBuilder = MockPostgrestFilterBuilderList();
-    mockTransformBuilder = MockPostgrestTransformBuilderSingle();
     mockAuthUser = MockBaseAuthUser();
     final mockGoTrue = MockGoTrueClient();
     final mockUser = MockUser();
@@ -52,23 +50,18 @@ void main() {
     // Mock Supabase Auth
     when(() => mockSupabase.auth).thenReturn(mockGoTrue);
     when(() => mockGoTrue.currentUser).thenReturn(mockUser);
+    when(() => mockUser.id).thenReturn('test-uid');
     when(() => mockUser.email).thenReturn('franklyn@example.com');
     when(() => mockUser.userMetadata).thenReturn({'name': 'Franklyn Silva'});
 
     // Mock Supabase Database
     when(() => mockSupabase.from(any())).thenAnswer((_) => mockQueryBuilder);
-    when(
-      () => mockQueryBuilder.select(any()),
-    ).thenAnswer((_) => mockFilterBuilder);
-    when(
-      () => mockFilterBuilder.eq(any(), any()),
-    ).thenAnswer((_) => mockFilterBuilder);
-    when(
-      () => mockFilterBuilder.maybeSingle(),
-    ).thenAnswer((_) => mockTransformBuilder);
-    when(
-      () => mockTransformBuilder.then(any()),
-    ).thenAnswer((invocation) => Future.value(null));
+    when(() => mockQueryBuilder.select(any())).thenAnswer(
+      (_) => FakePostgrestFilterBuilderList(
+        [],
+        singleResult: {'avatar_url': 'example.com'},
+      ),
+    );
   });
 
   testWidgets('ProfilePage should render all sections and widgets', (

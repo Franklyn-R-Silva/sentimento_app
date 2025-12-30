@@ -11,51 +11,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sentimento_app/ui/pages/profile/profile.model.dart';
 import '../mocks/mocks.dart';
 
-class FakePostgrestTransformBuilderSingle extends Fake
-    implements PostgrestTransformBuilder<Map<String, dynamic>?> {
-  final Map<String, dynamic>? result;
-  FakePostgrestTransformBuilderSingle(this.result);
-
-  @override
-  Future<U> then<U>(
-    FutureOr<U> Function(Map<String, dynamic>?) onValue, {
-    Function? onError,
-  }) {
-    return Future.value(result).then(onValue, onError: onError);
-  }
-}
-
-class FakePostgrestFilterBuilderList extends Fake
-    implements PostgrestFilterBuilder<List<Map<String, dynamic>>> {
-  final List<Map<String, dynamic>> result;
-  final Map<String, dynamic>? singleResult;
-  FakePostgrestFilterBuilderList(this.result, {this.singleResult});
-
-  @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> eq(
-    String column,
-    Object value,
-  ) => this;
-
-  @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> update(
-    Map<String, dynamic> values,
-  ) => this;
-
-  @override
-  PostgrestTransformBuilder<Map<String, dynamic>?> maybeSingle() {
-    return FakePostgrestTransformBuilderSingle(singleResult);
-  }
-
-  @override
-  Future<U> then<U>(
-    FutureOr<U> Function(List<Map<String, dynamic>>) onValue, {
-    Function? onError,
-  }) {
-    return Future.value(result).then(onValue, onError: onError);
-  }
-}
-
 void main() {
   late ProfileModel model;
   late MockSupabaseClient mockSupabaseClient;

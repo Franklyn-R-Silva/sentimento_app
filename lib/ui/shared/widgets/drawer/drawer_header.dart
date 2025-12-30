@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/backend/supabase.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DrawerHeaderWidget extends StatefulWidget {
   final String userName;
@@ -19,7 +18,6 @@ class DrawerHeaderWidget extends StatefulWidget {
 
 class _DrawerHeaderWidgetState extends State<DrawerHeaderWidget> {
   String? _avatarUrl;
-  bool _isLoading = true;
 
   @override
   void initState() {
@@ -41,14 +39,10 @@ class _DrawerHeaderWidgetState extends State<DrawerHeaderWidget> {
       if (mounted && data != null && data['avatar_url'] != null) {
         setState(() {
           _avatarUrl = data['avatar_url'] as String;
-          _isLoading = false;
         });
-      } else if (mounted) {
-        setState(() => _isLoading = false);
       }
     } catch (e) {
       debugPrint('Error loading drawer profile: $e');
-      if (mounted) setState(() => _isLoading = false);
     }
   }
 

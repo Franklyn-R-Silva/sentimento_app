@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sentimento_app/auth/supabase_auth/auth_util.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/core/model.dart';
 import 'package:sentimento_app/core/nav/nav.dart';
@@ -192,8 +191,8 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                       final success = model.isCreateAccount
                                           ? await model.createAccount(context)
                                           : await model.login(context);
-                                      if (success && mounted) {
-                                        context.goNamedAuth('Main', mounted);
+                                      if (success && context.mounted) {
+                                        context.goNamedAuth('Main', true);
                                       }
                                     },
                               style: ElevatedButton.styleFrom(

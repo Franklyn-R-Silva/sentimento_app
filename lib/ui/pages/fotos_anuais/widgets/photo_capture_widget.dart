@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/ui/shared/widgets/gradient_card.dart';
 import '../fotos_anuais.model.dart';
 

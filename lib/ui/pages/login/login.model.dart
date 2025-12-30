@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:sentimento_app/auth/supabase_auth/auth_util.dart';
+import 'package:sentimento_app/auth/supabase_auth/auth_util.dart' as auth_util;
 import 'package:sentimento_app/core/model.dart';
 
 class LoginModel extends FlutterFlowModel<Widget> with ChangeNotifier {
+  LoginModel({auth_util.SupabaseAuthManager? authManager})
+    : _authManager = authManager;
+
+  final auth_util.SupabaseAuthManager? _authManager;
+  auth_util.SupabaseAuthManager get authManager =>
+      _authManager ?? auth_util.authManager;
+
   ///  State fields for stateful widgets in this page.
 
   final unfocusNode = FocusNode();

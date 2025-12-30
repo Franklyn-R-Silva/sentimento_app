@@ -112,3 +112,36 @@ create policy "Usuários podem atualizar suas próprias metas"
 create policy "Usuários podem deletar suas próprias metas"
   on public.metas for delete
   using (auth.uid() = user_id);
+
+-- Criação da tabela de fotos anuais (Projeto 365 dias)
+create table public.fotos_anuais (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users not null default auth.uid(),
+  image_url text not null,
+  frase text,
+  mood_level int2 check (mood_level >= 1 and mood_level <= 5),
+  tags text[],
+  data_foto timestamptz default now() not null,
+  criado_em timestamptz default now() not null
+);
+
+-- Habilitar Row Level Security (RLS) para fotos_anuais
+alter table public.fotos_anuais enable row level security;
+
+-- Políticas de Segurança para fotos_anuais
+create policy "Usuários podem ver suas próprias fotos"
+  on public.fotos_anuais for select
+  using (auth.uid() = user_id);
+
+create policy "Usuários podem inserir suas próprias fotos"
+  on public.fotos_anuais for insert
+  with check (auth.uid() = user_id);
+
+create policy "Usuários podem atualizar suas próprias fotos"
+  on public.fotos_anuais for update
+  using (auth.uid() = user_id);
+
+create policy "Usuários podem deletar suas próprias fotos"
+  on public.fotos_anuais for delete
+  using (auth.uid() = user_id);
+

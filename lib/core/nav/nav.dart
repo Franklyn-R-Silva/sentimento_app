@@ -19,6 +19,7 @@ import 'package:sentimento_app/ui/pages/main/main.page.dart';
 import 'package:sentimento_app/ui/pages/profile/profile.page.dart';
 import 'package:sentimento_app/ui/pages/settings/settings.page.dart';
 import 'package:sentimento_app/ui/pages/stats/stats.page.dart';
+import 'package:sentimento_app/ui/pages/fotos_anuais/fotos_anuais.page.dart';
 
 // Project imports:
 
@@ -145,6 +146,12 @@ GoRouter createRouter(final AppStateNotifier appStateNotifier) => GoRouter(
       path: GoalsPageWidget.routePath,
       requireAuth: true,
       builder: (final context, final params) => const GoalsPageWidget(),
+    ),
+    FFRoute(
+      name: 'FotosAnuais',
+      path: '/fotosAnuais',
+      requireAuth: true,
+      builder: (final context, final params) => const FotosAnuaisPage(),
     ),
     FFRoute(
       name: 'Login',

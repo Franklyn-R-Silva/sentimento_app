@@ -74,6 +74,16 @@ class AppDrawer extends StatelessWidget {
                       context.pushNamed('Stats');
                     },
                   ),
+                  DrawerNavItem(
+                    icon: Icons.camera_alt_rounded,
+                    label: 'Fotos 365 Dias',
+                    subtitle: 'Uma foto por dia',
+                    color: const Color(0xFFFF9800),
+                    onTap: () {
+                      Navigator.pop(context);
+                      context.pushNamed('FotosAnuais');
+                    },
+                  ),
 
                   const SizedBox(height: 16),
 

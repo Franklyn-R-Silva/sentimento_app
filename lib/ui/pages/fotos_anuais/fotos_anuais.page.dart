@@ -135,15 +135,19 @@ class _FotosAnuaisPageState extends State<FotosAnuaisPage> {
                                     context,
                                     icon: Icons.camera_alt,
                                     label: 'Tirar Foto',
-                                    onTap: () =>
-                                        model.pickImage(ImageSource.camera),
+                                    onTap: () => model.pickImage(
+                                      context,
+                                      ImageSource.camera,
+                                    ),
                                   ),
                                   _actionButton(
                                     context,
                                     icon: Icons.photo_library,
                                     label: 'Galeria',
-                                    onTap: () =>
-                                        model.pickImage(ImageSource.gallery),
+                                    onTap: () => model.pickImage(
+                                      context,
+                                      ImageSource.gallery,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -259,6 +263,7 @@ class _FotosAnuaisPageState extends State<FotosAnuaisPage> {
                                     lastDate: DateTime(2100),
                                   );
                                   if (date != null) {
+                                    if (!context.mounted) return;
                                     final time = await showTimePicker(
                                       context: context,
                                       initialTime: TimeOfDay.fromDateTime(

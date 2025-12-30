@@ -3,6 +3,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:sentimento_app/backend/supabase.dart';
 import 'package:sentimento_app/core/model.dart';
 import 'dart:typed_data';
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:image_cropper/image_cropper.dart';
+import 'package:sentimento_app/core/theme.dart';
 
 class FotosAnuaisModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   final unfocusNode = FocusNode();
@@ -46,19 +50,70 @@ class FotosAnuaisModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     super.dispose();
   }
 
-  Future<void> pickImage(ImageSource source) async {
+  Future<void> pickImage(BuildContext context, ImageSource source) async {
     try {
+      if (!kIsWeb && Platform.isWindows && source == ImageSource.camera) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'A câmera não está disponível nativamente no Windows. Por favor, use a Galeria para selecionar um arquivo.',
+            ),
+          ),
+        );
+        return;
+      }
+
       final XFile? image = await _picker.pickImage(
         source: source,
-        maxWidth: 1080,
+        maxWidth: 1920,
         maxHeight: 1080,
-        imageQuality: 85,
+        imageQuality: 90,
       );
 
       if (image != null) {
-        _selectedImageBytes = await image.readAsBytes();
-        _imageName = image.name;
-        notifyListeners();
+        if (!context.mounted) return;
+
+        // Integrate Image Cropper
+        final croppedFile = await ImageCropper().cropImage(
+          sourcePath: image.path,
+          uiSettings: [
+            AndroidUiSettings(
+              toolbarTitle: 'Editar Foto',
+              toolbarColor: FlutterFlowTheme.of(context).primary,
+              toolbarWidgetColor: Colors.white,
+              initAspectRatio: CropAspectRatioPreset.original,
+              lockAspectRatio: false,
+              aspectRatioPresets: [
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio16x9,
+              ],
+            ),
+            IOSUiSettings(
+              title: 'Editar Foto',
+              aspectRatioPresets: [
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio16x9,
+              ],
+            ),
+            WebUiSettings(
+              context: context,
+              presentStyle: WebPresentStyle.dialog,
+              size: const CropperSize(width: 520, height: 520),
+            ),
+          ],
+        );
+
+        if (croppedFile != null) {
+          _selectedImageBytes = await croppedFile.readAsBytes();
+          _imageName = image.name;
+          notifyListeners();
+        }
       }
     } catch (e) {
       debugPrint('Error picking image: $e');
@@ -86,20 +141,24 @@ class FotosAnuaisModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       // 1. Upload to Storage
       final fileExtension = _imageName?.split('.').last ?? 'jpg';
       final fileName =
-          '${userId}/${DateTime.now().millisecondsSinceEpoch}.$fileExtension';
-      final storagePath = 'fotos_anuais/$fileName';
+          '${DateTime.now().millisecondsSinceEpoch}.$fileExtension';
+      final storagePath = 'users/$userId/$fileName';
 
       await supabase.storage
           .from('fotos_anuais')
           .uploadBinary(
-            fileName,
+            storagePath,
             _selectedImageBytes!,
-            fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
+            fileOptions: FileOptions(
+              cacheControl: '3600',
+              upsert: false,
+              contentType: 'image/$fileExtension',
+            ),
           );
 
       final imageUrl = supabase.storage
           .from('fotos_anuais')
-          .getPublicUrl(fileName);
+          .getPublicUrl(storagePath);
 
       // 2. Save to Database
       await FotosAnuaisTable().insert({
@@ -109,6 +168,8 @@ class FotosAnuaisModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         'mood_level': _moodLevel,
         'data_foto': _selectedDate.toIso8601String(),
       });
+
+      if (!context.mounted) return true;
 
       ScaffoldMessenger.of(
         context,
@@ -124,9 +185,11 @@ class FotosAnuaisModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       return true;
     } catch (e) {
       debugPrint('Error saving photo: $e');
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Erro ao salvar foto: $e')));
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Erro ao salvar foto: $e')));
+      }
       return false;
     } finally {
       isUploading = false;

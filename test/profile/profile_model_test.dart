@@ -1,5 +1,4 @@
 // Package imports:
-import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -99,7 +98,7 @@ void main() {
 
       model.loadUserData();
 
-      await Future.delayed(const Duration(milliseconds: 50));
+      await Future<void>.delayed(const Duration(milliseconds: 50));
 
       expect(model.avatarUrl, 'https://example.com/db-avatar.jpg');
       expect(model.userName, 'franklyn_db');

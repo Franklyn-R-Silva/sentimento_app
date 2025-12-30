@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sentimento_app/ui/pages/profile/widgets/profile_logout_button.dart';
-import 'package:sentimento_app/core/theme.dart';
 
 void main() {
   testWidgets(

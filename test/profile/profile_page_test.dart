@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -7,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:sentimento_app/main.dart';
 import 'package:sentimento_app/ui/pages/profile/profile.page.dart';
 import 'package:sentimento_app/ui/pages/profile/profile.model.dart';
-import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/auth/base_auth_user_provider.dart';
 import '../mocks/mocks.dart';
 
@@ -24,8 +21,6 @@ class MockMyAppState extends Fake implements MyAppState {
 void main() {
   late MockSupabaseClient mockSupabase;
   late MockSupabaseQueryBuilder mockQueryBuilder;
-  late MockPostgrestFilterBuilderList mockFilterBuilder;
-  late MockPostgrestTransformBuilderSingle mockTransformBuilder;
   late MockBaseAuthUser mockAuthUser;
 
   setUpAll(() {

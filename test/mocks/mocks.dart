@@ -108,11 +108,6 @@ class FakePostgrestFilterBuilderList extends Fake
   ) => this;
 
   @override
-  PostgrestFilterBuilder<List<Map<String, dynamic>>> update(
-    Map<String, dynamic> values,
-  ) => this;
-
-  @override
   PostgrestTransformBuilder<Map<String, dynamic>?> maybeSingle() {
     return FakePostgrestTransformBuilderSingle(singleResult);
   }

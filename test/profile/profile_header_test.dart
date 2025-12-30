@@ -54,7 +54,7 @@ class MockHttpClientRequest extends Fake implements HttpClientRequest {
   @override
   Future<HttpClientResponse> close() async {
     if (delay != null) {
-      await Future.delayed(delay!);
+      await Future<void>.delayed(delay!);
     }
     if (isError) {
       throw Exception('Network Error');

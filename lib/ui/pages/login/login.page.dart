@@ -193,10 +193,22 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                               onPressed: model.isLoading
                                   ? null
                                   : () async {
-                                      final success = model.isCreateAccount
-                                          ? await model.createAccount(context)
-                                          : await model.login(context);
-                                      if (success && context.mounted) {
+                                      final error = model.isCreateAccount
+                                          ? await model.createAccount()
+                                          : await model.login();
+
+                                      if (!context.mounted) return;
+
+                                      if (error != null) {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          SnackBar(
+                                            content: Text(error),
+                                            backgroundColor: Colors.red,
+                                          ),
+                                        );
+                                      } else {
                                         context.goNamedAuth('Main', true);
                                       }
                                     },

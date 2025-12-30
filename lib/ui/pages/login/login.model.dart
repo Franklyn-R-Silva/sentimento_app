@@ -73,47 +73,49 @@ class LoginModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   }
 
   /// Action blocks are added here.
-  Future<bool> login(BuildContext context) async {
+  Future<String?> login() async {
     if (emailAddressController!.text.isEmpty ||
         passwordController!.text.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Preencha todos os campos')));
-      return false;
+      return 'Preencha todos os campos';
     }
 
     isLoading = true;
     try {
       final user = await authManager.signInWithEmail(
-        context,
         emailAddressController!.text,
         passwordController!.text,
       );
-      return user != null;
+      return user != null ? null : 'Erro ao realizar login';
+    } on Exception catch (e) {
+      // Clean up error message if it's an AuthException
+      return e.toString().replaceAll('AuthException: ', '');
+    } catch (e) {
+      return 'Erro inesperado: $e';
     } finally {
       isLoading = false;
     }
   }
 
-  Future<bool> createAccount(BuildContext context) async {
+  Future<String?> createAccount() async {
     if (emailAddressController!.text.isEmpty ||
         passwordController!.text.isEmpty ||
         usernameController!.text.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Preencha todos os campos')));
-      return false;
+      return 'Preencha todos os campos';
     }
 
     isLoading = true;
     try {
       final user = await authManager.createAccountWithEmail(
-        context,
         emailAddressController!.text,
         passwordController!.text,
         username: usernameController!.text,
       );
-      return user != null;
+      // Successful creation (some flows return user, others might be async verfication)
+      return user != null ? null : 'Erro ao criar conta';
+    } on Exception catch (e) {
+      return e.toString().replaceAll('AuthException: ', '');
+    } catch (e) {
+      return 'Erro inesperado: $e';
     } finally {
       isLoading = false;
     }

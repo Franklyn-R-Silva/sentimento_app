@@ -27,13 +27,11 @@ abstract class AuthManager {
 
 mixin EmailSignInManager on AuthManager {
   Future<BaseAuthUser?> signInWithEmail(
-    final BuildContext context,
     final String email,
     final String password,
   );
 
   Future<BaseAuthUser?> createAccountWithEmail(
-    final BuildContext context,
     final String email,
     final String password, {
     final String? username,

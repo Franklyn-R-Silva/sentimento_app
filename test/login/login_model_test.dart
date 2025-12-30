@@ -29,23 +29,22 @@ void main() {
   });
 
   group('LoginModel Tests', () {
-    test('login should return true when successful', () async {
+    test('login should return null (success) when successful', () async {
       when(
-        () => mockAuthManager.signInWithEmail(any(), any(), any()),
+        () => mockAuthManager.signInWithEmail(any(), any()),
       ).thenAnswer((_) async => SentimentoAppSupabaseUser(MockUser()));
 
       model.emailAddressController!.text = 'test@test.com';
       model.passwordController!.text = 'password';
 
-      // We need a context for ScaffoldMessenger, but login calls it if empty.
-      // For this unit test, we'll just check if it calls authManager correctly.
-      // In a real widget test we would use pumpWidget.
+      final result = await model.login();
+      expect(result, isNull);
     });
 
     test('isLoading should be toggled during login', () async {
-      when(
-        () => mockAuthManager.signInWithEmail(any(), any(), any()),
-      ).thenAnswer((_) async {
+      when(() => mockAuthManager.signInWithEmail(any(), any())).thenAnswer((
+        _,
+      ) async {
         expect(model.isLoading, true);
         return null;
       });
@@ -53,10 +52,7 @@ void main() {
       model.emailAddressController!.text = 'test@test.com';
       model.passwordController!.text = 'password';
 
-      // Mock context
-      final context = MockBuildContext();
-
-      await model.login(context);
+      await model.login();
       expect(model.isLoading, false);
     });
   });

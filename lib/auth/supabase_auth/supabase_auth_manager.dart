@@ -130,14 +130,12 @@ class SupabaseAuthManager extends AuthManager with EmailSignInManager {
 
   @override
   Future<BaseAuthUser?> signInWithEmail(
-    final BuildContext context,
     final String email,
     final String password,
-  ) => _signInOrCreateAccount(context, () => emailSignInFunc(email, password));
+  ) => _signInOrCreateAccount(() => emailSignInFunc(email, password));
 
   @override
   Future<BaseAuthUser?> createAccountWithEmail(
-    final BuildContext context,
     final String email,
     final String password, {
     final String? username,
@@ -146,20 +144,11 @@ class SupabaseAuthManager extends AuthManager with EmailSignInManager {
       if (username != null) {
         final exists = await checkUsernameExists(username);
         if (exists) {
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(const SnackBar(content: Text('Login já existe')));
-          }
-          return null;
+          throw const AuthException('Login já existe');
         }
       }
 
-      if (!context.mounted) return null;
-
       return _signInOrCreateAccount(
-        context,
         () => emailCreateAccountFunc(
           email,
           password,
@@ -167,8 +156,9 @@ class SupabaseAuthManager extends AuthManager with EmailSignInManager {
         ),
       );
     } catch (e) {
+      if (e is AuthException) rethrow; // Rethrow known auth errors
       logger.e('Erro ao criar conta: $e');
-      return null;
+      throw AuthException(e.toString()); // Wrap unknown errors
     }
   }
 
@@ -182,14 +172,13 @@ class SupabaseAuthManager extends AuthManager with EmailSignInManager {
       return res != null;
     } catch (e) {
       logger.e('Erro ao verificar username: $e');
-      return false; // Assumir que não existe se der erro, ou tratar melhor
+      return false; // Fail safe
     }
   }
 
   /// Tries to sign in or create an account using Supabase Auth.
   /// Returns the User object if sign in was successful.
   Future<BaseAuthUser?> _signInOrCreateAccount(
-    final BuildContext context,
     final Future<User?> Function() signInFunc,
   ) async {
     try {
@@ -203,35 +192,17 @@ class SupabaseAuthManager extends AuthManager with EmailSignInManager {
         AppStateNotifier.instance.update(authUser);
       } else {
         logger.w('Login retornado usuário nulo ou pendente de confirmação.');
-        // Se chegamos aqui sem exceção, a conta pode ter sido criada (pendente de email)
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                'Conta criada! Verifique seu email para confirmar.',
-              ),
-              backgroundColor: Colors.blue,
-            ),
-          );
-        }
       }
       return authUser;
     } on AuthException catch (e) {
       logger.e('Erro de Autenticação Supabase: ${e.message}');
       final errorMsg = e.message.contains('User already registered')
           ? 'Email já cadastrado'
-          : 'Error: ${e.message}';
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(errorMsg)));
-      }
-      return null;
+          : e.message;
+      throw AuthException(errorMsg);
     } catch (e) {
       logger.e('Erro desconhecido no login: $e');
-      return null;
+      throw AuthException(e.toString());
     }
   }
 }

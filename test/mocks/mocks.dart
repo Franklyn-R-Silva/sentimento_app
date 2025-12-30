@@ -21,6 +21,10 @@ class MockSupabaseAuthManager extends Mock implements SupabaseAuthManager {}
 
 class MockUser extends Mock implements User {}
 
+class MockAuthUserInfo extends Mock implements AuthUserInfo {}
+
+class MockBaseAuthUser extends Mock implements BaseAuthUser {}
+
 class MockSupabaseQueryBuilder extends Mock implements SupabaseQueryBuilder {}
 
 class MockPostgrestFilterBuilderList extends Mock

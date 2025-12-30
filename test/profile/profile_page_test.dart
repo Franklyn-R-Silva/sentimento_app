@@ -1,0 +1,98 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:provider/provider.dart';
+import 'package:sentimento_app/main.dart';
+import 'package:sentimento_app/ui/pages/profile/profile.page.dart';
+import 'package:sentimento_app/ui/pages/profile/profile.model.dart';
+import 'package:sentimento_app/core/theme.dart';
+import 'package:sentimento_app/auth/base_auth_user_provider.dart';
+import '../mocks/mocks.dart';
+
+// Mock for MyAppState to handle setThemeMode
+class MockMyAppState extends Fake implements MyAppState {
+  @override
+  void setThemeMode(ThemeMode mode) {}
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) =>
+      'MockMyAppState';
+}
+
+void main() {
+  late MockSupabaseClient mockSupabase;
+  late MockSupabaseQueryBuilder mockQueryBuilder;
+  late MockPostgrestFilterBuilderList mockFilterBuilder;
+  late MockPostgrestTransformBuilderSingle mockTransformBuilder;
+  late MockBaseAuthUser mockAuthUser;
+
+  setUpAll(() {
+    registerFallbackValue(ThemeMode.light);
+  });
+
+  setUp(() {
+    mockSupabase = MockSupabaseClient();
+    mockQueryBuilder = MockSupabaseQueryBuilder();
+    mockFilterBuilder = MockPostgrestFilterBuilderList();
+    mockTransformBuilder = MockPostgrestTransformBuilderSingle();
+    mockAuthUser = MockBaseAuthUser();
+
+    // Mock currentUser globals
+    currentUser = mockAuthUser;
+    when(() => mockAuthUser.loggedIn).thenReturn(true);
+    when(() => mockAuthUser.uid).thenReturn('test-uid');
+    when(() => mockAuthUser.email).thenReturn('franklyn@example.com');
+    when(() => mockAuthUser.displayName).thenReturn('Franklyn Silva');
+    when(() => mockAuthUser.photoUrl).thenReturn(null);
+
+    // Mock Supabase Database
+    when(() => mockSupabase.from(any())).thenAnswer((_) => mockQueryBuilder);
+    when(
+      () => mockQueryBuilder.select(any()),
+    ).thenAnswer((_) => mockFilterBuilder);
+    when(
+      () => mockFilterBuilder.eq(any(), any()),
+    ).thenAnswer((_) => mockFilterBuilder);
+    when(
+      () => mockFilterBuilder.maybeSingle(),
+    ).thenAnswer((_) => mockTransformBuilder);
+    when(
+      () => mockTransformBuilder.then(any()),
+    ).thenAnswer((invocation) => Future.value(null));
+  });
+
+  testWidgets('ProfilePage should render all sections and widgets', (
+    WidgetTester tester,
+  ) async {
+    // Create a real model with mocked dependencies
+    final model = ProfileModel(supabaseClient: mockSupabase);
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [ChangeNotifierProvider<ProfileModel>.value(value: model)],
+        child: const MaterialApp(home: ProfilePageWidget()),
+      ),
+    );
+
+    // We need to pump again because loadUserData is async in initState
+    await tester.pump();
+
+    // Check Header
+    expect(find.text('Franklyn Silva'), findsOneWidget);
+    expect(find.text('franklyn@example.com'), findsOneWidget);
+
+    // Check Sections
+    expect(find.text('Configurações'), findsOneWidget);
+    expect(find.text('Dados'), findsOneWidget);
+    expect(find.text('Sobre'), findsOneWidget);
+
+    // Check specific tiles
+    expect(find.text('Modo Escuro'), findsOneWidget);
+    expect(find.text('Notificações'), findsOneWidget);
+    expect(find.text('Exportar Dados'), findsOneWidget);
+    expect(find.text('Alterar Senha'), findsOneWidget);
+    expect(find.text('Sair'), findsOneWidget);
+  });
+}

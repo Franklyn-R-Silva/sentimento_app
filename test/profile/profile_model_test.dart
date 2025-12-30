@@ -152,8 +152,23 @@ void main() {
   });
 
   group('ProfileModel - uploadAvatarImage', () {
-    test('should upload image and update avatarUrl on success', () async {
-      final context = MockBuildContext();
+    testWidgets('should upload image and update avatarUrl on success', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Builder(
+              builder: (context) {
+                return TextButton(
+                  onPressed: () => model.uploadAvatarImage(context),
+                  child: const Text('Upload'),
+                );
+              },
+            ),
+          ),
+        ),
+      );
 
       when(
         () => mockImagePicker.pickImage(
@@ -183,13 +198,21 @@ void main() {
         () => mockQueryBuilder.update(any()),
       ).thenAnswer((_) => FakePostgrestFilterBuilderList([]));
 
-      try {
-        await model.uploadAvatarImage(context);
-      } catch (e) {
-        if (!e.toString().contains('ScaffoldMessenger')) rethrow;
-      }
+      // Trigger upload via button press to get valid context
+      await tester.tap(find.text('Upload'));
+      await tester.pump(); // Start async operation
+
+      // Simulate async completion
+      await tester.pump(const Duration(milliseconds: 100));
 
       expect(model.avatarUrl, 'https://example.com/new-avatar.jpg');
+      verify(
+        () => mockFileApi.uploadBinary(
+          any(),
+          any(),
+          fileOptions: any(named: 'fileOptions'),
+        ),
+      ).called(1);
       expect(model.isUploading, false);
     });
   });

@@ -61,25 +61,35 @@ class ProfileHeader extends StatelessWidget {
                         offset: const Offset(0, 6),
                       ),
                     ],
-                    image: (avatarUrl != null && avatarUrl!.isNotEmpty)
-                        ? DecorationImage(
-                            image: NetworkImage(avatarUrl!),
-                            fit: BoxFit.cover,
-                          )
-                        : null,
                   ),
-                  child: (avatarUrl == null || avatarUrl!.isEmpty)
-                      ? Center(
-                          child: Text(
-                            (userName?.isNotEmpty ?? false)
-                                ? userName![0].toUpperCase()
-                                : 'U',
-                            style: theme.displaySmall.override(
-                              color: Colors.white,
-                            ),
-                          ),
-                        )
-                      : null,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(28),
+                    child: (avatarUrl != null && avatarUrl!.isNotEmpty)
+                        ? Image.network(
+                            avatarUrl!,
+                            width: 90,
+                            height: 90,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return _buildInitials(theme);
+                            },
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  value:
+                                      loadingProgress.expectedTotalBytes != null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                            loadingProgress.expectedTotalBytes!
+                                      : null,
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              );
+                            },
+                          )
+                        : _buildInitials(theme),
+                  ),
                 ),
                 if (isUploading)
                   Positioned.fill(
@@ -128,6 +138,15 @@ class ProfileHeader extends StatelessWidget {
             style: theme.labelMedium.override(color: theme.secondaryText),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildInitials(FlutterFlowTheme theme) {
+    return Center(
+      child: Text(
+        (userName?.isNotEmpty ?? false) ? userName![0].toUpperCase() : 'U',
+        style: theme.displaySmall.override(color: Colors.white),
       ),
     );
   }

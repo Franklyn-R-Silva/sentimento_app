@@ -19,6 +19,18 @@ class MockSupabaseAuthManager extends Mock implements SupabaseAuthManager {}
 
 class MockUser extends Mock implements User {}
 
+class MockSupabaseQueryBuilder extends Mock implements SupabaseQueryBuilder {}
+
+class MockPostgrestFilterBuilderList extends Mock
+    implements PostgrestFilterBuilder<List<Map<String, dynamic>>> {}
+
+class MockPostgrestTransformBuilderSingle extends Mock
+    implements PostgrestTransformBuilder<Map<String, dynamic>?> {}
+
+class MockSupabaseStorageClient extends Mock implements SupabaseStorageClient {}
+
+class MockStorageFileApi extends Mock implements StorageFileApi {}
+
 class FakeBuildContext extends Fake implements BuildContext {}
 
 class MockBuildContext extends Mock implements BuildContext {}

@@ -10,6 +10,11 @@ import 'package:sentimento_app/backend/supabase.dart';
 import 'package:sentimento_app/core/model.dart';
 
 class ProfileModel extends FlutterFlowModel<Widget> with ChangeNotifier {
+  final SupabaseClient? supabaseClient;
+  ProfileModel({this.supabaseClient});
+
+  SupabaseClient get _client => supabaseClient ?? SupaFlow.client;
+
   final unfocusNode = FocusNode();
 
   // Password Change
@@ -59,23 +64,27 @@ class ProfileModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   }
 
   void loadUserData() {
-    final user = Supabase.instance.client.auth.currentUser;
+    final user = _client.auth.currentUser;
     _userEmail = user?.email;
     _userName =
         (user?.userMetadata?['name'] as String?) ??
+        (user?.userMetadata?['full_name'] as String?) ??
         user?.email?.split('@').first ??
         'Usuário';
 
-    // Fetch profile data from app_profiles for avatar_url
+    // Try to get avatar from metadata first (common for social logins)
+    _avatarUrl = user?.userMetadata?['avatar_url'] as String?;
+
+    // Fetch profile data from app_profiles for avatar_url (overwrites metadata if present)
     _fetchProfileData();
   }
 
   Future<void> _fetchProfileData() async {
-    final user = Supabase.instance.client.auth.currentUser;
+    final user = _client.auth.currentUser;
     if (user == null) return;
 
     try {
-      final data = await SupaFlow.client
+      final data = await _client
           .from('app_profiles')
           .select('avatar_url, username, full_name')
           .eq('id', user.id)
@@ -112,7 +121,7 @@ class ProfileModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     notifyListeners();
 
     try {
-      final user = Supabase.instance.client.auth.currentUser;
+      final user = _client.auth.currentUser;
       if (user == null) return;
 
       final fileBytes = await image.readAsBytes();
@@ -121,7 +130,7 @@ class ProfileModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       final path = '${user.id}/$fileName';
 
       // Upload to 'avatars' bucket
-      await SupaFlow.client.storage
+      await _client.storage
           .from('avatars')
           .uploadBinary(
             path,
@@ -133,12 +142,10 @@ class ProfileModel extends FlutterFlowModel<Widget> with ChangeNotifier {
           );
 
       // Get Public URL
-      final publicUrl = SupaFlow.client.storage
-          .from('avatars')
-          .getPublicUrl(path);
+      final publicUrl = _client.storage.from('avatars').getPublicUrl(path);
 
       // Update app_profiles
-      await SupaFlow.client
+      await _client
           .from('app_profiles')
           .update({'avatar_url': publicUrl})
           .eq('id', user.id);

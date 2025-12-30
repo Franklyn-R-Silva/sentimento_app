@@ -188,9 +188,14 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                             child: ElevatedButton(
                               onPressed: model.isLoading
                                   ? null
-                                  : () => model.isCreateAccount
-                                        ? _handleCreateAccount(model)
-                                        : _handleLogin(model),
+                                  : () async {
+                                      final success = model.isCreateAccount
+                                          ? await model.createAccount(context)
+                                          : await model.login(context);
+                                      if (success && mounted) {
+                                        context.goNamedAuth('Main', mounted);
+                                      }
+                                    },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: theme.primary,
                                 foregroundColor: Colors.white,
@@ -387,66 +392,6 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
         ),
       ),
     );
-  }
-
-  Future<void> _handleLogin(LoginModel model) async {
-    if (model.emailAddressController!.text.isEmpty ||
-        model.passwordController!.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Preencha todos os campos'),
-          backgroundColor: FlutterFlowTheme.of(context).error,
-        ),
-      );
-      return;
-    }
-
-    model.isLoading = true;
-    try {
-      final user = await authManager.signInWithEmail(
-        context,
-        model.emailAddressController!.text,
-        model.passwordController!.text,
-      );
-      if (user == null) return;
-
-      if (mounted) {
-        context.goNamedAuth('Main', mounted);
-      }
-    } finally {
-      model.isLoading = false;
-    }
-  }
-
-  Future<void> _handleCreateAccount(LoginModel model) async {
-    if (model.emailAddressController!.text.isEmpty ||
-        model.passwordController!.text.isEmpty ||
-        model.usernameController!.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Preencha todos os campos'),
-          backgroundColor: FlutterFlowTheme.of(context).error,
-        ),
-      );
-      return;
-    }
-
-    model.isLoading = true;
-    try {
-      final user = await authManager.createAccountWithEmail(
-        context,
-        model.emailAddressController!.text,
-        model.passwordController!.text,
-        username: model.usernameController!.text,
-      );
-      if (user == null) return;
-
-      if (mounted) {
-        context.goNamedAuth('Main', mounted);
-      }
-    } finally {
-      model.isLoading = false;
-    }
   }
 }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 import 'package:sentimento_app/backend/supabase.dart';
 import 'package:sentimento_app/core/model.dart';
 
@@ -80,7 +81,7 @@ class StatsModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       }
 
       // Calculate streaks
-      final streaks = _calculateStreaks(entries);
+      final streaks = calculateStreaks(entries);
       _currentStreak = streaks['current'] ?? 0;
       _longestStreak = streaks['longest'] ?? 0;
 
@@ -92,8 +93,8 @@ class StatsModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     }
   }
 
-  /// Calculates current and longest streaks from entries
-  Map<String, int> _calculateStreaks(List<EntradasHumorRow> entries) {
+  @visibleForTesting
+  Map<String, int> calculateStreaks(List<EntradasHumorRow> entries) {
     if (entries.isEmpty) return {'current': 0, 'longest': 0};
 
     // Get unique dates (only date part, no time)

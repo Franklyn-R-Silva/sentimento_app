@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sentimento_app/auth/supabase_auth/auth_util.dart';
 import 'package:sentimento_app/core/model.dart';
 
 class LoginModel extends FlutterFlowModel<Widget> with ChangeNotifier {
@@ -62,6 +63,49 @@ class LoginModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   }
 
   /// Action blocks are added here.
+  Future<bool> login(BuildContext context) async {
+    if (emailAddressController!.text.isEmpty ||
+        passwordController!.text.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Preencha todos os campos')));
+      return false;
+    }
 
-  /// Additional helper methods are added here.
+    isLoading = true;
+    try {
+      final user = await authManager.signInWithEmail(
+        context,
+        emailAddressController!.text,
+        passwordController!.text,
+      );
+      return user != null;
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  Future<bool> createAccount(BuildContext context) async {
+    if (emailAddressController!.text.isEmpty ||
+        passwordController!.text.isEmpty ||
+        usernameController!.text.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Preencha todos os campos')));
+      return false;
+    }
+
+    isLoading = true;
+    try {
+      final user = await authManager.createAccountWithEmail(
+        context,
+        emailAddressController!.text,
+        passwordController!.text,
+        username: usernameController!.text,
+      );
+      return user != null;
+    } finally {
+      isLoading = false;
+    }
+  }
 }

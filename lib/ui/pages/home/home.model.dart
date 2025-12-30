@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 import 'package:sentimento_app/backend/supabase.dart';
 import 'package:sentimento_app/core/model.dart';
 
@@ -83,8 +84,8 @@ class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       annualEntries = annualResponse;
 
       // Calculate streaks
-      _longestStreak = _calculateLongestStreak(annualEntries);
-      _currentStreak = _calculateCurrentStreak(recentEntries);
+      _longestStreak = calculateLongestStreak(annualEntries);
+      _currentStreak = calculateCurrentStreak(recentEntries);
 
       notifyListeners();
     } catch (e) {
@@ -131,8 +132,8 @@ class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     }
   }
 
-  /// Calculates the longest streak of consecutive days with entries
-  int _calculateLongestStreak(List<EntradasHumorRow> entries) {
+  @visibleForTesting
+  int calculateLongestStreak(List<EntradasHumorRow> entries) {
     if (entries.isEmpty) return 0;
 
     // Get unique dates (only date part, no time)
@@ -166,7 +167,8 @@ class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     return longestStreak;
   }
 
-  int _calculateCurrentStreak(List<EntradasHumorRow> entries) {
+  @visibleForTesting
+  int calculateCurrentStreak(List<EntradasHumorRow> entries) {
     if (entries.isEmpty) return 0;
 
     int streak = 0;

@@ -9,7 +9,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:latlong2/latlong.dart' as ll;
 
 class FotosAnuaisModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   final unfocusNode = FocusNode();
@@ -34,9 +34,9 @@ class FotosAnuaisModel extends FlutterFlowModel<Widget> with ChangeNotifier {
 
   String? _imageName;
 
-  LatLng? _currentLocation;
-  LatLng? get currentLocation => _currentLocation;
-  set currentLocation(LatLng? value) {
+  ll.LatLng? _currentLocation;
+  ll.LatLng? get currentLocation => _currentLocation;
+  set currentLocation(ll.LatLng? value) {
     _currentLocation = value;
     notifyListeners();
   }
@@ -168,7 +168,7 @@ class FotosAnuaisModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         ),
       );
 
-      _currentLocation = LatLng(position.latitude, position.longitude);
+      _currentLocation = ll.LatLng(position.latitude, position.longitude);
     } catch (e) {
       debugPrint('Location Error: $e');
       if (context.mounted) {

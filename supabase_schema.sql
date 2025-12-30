@@ -63,8 +63,13 @@ create policy "Usuários podem atualizar seu próprio perfil"
 create or replace function public.handle_new_user()
 returns trigger as $$
 begin
-  insert into public.app_profiles (id, full_name, avatar_url)
-  values (new.id, new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'avatar_url');
+  insert into public.app_profiles (id, username, full_name, avatar_url)
+  values (
+    new.id,
+    new.raw_user_meta_data->>'username',
+    new.raw_user_meta_data->>'full_name',
+    new.raw_user_meta_data->>'avatar_url'
+  );
   return new;
 end;
 $$ language plpgsql security definer;

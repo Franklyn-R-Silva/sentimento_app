@@ -192,16 +192,24 @@ class SupabaseAuthManager extends AuthManager with EmailSignInManager {
       final user = await signInFunc();
       final authUser = user == null ? null : SentimentoAppSupabaseUser(user);
 
-      // Update currentUser here in case user info needs to be used immediately
-      // after a user is signed in. This should be handled by the user stream,
-      // but adding here too in case of a race condition where the user stream
-      // doesn't assign the currentUser in time.
       if (authUser != null) {
         logger.i('Login realizado com sucesso! User UID: ${authUser.uid}');
         currentUser = authUser;
         AppStateNotifier.instance.update(authUser);
       } else {
-        logger.w('Login falhou ou retornou usuário nulo.');
+        logger.w('Login retornado usuário nulo ou pendente de confirmação.');
+        // Se chegamos aqui sem exceção, a conta pode ter sido criada (pendente de email)
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Conta criada! Verifique seu email para confirmar.',
+              ),
+              backgroundColor: Colors.blue,
+            ),
+          );
+        }
       }
       return authUser;
     } on AuthException catch (e) {

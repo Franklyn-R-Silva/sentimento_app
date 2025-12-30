@@ -1,5 +1,10 @@
-import 'package:fl_chart/fl_chart.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:fl_chart/fl_chart.dart';
+
+// Project imports:
 import 'package:sentimento_app/backend/tables/entradas_humor.dart';
 import 'package:sentimento_app/core/theme.dart';
 

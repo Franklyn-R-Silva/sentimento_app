@@ -1,14 +1,21 @@
+// Dart imports:
+import 'dart:io' show Platform;
+import 'dart:typed_data';
+
+// Flutter imports:
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:geolocator/geolocator.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:latlong2/latlong.dart' as ll;
+
+// Project imports:
 import 'package:sentimento_app/backend/supabase.dart' hide LatLng;
 import 'package:sentimento_app/core/model.dart';
-import 'dart:typed_data';
-import 'dart:io' show Platform;
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:image_cropper/image_cropper.dart';
 import 'package:sentimento_app/core/theme.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:latlong2/latlong.dart' as ll;
 
 class FotosAnuaisModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   final unfocusNode = FocusNode();

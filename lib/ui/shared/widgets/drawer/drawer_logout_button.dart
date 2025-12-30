@@ -1,7 +1,10 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:sentimento_app/core/theme.dart';
+
+// Project imports:
 import 'package:sentimento_app/auth/supabase_auth/auth_util.dart';
 import 'package:sentimento_app/core/nav/nav.dart';
+import 'package:sentimento_app/core/theme.dart';
 
 class DrawerLogoutButton extends StatelessWidget {
   final FlutterFlowTheme theme;

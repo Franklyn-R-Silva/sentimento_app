@@ -1,6 +1,9 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:sentimento_app/core/theme.dart';
+
+// Project imports:
 import 'package:sentimento_app/backend/supabase.dart';
+import 'package:sentimento_app/core/theme.dart';
 
 class DrawerHeaderWidget extends StatefulWidget {
   final String userName;

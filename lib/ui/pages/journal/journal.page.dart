@@ -1,16 +1,21 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
-import 'package:sentimento_app/backend/tables/entradas_humor.dart';
+
+// Project imports:
 import 'package:sentimento_app/backend/services/data_refresh_service.dart';
+import 'package:sentimento_app/backend/tables/entradas_humor.dart';
 import 'package:sentimento_app/core/model.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/ui/pages/home/widgets/mood_card.dart';
+import 'package:sentimento_app/ui/pages/journal/widgets/journal_calendar_view.dart';
 import 'package:sentimento_app/ui/pages/journal/widgets/journal_empty_state.dart';
+import 'package:sentimento_app/ui/pages/journal/widgets/journal_entry_detail_sheet.dart';
 import 'package:sentimento_app/ui/pages/journal/widgets/journal_filter_chip.dart';
 import 'package:sentimento_app/ui/pages/journal/widgets/journal_search_bar.dart';
-import 'package:sentimento_app/ui/pages/journal/widgets/journal_entry_detail_sheet.dart';
-import 'package:sentimento_app/ui/pages/journal/widgets/journal_calendar_view.dart';
 import 'journal.model.dart';
 
 export 'journal.model.dart';

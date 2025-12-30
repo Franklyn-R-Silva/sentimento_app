@@ -1,14 +1,19 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:provider/provider.dart';
+
+// Project imports:
 import 'package:sentimento_app/core/model.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'goals.model.dart';
-import 'widgets/goal_card.dart';
 import 'widgets/celebration_overlay.dart';
-import 'widgets/goals_header.dart';
-import 'widgets/goals_stats_row.dart';
+import 'widgets/goal_card.dart';
 import 'widgets/goals_add_sheet.dart';
 import 'widgets/goals_empty_state.dart';
+import 'widgets/goals_header.dart';
+import 'widgets/goals_stats_row.dart';
 
 export 'goals.model.dart';
 

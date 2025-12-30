@@ -1,6 +1,9 @@
+// Package imports:
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sentimento_app/ui/pages/home/home.model.dart';
+
+// Project imports:
 import 'package:sentimento_app/backend/tables/entradas_humor.dart';
+import 'package:sentimento_app/ui/pages/home/home.model.dart';
 
 void main() {
   late HomeModel model;

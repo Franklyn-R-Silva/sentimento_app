@@ -1,14 +1,19 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+// Project imports:
 import 'package:sentimento_app/core/nav/nav.dart';
 import 'package:sentimento_app/core/theme.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'drawer/drawer_header.dart';
-import 'drawer/daily_message.dart';
-import 'drawer/drawer_nav_section.dart';
-import 'drawer/drawer_nav_item.dart';
-import 'drawer/drawer_logout_button.dart';
-import 'drawer/emergency_contact.dart';
 import 'drawer/breathing_exercise_sheet.dart';
+import 'drawer/daily_message.dart';
+import 'drawer/drawer_header.dart';
+import 'drawer/drawer_logout_button.dart';
+import 'drawer/drawer_nav_item.dart';
+import 'drawer/drawer_nav_section.dart';
+import 'drawer/emergency_contact.dart';
 
 /// AppDrawer - Drawer inventivo e acolhedor para usuários com depressão
 class AppDrawer extends StatelessWidget {

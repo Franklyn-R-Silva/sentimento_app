@@ -2,9 +2,9 @@
 
 // Package imports:
 import 'package:rxdart/rxdart.dart';
-import 'package:sentimento_app/auth/base_auth_user_provider.dart';
 
 // Project imports:
+import 'package:sentimento_app/auth/base_auth_user_provider.dart';
 import 'package:sentimento_app/backend/database.dart';
 
 export '../base_auth_user_provider.dart';

@@ -7,6 +7,8 @@ import 'dart:convert';
 
 // Flutter imports:
 import 'package:flutter/foundation.dart';
+
+// Project imports:
 import 'package:sentimento_app/backend/table.dart';
 import 'package:sentimento_app/core/lat_lng.dart';
 

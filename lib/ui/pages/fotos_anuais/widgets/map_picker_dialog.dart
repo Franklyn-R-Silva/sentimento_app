@@ -1,6 +1,11 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' as ll;
+
+// Project imports:
 import 'package:sentimento_app/core/theme.dart';
 
 class MapPickerStyles {

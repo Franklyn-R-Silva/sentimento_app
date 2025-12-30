@@ -1,4 +1,7 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:sentimento_app/core/theme.dart';
 
 /// GradientCard - Card com gradiente baseado no nível de humor

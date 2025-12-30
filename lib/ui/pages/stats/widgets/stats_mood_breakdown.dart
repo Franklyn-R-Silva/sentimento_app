@@ -1,4 +1,7 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/ui/shared/widgets/gradient_card.dart';
 import 'package:sentimento_app/ui/shared/widgets/mood_indicator.dart';

@@ -1,9 +1,14 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:sentimento_app/auth/supabase_auth/supabase_user_provider.dart';
 import 'package:sentimento_app/ui/pages/login/login.model.dart';
-import 'mocks.dart';
+import '../mocks/mocks.dart';
 
 void main() {
   late LoginModel model;

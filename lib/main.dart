@@ -1,14 +1,19 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+
+// Package imports:
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logger/logger.dart';
-import 'package:sentimento_app/auth/supabase_auth/supabase_user_provider.dart';
+import 'package:provider/provider.dart';
+
+// Project imports:
 import 'package:sentimento_app/auth/supabase_auth/auth_util.dart';
+import 'package:sentimento_app/auth/supabase_auth/supabase_user_provider.dart';
 import 'package:sentimento_app/backend/supabase.dart';
+import 'package:sentimento_app/core/nav/nav.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/core/util.dart';
-import 'package:sentimento_app/core/nav/nav.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,7 +1,12 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+// Project imports:
 import 'package:sentimento_app/backend/tables/metas.dart';
 import 'package:sentimento_app/core/model.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class GoalsModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   final unfocusNode = FocusNode();

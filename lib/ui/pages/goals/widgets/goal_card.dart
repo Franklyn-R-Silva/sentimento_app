@@ -1,5 +1,10 @@
+// Dart imports:
 import 'dart:ui';
+
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:sentimento_app/backend/tables/metas.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'goal_progress_ring.dart';

@@ -1,14 +1,19 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:provider/provider.dart';
+
+// Project imports:
 import 'package:sentimento_app/core/model.dart';
 import 'package:sentimento_app/core/nav/nav.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/main.dart';
 import 'profile.model.dart';
 import 'widgets/profile_header.dart';
-import 'widgets/profile_settings_tile.dart';
-import 'widgets/profile_section_title.dart';
 import 'widgets/profile_logout_button.dart';
+import 'widgets/profile_section_title.dart';
+import 'widgets/profile_settings_tile.dart';
 
 export 'profile.model.dart';
 

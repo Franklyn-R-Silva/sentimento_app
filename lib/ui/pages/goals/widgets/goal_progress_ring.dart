@@ -1,4 +1,7 @@
+// Dart imports:
 import 'dart:math' as math;
+
+// Flutter imports:
 import 'package:flutter/material.dart';
 
 /// Widget de ring de progresso animado com gradiente

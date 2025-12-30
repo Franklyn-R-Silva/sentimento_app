@@ -1,5 +1,10 @@
+// Dart imports:
 import 'dart:ui';
+
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:sentimento_app/core/theme.dart';
 
 class GoalsAddSheet extends StatefulWidget {

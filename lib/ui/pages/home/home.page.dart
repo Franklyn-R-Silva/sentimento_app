@@ -1,16 +1,20 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 
+// Project imports:
 import 'package:sentimento_app/backend/services/data_refresh_service.dart';
-import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/core/model.dart';
+import 'package:sentimento_app/core/theme.dart';
+import 'package:sentimento_app/ui/pages/home/widgets/home_add_mood_sheet.dart';
+import 'package:sentimento_app/ui/pages/home/widgets/home_empty_state.dart';
+import 'package:sentimento_app/ui/pages/home/widgets/home_header.dart';
 import 'package:sentimento_app/ui/pages/home/widgets/mood_card.dart';
 import 'package:sentimento_app/ui/pages/home/widgets/mood_streak.dart';
 import 'package:sentimento_app/ui/pages/home/widgets/weekly_chart.dart';
-import 'package:sentimento_app/ui/pages/home/widgets/home_header.dart';
-import 'package:sentimento_app/ui/pages/home/widgets/home_empty_state.dart';
-import 'package:sentimento_app/ui/pages/home/widgets/home_add_mood_sheet.dart';
 import 'package:sentimento_app/ui/shared/widgets/gradient_card.dart';
 import 'home.model.dart';
 

@@ -1,6 +1,11 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:sentimento_app/auth/supabase_auth/auth_util.dart';
+
+// Package imports:
 import 'package:image_picker/image_picker.dart';
+
+// Project imports:
+import 'package:sentimento_app/auth/supabase_auth/auth_util.dart';
 import 'package:sentimento_app/backend/supabase.dart';
 import 'package:sentimento_app/core/model.dart';
 

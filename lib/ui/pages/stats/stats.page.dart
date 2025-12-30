@@ -1,12 +1,17 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:provider/provider.dart';
+
+// Project imports:
+import 'package:sentimento_app/backend/services/data_refresh_service.dart';
 import 'package:sentimento_app/core/model.dart';
 import 'package:sentimento_app/core/theme.dart';
-import 'package:sentimento_app/backend/services/data_refresh_service.dart';
 import 'stats.model.dart';
-import 'widgets/stats_overview.dart';
-import 'widgets/stats_mood_breakdown.dart';
 import 'widgets/stats_distribution_chart.dart';
+import 'widgets/stats_mood_breakdown.dart';
+import 'widgets/stats_overview.dart';
 
 export 'stats.model.dart';
 

@@ -1,3 +1,4 @@
+// Project imports:
 import 'package:sentimento_app/backend/database.dart';
 import 'package:sentimento_app/backend/supabase.dart';
 

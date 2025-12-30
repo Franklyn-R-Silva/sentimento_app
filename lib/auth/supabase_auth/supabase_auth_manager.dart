@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:logger/logger.dart';
+
+// Project imports:
 import 'package:sentimento_app/auth/auth_manager.dart';
 import 'package:sentimento_app/auth/supabase_auth/auth_util.dart';
 import 'package:sentimento_app/auth/supabase_auth/email_auth.dart';

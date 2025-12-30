@@ -1,11 +1,16 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:table_calendar/table_calendar.dart';
-import 'package:sentimento_app/core/theme.dart';
-import 'package:sentimento_app/ui/pages/journal/journal.model.dart';
-import 'package:sentimento_app/backend/tables/entradas_humor.dart';
-import 'package:sentimento_app/ui/pages/home/widgets/mood_card.dart';
-import 'package:sentimento_app/ui/pages/journal/widgets/journal_entry_detail_sheet.dart';
+
+// Project imports:
 import 'package:sentimento_app/backend/services/data_refresh_service.dart';
+import 'package:sentimento_app/backend/tables/entradas_humor.dart';
+import 'package:sentimento_app/core/theme.dart';
+import 'package:sentimento_app/ui/pages/home/widgets/mood_card.dart';
+import 'package:sentimento_app/ui/pages/journal/journal.model.dart';
+import 'package:sentimento_app/ui/pages/journal/widgets/journal_entry_detail_sheet.dart';
 
 class JournalCalendarView extends StatefulWidget {
   final JournalModel model;

@@ -1,12 +1,17 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:provider/provider.dart';
+
+// Project imports:
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/ui/pages/fotos_anuais/fotos_anuais.model.dart';
-import 'widgets/location_selection_widget.dart';
-import 'widgets/photo_capture_widget.dart';
-import 'widgets/mood_selector_widget.dart';
-import 'widgets/phrase_input_widget.dart';
 import 'widgets/date_time_selector_widget.dart';
+import 'widgets/location_selection_widget.dart';
+import 'widgets/mood_selector_widget.dart';
+import 'widgets/photo_capture_widget.dart';
+import 'widgets/phrase_input_widget.dart';
 
 class FotosAnuaisPage extends StatefulWidget {
   const FotosAnuaisPage({super.key});

@@ -1,5 +1,10 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:latlong2/latlong.dart' as ll;
+
+// Project imports:
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/ui/shared/widgets/gradient_card.dart';
 import '../fotos_anuais.model.dart';

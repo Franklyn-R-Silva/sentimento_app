@@ -38,6 +38,8 @@ void main() {
     mockFilterBuilder = MockPostgrestFilterBuilderList();
     mockTransformBuilder = MockPostgrestTransformBuilderSingle();
     mockAuthUser = MockBaseAuthUser();
+    final mockGoTrue = MockGoTrueClient();
+    final mockUser = MockUser();
 
     // Mock currentUser globals
     currentUser = mockAuthUser;
@@ -46,6 +48,12 @@ void main() {
     when(() => mockAuthUser.email).thenReturn('franklyn@example.com');
     when(() => mockAuthUser.displayName).thenReturn('Franklyn Silva');
     when(() => mockAuthUser.photoUrl).thenReturn(null);
+
+    // Mock Supabase Auth
+    when(() => mockSupabase.auth).thenReturn(mockGoTrue);
+    when(() => mockGoTrue.currentUser).thenReturn(mockUser);
+    when(() => mockUser.email).thenReturn('franklyn@example.com');
+    when(() => mockUser.userMetadata).thenReturn({'name': 'Franklyn Silva'});
 
     // Mock Supabase Database
     when(() => mockSupabase.from(any())).thenAnswer((_) => mockQueryBuilder);

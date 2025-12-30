@@ -4,7 +4,6 @@ import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
 import 'package:sentimento_app/main.dart';
 import 'package:sentimento_app/ui/pages/profile/profile.page.dart';
-import 'package:sentimento_app/ui/pages/profile/profile.model.dart';
 import 'package:sentimento_app/auth/base_auth_user_provider.dart';
 import '../mocks/mocks.dart';
 

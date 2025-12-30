@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:latlong2/latlong.dart' as ll;
 import 'package:sentimento_app/core/theme.dart';
 
 class MapPickerStyles {
@@ -18,7 +18,7 @@ class MapPickerStyles {
 }
 
 class MapPickerDialog extends StatefulWidget {
-  final LatLng initialLocation;
+  final ll.LatLng initialLocation;
 
   const MapPickerDialog({super.key, required this.initialLocation});
 
@@ -27,7 +27,7 @@ class MapPickerDialog extends StatefulWidget {
 }
 
 class _MapPickerDialogState extends State<MapPickerDialog> {
-  late LatLng _pickedLocation;
+  late ll.LatLng _pickedLocation;
   final MapController _mapController = MapController();
 
   @override

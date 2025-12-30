@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:latlong2/latlong.dart' as ll;
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/ui/shared/widgets/gradient_card.dart';
 import '../fotos_anuais.model.dart';
@@ -70,10 +70,10 @@ class LocationSelectionWidget extends StatelessWidget {
                   IconButton(
                     icon: const Icon(Icons.map, color: Colors.white),
                     onPressed: () async {
-                      final LatLng initial =
+                      final ll.LatLng initial =
                           model.currentLocation ??
-                          const LatLng(-23.5505, -46.6333);
-                      final result = await showDialog<LatLng>(
+                          const ll.LatLng(-23.5505, -46.6333);
+                      final result = await showDialog<ll.LatLng>(
                         context: context,
                         builder: (context) =>
                             MapPickerDialog(initialLocation: initial),

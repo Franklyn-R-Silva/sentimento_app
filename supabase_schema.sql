@@ -145,3 +145,37 @@ create policy "Usuários podem deletar suas próprias fotos"
   on public.fotos_anuais for delete
   using (auth.uid() = user_id);
 
+-- Recomendações de Índices para Performance
+create index if not exists idx_entradas_humor_user_id on public.entradas_humor(user_id);
+create index if not exists idx_metas_user_id on public.metas(user_id);
+create index if not exists idx_fotos_anuais_user_id on public.fotos_anuais(user_id);
+create index if not exists idx_fotos_anuais_data_foto on public.fotos_anuais(data_foto);
+
+-- Configuração de Segurança para o Bucket de Storage (fotos_anuais)
+-- Nota: O bucket deve ser criado manualmente no painel como 'fotos_anuais'
+
+-- Permite que usuários autenticados vejam qualquer foto (Bucket Público)
+create policy "Fotos são visíveis publicamente"
+on storage.objects for select
+to authenticated
+using (bucket_id = 'fotos_anuais');
+
+-- Permite que usuários façam upload apenas para sua própria pasta
+create policy "Usuários podem fazer upload de suas próprias fotos"
+on storage.objects for insert
+to authenticated
+with check (
+  bucket_id = 'fotos_anuais' AND
+  (storage.foldername(name))[1] = 'users' AND
+  (storage.foldername(name))[2] = auth.uid()::text
+);
+
+-- Permite que usuários deletem suas próprias fotos
+create policy "Usuários podem deletar suas próprias fotos"
+on storage.objects for delete
+to authenticated
+using (
+  bucket_id = 'fotos_anuais' AND
+  (storage.foldername(name))[1] = 'users' AND
+  (storage.foldername(name))[2] = auth.uid()::text
+);

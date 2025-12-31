@@ -26,6 +26,5 @@ class NetworkException extends AppException {
 
 /// Erros inesperados ou não categorizados
 class GenericException extends AppException {
-  GenericException([String message = 'Ocorreu um erro inesperado.'])
-    : super(message);
+  GenericException([super.message = 'Ocorreu um erro inesperado.']);
 }

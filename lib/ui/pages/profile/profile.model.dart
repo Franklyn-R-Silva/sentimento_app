@@ -9,7 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sentimento_app/auth/supabase_auth/auth_util.dart';
 import 'package:sentimento_app/backend/supabase.dart';
 import 'package:sentimento_app/core/base_model.dart';
-import 'package:sentimento_app/core/exceptions/app_exceptions.dart';
+import 'package:sentimento_app/core/exceptions/app_exceptions.dart' as app_ex;
 import 'package:sentimento_app/services/toast_service.dart';
 
 class ProfileModel extends BaseModel {
@@ -57,6 +57,7 @@ class ProfileModel extends BaseModel {
   @override
   void initState(BuildContext context) {
     super.initState(context);
+    loadUserData();
   }
 
   @override
@@ -110,7 +111,7 @@ class ProfileModel extends BaseModel {
       }
     } catch (e) {
       debugPrint('Error fetching profile: $e');
-      throw NetworkException('Erro ao carregar perfil: $e');
+      throw app_ex.NetworkException('Erro ao carregar perfil: $e');
     }
   }
 
@@ -126,7 +127,7 @@ class ProfileModel extends BaseModel {
 
     await runSafe(() async {
       final user = _client.auth.currentUser;
-      if (user == null) throw AuthException('Usuário não autenticado');
+      if (user == null) throw app_ex.AuthException('Usuário não autenticado');
 
       final fileBytes = await image.readAsBytes();
       final fileExt = image.path.split('.').last;
@@ -172,15 +173,17 @@ class ProfileModel extends BaseModel {
 
     await runSafe(() async {
       if (password == null || password.isEmpty) {
-        throw ValidationException('Digite a nova senha');
+        throw app_ex.ValidationException('Digite a nova senha');
       }
 
       if (password != confirmPassword) {
-        throw ValidationException('As senhas não conferem');
+        throw app_ex.ValidationException('As senhas não conferem');
       }
 
       if (password.length < 6) {
-        throw ValidationException('A senha deve ter pelo menos 6 caracteres');
+        throw app_ex.ValidationException(
+          'A senha deve ter pelo menos 6 caracteres',
+        );
       }
 
       await authManager.updatePassword(newPassword: password, context: context);

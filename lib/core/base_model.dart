@@ -9,6 +9,9 @@ abstract class BaseModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   bool _isBusy = false;
   bool get isBusy => _isBusy;
 
+  @override
+  void initState(BuildContext context) {}
+
   /// Define o estado de carregamento e notifica os ouvintes
   void setBusy(bool value) {
     _isBusy = value;

@@ -6,6 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 
+import 'package:sentimento_app/core/nav/nav.dart';
+
 /// Background message handler - must be top-level function
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -155,13 +157,35 @@ class NotificationService {
   /// Handle notification tap from FCM
   void _handleNotificationTap(RemoteMessage message) {
     debugPrint('Notification tapped: ${message.data}');
-    // TODO: Navigate to specific screen based on message.data
+    _navigateToScreen(message.data['screen'] as String?);
   }
 
   /// Handle local notification tap
   void _onNotificationTap(NotificationResponse response) {
     debugPrint('Local notification tapped: ${response.payload}');
-    // TODO: Navigate to specific screen based on payload
+    _navigateToScreen(response.payload);
+  }
+
+  /// Navigate to specific screen based on payload
+  void _navigateToScreen(String? screen) {
+    final context = appNavigatorKey.currentContext;
+    if (context == null) return;
+
+    switch (screen) {
+      case 'home':
+        context.pushNamed('Home');
+        break;
+      case 'goals':
+        context.pushNamed('Goals');
+        break;
+      case 'journal':
+        context.pushNamed('Journal');
+        break;
+      default:
+        // Default: go to main page
+        context.pushNamed('Main');
+        break;
+    }
   }
 
   /// Show a local notification

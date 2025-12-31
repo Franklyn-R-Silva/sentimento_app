@@ -14,16 +14,21 @@ class AppCard extends StatelessWidget {
     final theme = FlutterFlowTheme.of(context);
 
     return Container(
+      padding: const EdgeInsets.all(20), // Default premium padding
       decoration: BoxDecoration(
         color: theme.secondaryBackground,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24), // Softer corners
         boxShadow: [
           BoxShadow(
-            color: theme.primary.withAlpha(25),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: theme.primaryText.withValues(alpha: 0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
           ),
         ],
+        border: Border.all(
+          color: theme.alternate.withValues(alpha: 0.05),
+          width: 1,
+        ),
       ),
       child: child,
     );

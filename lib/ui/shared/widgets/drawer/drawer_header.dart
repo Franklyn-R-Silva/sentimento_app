@@ -96,6 +96,8 @@ class _DrawerHeaderWidgetState extends State<DrawerHeaderWidget> {
               child: (_avatarUrl != null && _avatarUrl!.isNotEmpty)
                   ? CachedNetworkImage(
                       imageUrl: _avatarUrl!,
+                      width: 56,
+                      height: 56,
                       fit: BoxFit.cover,
                       placeholder: (context, url) => const Center(
                         child: SizedBox(
@@ -107,16 +109,21 @@ class _DrawerHeaderWidgetState extends State<DrawerHeaderWidget> {
                           ),
                         ),
                       ),
-                      errorWidget: (context, url, error) => Center(
-                        child: Text(
-                          widget.userName.isNotEmpty
-                              ? widget.userName[0].toUpperCase()
-                              : 'U',
-                          style: widget.theme.headlineSmall.override(
-                            color: Colors.white,
+                      errorWidget: (context, url, error) {
+                        debugPrint(
+                          'CachedNetworkImage error: $error for URL: $url',
+                        );
+                        return Center(
+                          child: Text(
+                            widget.userName.isNotEmpty
+                                ? widget.userName[0].toUpperCase()
+                                : 'U',
+                            style: widget.theme.headlineSmall.override(
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     )
                   : Center(
                       child: Text(

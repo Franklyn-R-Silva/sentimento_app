@@ -79,8 +79,12 @@ class ProfileHeader extends StatelessWidget {
                                 strokeWidth: 2,
                               ),
                             ),
-                            errorWidget: (context, url, error) =>
-                                _buildInitials(theme),
+                            errorWidget: (context, url, error) {
+                              debugPrint(
+                                'CachedNetworkImage error: $error for URL: $url',
+                              );
+                              return _buildInitials(theme);
+                            },
                           )
                         : _buildInitials(theme),
                   ),

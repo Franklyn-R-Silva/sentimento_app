@@ -17,11 +17,11 @@ class StatsDistributionChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = FlutterFlowTheme.of(context);
     final colors = [
-      const Color(0xFFE53935),
-      const Color(0xFFFF9800),
-      const Color(0xFF2196F3),
-      const Color(0xFF4CAF50),
-      theme.primary,
+      theme.error, // 1 - Muito triste
+      theme.warning, // 2 - Triste
+      theme.secondary, // 3 - Neutro
+      theme.success, // 4 - Bem
+      theme.primary, // 5 - Muito bem
     ];
     final emojis = ['😢', '😟', '😐', '🙂', '😄'];
 

@@ -67,8 +67,33 @@ class DynamicChart extends StatelessWidget {
     }
   }
 
+  LinearGradient _getMoodGradient(FlutterFlowTheme theme) {
+    return LinearGradient(
+      colors: [
+        theme.error,
+        theme.warning,
+        theme.secondary,
+        theme.success,
+        theme.primary,
+      ],
+      stops: const [0.0, 0.25, 0.5, 0.75, 1.0],
+      begin: Alignment.bottomCenter,
+      end: Alignment.topCenter,
+    );
+  }
+
+  Color _getColorForValue(double value, FlutterFlowTheme theme) {
+    if (value < 2.0) return theme.error;
+    if (value < 3.0) return theme.warning;
+    if (value < 4.0) return theme.secondary;
+    if (value < 4.8) return theme.success;
+    return theme.primary;
+  }
+
   Widget _buildDailyChart(BuildContext context) {
     final theme = FlutterFlowTheme.of(context);
+    final moodGradient = _getMoodGradient(theme);
+
     // Group by hour
     final Map<int, List<int>> hourlyMoods = {};
     for (var entry in entries) {
@@ -112,12 +137,22 @@ class DynamicChart extends StatelessWidget {
           LineChartBarData(
             spots: spots,
             isCurved: true,
-            color: theme.primary,
+            gradient: moodGradient,
             barWidth: 3,
             dotData: const FlDotData(show: true),
             belowBarData: BarAreaData(
               show: true,
-              color: theme.primary.withValues(alpha: 0.2),
+              gradient: LinearGradient(
+                colors: [
+                  theme.error.withValues(alpha: 0.1),
+                  theme.warning.withValues(alpha: 0.1),
+                  theme.secondary.withValues(alpha: 0.1),
+                  theme.success.withValues(alpha: 0.1),
+                  theme.primary.withValues(alpha: 0.2),
+                ],
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+              ),
             ),
           ),
         ],
@@ -127,6 +162,8 @@ class DynamicChart extends StatelessWidget {
 
   Widget _buildWeeklyChart(BuildContext context) {
     final theme = FlutterFlowTheme.of(context);
+    final moodGradient = _getMoodGradient(theme);
+
     // Group by weekday (1=Mon, 7=Sun)
     final Map<int, List<int>> dayMoods = {};
     for (var entry in entries) {
@@ -181,12 +218,22 @@ class DynamicChart extends StatelessWidget {
           LineChartBarData(
             spots: spots,
             isCurved: true,
-            color: theme.secondary,
+            gradient: moodGradient,
             barWidth: 3,
             dotData: const FlDotData(show: true),
             belowBarData: BarAreaData(
               show: true,
-              color: theme.secondary.withValues(alpha: 0.2),
+              gradient: LinearGradient(
+                colors: [
+                  theme.error.withValues(alpha: 0.1),
+                  theme.warning.withValues(alpha: 0.1),
+                  theme.secondary.withValues(alpha: 0.1),
+                  theme.success.withValues(alpha: 0.1),
+                  theme.primary.withValues(alpha: 0.1),
+                ],
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+              ),
             ),
           ),
         ],
@@ -196,6 +243,8 @@ class DynamicChart extends StatelessWidget {
 
   Widget _buildMonthlyChart(BuildContext context) {
     final theme = FlutterFlowTheme.of(context);
+    final moodGradient = _getMoodGradient(theme);
+
     // Group by day of month
     final Map<int, List<int>> dayMoods = {};
     for (var entry in entries) {
@@ -245,12 +294,22 @@ class DynamicChart extends StatelessWidget {
           LineChartBarData(
             spots: spots,
             isCurved: true,
-            color: const Color(0xFF4CAF50),
+            gradient: moodGradient,
             barWidth: 2,
             dotData: const FlDotData(show: true),
             belowBarData: BarAreaData(
               show: true,
-              color: const Color(0xFF4CAF50).withValues(alpha: 0.2),
+              gradient: LinearGradient(
+                colors: [
+                  theme.error.withValues(alpha: 0.1),
+                  theme.warning.withValues(alpha: 0.1),
+                  theme.secondary.withValues(alpha: 0.1),
+                  theme.success.withValues(alpha: 0.1),
+                  theme.primary.withValues(alpha: 0.1),
+                ],
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+              ),
             ),
           ),
         ],
@@ -278,7 +337,7 @@ class DynamicChart extends StatelessWidget {
             barRods: [
               BarChartRodData(
                 toY: avg,
-                color: theme.primary,
+                color: _getColorForValue(avg, theme),
                 width: 12,
                 borderRadius: BorderRadius.circular(4),
               ),

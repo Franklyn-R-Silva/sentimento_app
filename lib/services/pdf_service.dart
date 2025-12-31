@@ -10,9 +10,7 @@ class PdfService {
   Future<void> generateAndShareEntryPdf(EntradasHumorRow entry) async {
     final pdf = pw.Document();
 
-    final dateStr = DateFormat(
-      'dd/MM/yyyy HH:mm',
-    ).format(DateTime.parse(entry.criadoEm!));
+    final dateStr = DateFormat('dd/MM/yyyy HH:mm').format(entry.criadoEm);
     final moodScore = entry.nota ?? 0;
 
     // Map mood score to text/emoji (simplified)

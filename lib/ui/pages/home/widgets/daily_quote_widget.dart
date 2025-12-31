@@ -24,20 +24,36 @@ class DailyQuoteWidget extends StatefulWidget {
   State<DailyQuoteWidget> createState() => _DailyQuoteWidgetState();
 }
 
-class _DailyQuoteWidgetState extends State<DailyQuoteWidget> {
+class _DailyQuoteWidgetState extends State<DailyQuoteWidget>
+    with WidgetsBindingObserver {
   late String _quote;
   late String _author;
 
   @override
   void initState() {
     super.initState();
-    _pickQuoteByTime();
+    WidgetsBinding.instance.addObserver(this);
+    _pickQuoteByTime(updateState: false);
   }
 
-  void _pickQuoteByTime() {
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _pickQuoteByTime(updateState: true);
+    }
+  }
+
+  void _pickQuoteByTime({required bool updateState}) {
     if (kAllQuotes.isEmpty) {
       _quote = "Sem frases hoje.";
       _author = "";
+      if (updateState && mounted) setState(() {});
       return;
     }
 
@@ -53,14 +69,21 @@ class _DailyQuoteWidgetState extends State<DailyQuoteWidget> {
     final int dayOfYear = int.parse(DateFormat("D").format(now));
 
     // Create a stable index based on day and period
-    // Used to ensure the same quote is shown for the same period
     final int seed = (dayOfYear * 3) + period;
     final int index = seed % kAllQuotes.length;
 
-    setState(() {
-      _quote = kAllQuotes[index]['text']!;
-      _author = kAllQuotes[index]['author']!;
-    });
+    final String newQuote = kAllQuotes[index]['text'] ?? "Frase indisponível";
+    final String newAuthor = kAllQuotes[index]['author'] ?? "Desconhecido";
+
+    if (updateState && mounted) {
+      setState(() {
+        _quote = newQuote;
+        _author = newAuthor;
+      });
+    } else {
+      _quote = newQuote;
+      _author = newAuthor;
+    }
   }
 
   Future<void> _copyToClipboard() async {

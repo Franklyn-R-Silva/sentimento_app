@@ -170,6 +170,11 @@ class _GoalsPageWidgetState extends State<GoalsPageWidget>
                                       return GoalCard(
                                         meta: meta,
                                         index: index,
+                                        hasCheckedInToday: model
+                                            .hasCheckedInToday(meta),
+                                        currentStreak: model.getCurrentStreak(
+                                          meta,
+                                        ),
                                         onIncrement: () =>
                                             model.incrementProgress(meta),
                                         onDelete: () =>

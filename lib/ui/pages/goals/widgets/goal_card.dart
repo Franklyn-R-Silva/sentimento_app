@@ -2,6 +2,7 @@
 import 'dart:ui';
 
 // Flutter imports:
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -16,6 +17,8 @@ class GoalCard extends StatefulWidget {
   final VoidCallback? onIncrement;
   final VoidCallback? onDelete;
   final int index;
+  final bool hasCheckedInToday;
+  final int currentStreak;
 
   const GoalCard({
     super.key,
@@ -24,6 +27,8 @@ class GoalCard extends StatefulWidget {
     this.onIncrement,
     this.onDelete,
     this.index = 0,
+    this.hasCheckedInToday = false,
+    this.currentStreak = 0,
   });
 
   @override
@@ -216,15 +221,50 @@ class _GoalCardState extends State<GoalCard>
                                     color: color.withValues(alpha: 0.15),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
-                                  child: Text(
+                                  child: AutoSizeText(
                                     '${widget.meta.valorAtual}/${widget.meta.metaValor}',
                                     style: theme.labelSmall.override(
                                       color: color,
                                       fontWeight: FontWeight.w600,
                                     ),
+                                    minFontSize: 8,
                                   ),
                                 ),
                                 const SizedBox(width: 8),
+                                // Streak badge
+                                if (widget.currentStreak > 0)
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: theme.warning.withValues(
+                                        alpha: 0.2,
+                                      ),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Text(
+                                          '🔥',
+                                          style: TextStyle(fontSize: 10),
+                                        ),
+                                        const SizedBox(width: 4),
+                                        AutoSizeText(
+                                          '${widget.currentStreak}',
+                                          style: theme.labelSmall.override(
+                                            color: theme.warning,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                          minFontSize: 8,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                if (widget.currentStreak > 0)
+                                  const SizedBox(width: 8),
                                 // Frequency badge
                                 Container(
                                   padding: const EdgeInsets.symmetric(
@@ -237,11 +277,12 @@ class _GoalCardState extends State<GoalCard>
                                     ),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
-                                  child: Text(
+                                  child: AutoSizeText(
                                     _getFrequencyLabel(widget.meta.frequencia),
                                     style: theme.labelSmall.override(
                                       color: theme.secondaryText,
                                     ),
+                                    minFontSize: 8,
                                   ),
                                 ),
                               ],
@@ -250,34 +291,50 @@ class _GoalCardState extends State<GoalCard>
                         ),
                       ),
 
-                      // Increment button
+                      // Increment button (disabled if already checked in today)
                       if (!widget.meta.concluido && widget.onIncrement != null)
                         Material(
                           color: Colors.transparent,
                           child: InkWell(
-                            onTap: widget.onIncrement,
+                            onTap: widget.hasCheckedInToday
+                                ? null
+                                : widget.onIncrement,
                             borderRadius: BorderRadius.circular(16),
                             child: Container(
                               width: 48,
                               height: 48,
                               decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [color, color.withValues(alpha: 0.8)],
-                                ),
+                                gradient: widget.hasCheckedInToday
+                                    ? null
+                                    : LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          color,
+                                          color.withValues(alpha: 0.8),
+                                        ],
+                                      ),
+                                color: widget.hasCheckedInToday
+                                    ? theme.success.withValues(alpha: 0.2)
+                                    : null,
                                 borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: color.withValues(alpha: 0.4),
-                                    blurRadius: 12,
-                                    offset: const Offset(0, 4),
-                                  ),
-                                ],
+                                boxShadow: widget.hasCheckedInToday
+                                    ? null
+                                    : [
+                                        BoxShadow(
+                                          color: color.withValues(alpha: 0.4),
+                                          blurRadius: 12,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
                               ),
-                              child: const Icon(
-                                Icons.add_rounded,
-                                color: Colors.white,
+                              child: Icon(
+                                widget.hasCheckedInToday
+                                    ? Icons.check_rounded
+                                    : Icons.add_rounded,
+                                color: widget.hasCheckedInToday
+                                    ? theme.success
+                                    : Colors.white,
                                 size: 24,
                               ),
                             ),

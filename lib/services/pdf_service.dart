@@ -9,7 +9,7 @@ class PdfService {
     final pdf = pw.Document();
 
     final dateStr = DateFormat('dd/MM/yyyy HH:mm').format(entry.criadoEm);
-    final moodScore = entry.nota ?? 0;
+    final moodScore = entry.nota;
 
     // Map mood score to text/emoji (simplified)
     String getMoodLabel(int score) {
@@ -106,6 +106,93 @@ class PdfService {
     await Printing.sharePdf(
       bytes: await pdf.save(),
       filename: 'sentimento_entry_${entry.id}.pdf',
+    );
+  }
+
+  Future<void> generateAndShareFullReport(
+    List<EntradasHumorRow> entries,
+  ) async {
+    final pdf = pw.Document();
+    final now = DateTime.now();
+    final dateStr = DateFormat('dd/MM/yyyy').format(now);
+
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        header: (context) => pw.Header(
+          level: 0,
+          child: pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Text(
+                'Relatório Completo',
+                style: pw.TextStyle(
+                  fontSize: 24,
+                  fontWeight: pw.FontWeight.bold,
+                ),
+              ),
+              pw.Text('Gerado em: $dateStr'),
+            ],
+          ),
+        ),
+        footer: (context) => pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.center,
+          children: [
+            pw.Divider(),
+            pw.Text(
+              'Página ${context.pageNumber} de ${context.pagesCount}',
+              style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey),
+            ),
+          ],
+        ),
+        build: (context) => [
+          pw.SizedBox(height: 20),
+          pw.Text(
+            'Histórico de Humor',
+            style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold),
+          ),
+          pw.SizedBox(height: 10),
+          pw.Table.fromTextArray(
+            headers: ['Data', 'Humor', 'Tags', 'Nota'],
+            data: entries.map((entry) {
+              final date = DateFormat('dd/MM HH:mm').format(entry.criadoEm);
+              final note = (entry.notaTexto ?? '').replaceAll('\n', ' ');
+              String moodLabel = '';
+              if (entry.nota >= 4)
+                moodLabel = '😄';
+              else if (entry.nota == 3)
+                moodLabel = '🙂';
+              else if (entry.nota == 2)
+                moodLabel = '😐';
+              else if (entry.nota == 1)
+                moodLabel = '😔';
+              else
+                moodLabel = '😢';
+
+              return [
+                date,
+                '$moodLabel (${entry.nota})',
+                entry.tags.join(', '),
+                note.length > 20 ? '${note.substring(0, 20)}...' : note,
+              ];
+            }).toList(),
+            headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey300),
+            cellHeight: 30,
+            cellAlignments: {
+              0: pw.Alignment.centerLeft,
+              1: pw.Alignment.center,
+              2: pw.Alignment.centerLeft,
+              3: pw.Alignment.centerLeft,
+            },
+          ),
+        ],
+      ),
+    );
+
+    await Printing.sharePdf(
+      bytes: await pdf.save(),
+      filename: 'relatorio_sentimento_$dateStr.pdf',
     );
   }
 }

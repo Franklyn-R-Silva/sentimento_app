@@ -89,7 +89,7 @@ class DynamicChart extends StatelessWidget {
         maxY: 5,
         minX: 0,
         maxX: 23,
-        gridData: FlGridData(show: false),
+        gridData: const FlGridData(show: false),
         titlesData: FlTitlesData(
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
@@ -149,7 +149,7 @@ class DynamicChart extends StatelessWidget {
         maxY: 5,
         minX: 0,
         maxX: 6,
-        gridData: FlGridData(show: false),
+        gridData: const FlGridData(show: false),
         titlesData: FlTitlesData(
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
@@ -222,7 +222,7 @@ class DynamicChart extends StatelessWidget {
         maxY: 5,
         minX: 1,
         maxX: daysInMonth.toDouble(),
-        gridData: FlGridData(show: false),
+        gridData: const FlGridData(show: false),
         titlesData: FlTitlesData(
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
@@ -308,7 +308,7 @@ class DynamicChart extends StatelessWidget {
       BarChartData(
         minY: 0,
         maxY: 5,
-        gridData: FlGridData(show: false),
+        gridData: const FlGridData(show: false),
         titlesData: FlTitlesData(
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(

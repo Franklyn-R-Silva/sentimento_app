@@ -9,7 +9,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sentimento_app/core/nav/nav.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'drawer/breathing_exercise_sheet.dart';
-import 'drawer/daily_message.dart';
 import 'drawer/drawer_header.dart';
 import 'drawer/drawer_logout_button.dart';
 import 'drawer/drawer_nav_item.dart';

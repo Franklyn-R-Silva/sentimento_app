@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -53,10 +54,14 @@ class DrawerNavItem extends StatelessWidget {
         title: Row(
           children: [
             Flexible(
-              child: Text(
+              child: AutoSizeText(
                 label,
-                style: theme.bodyMedium,
+                style: theme.bodyMedium.override(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                ),
                 overflow: TextOverflow.ellipsis,
+                minFontSize: 9,
               ),
             ),
             if (badge != null) ...[

@@ -85,7 +85,10 @@ class _BreathingExerciseSheetState extends State<BreathingExerciseSheet>
           const SizedBox(height: 24),
           AutoSizeText(
             'Exercício de Respiração',
-            style: theme.headlineSmall,
+            style: theme.headlineSmall.override(
+              fontWeight: FontWeight.w600,
+              fontSize: 13,
+            ),
             minFontSize: 9,
           ),
 

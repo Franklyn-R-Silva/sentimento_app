@@ -73,7 +73,7 @@ class ProfileHeader extends StatelessWidget {
                             width: 90,
                             height: 90,
                             fit: BoxFit.cover,
-                            placeholder: (context, url) => Center(
+                            placeholder: (context, url) => const Center(
                               child: CircularProgressIndicator(
                                 color: Colors.white,
                                 strokeWidth: 2,

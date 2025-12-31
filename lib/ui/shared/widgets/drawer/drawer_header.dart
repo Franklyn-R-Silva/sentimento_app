@@ -97,7 +97,7 @@ class _DrawerHeaderWidgetState extends State<DrawerHeaderWidget> {
                   ? CachedNetworkImage(
                       imageUrl: _avatarUrl!,
                       fit: BoxFit.cover,
-                      placeholder: (context, url) => Center(
+                      placeholder: (context, url) => const Center(
                         child: SizedBox(
                           width: 20,
                           height: 20,

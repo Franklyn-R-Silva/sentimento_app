@@ -2,6 +2,9 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
+// Package imports:
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:sentimento_app/auth/supabase_auth/auth_util.dart' as auth_util;
 import 'package:sentimento_app/core/model.dart';
 
@@ -56,7 +59,17 @@ class LoginModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   /// Initialization and disposal methods.
 
   @override
-  void initState(BuildContext context) {}
+  void initState(BuildContext context) {
+    _loadSavedEmail();
+  }
+
+  Future<void> _loadSavedEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedEmail = prefs.getString('saved_email');
+    if (savedEmail != null && (emailAddressController?.text.isEmpty ?? true)) {
+      emailAddressController?.text = savedEmail;
+    }
+  }
 
   @override
   void dispose() {
@@ -85,7 +98,15 @@ class LoginModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         emailAddressController!.text,
         passwordController!.text,
       );
-      return user != null ? null : 'Erro ao realizar login';
+
+      if (user != null) {
+        // Save email on success
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('saved_email', emailAddressController!.text);
+        return null;
+      } else {
+        return 'Erro ao realizar login';
+      }
     } on Exception catch (e) {
       // Clean up error message if it's an AuthException
       return e.toString().replaceAll('AuthException: ', '');

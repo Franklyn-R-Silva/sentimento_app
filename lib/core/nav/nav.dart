@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:sentimento_app/auth/base_auth_user_provider.dart';
 import 'package:sentimento_app/core/util.dart';
 import 'package:sentimento_app/ui/pages/fotos_anuais/fotos_anuais.page.dart';
+import 'package:sentimento_app/ui/pages/gallery/gallery.page.dart';
 import 'package:sentimento_app/ui/pages/goals/goals.page.dart';
 import 'package:sentimento_app/ui/pages/home/home.page.dart';
 import 'package:sentimento_app/ui/pages/journal/journal.page.dart';
@@ -148,6 +149,12 @@ GoRouter createRouter(final AppStateNotifier appStateNotifier) => GoRouter(
       path: GoalsPageWidget.routePath,
       requireAuth: true,
       builder: (final context, final params) => const GoalsPageWidget(),
+    ),
+    FFRoute(
+      name: GalleryPageWidget.routeName,
+      path: GalleryPageWidget.routePath,
+      requireAuth: true,
+      builder: (final context, final params) => const GalleryPageWidget(),
     ),
     FFRoute(
       name: 'FotosAnuais',

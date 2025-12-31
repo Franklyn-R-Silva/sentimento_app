@@ -97,12 +97,12 @@ class AppDrawer extends StatelessWidget {
                       _buildShortcut(
                         context,
                         theme,
-                        icon: Icons.camera_alt_rounded,
-                        label: 'Fotos',
+                        icon: Icons.photo_library_rounded,
+                        label: 'Galeria',
                         color: const Color(0xFFFF9800),
                         onTap: () {
                           Navigator.pop(context);
-                          context.pushNamed('FotosAnuais');
+                          context.pushNamed('Gallery');
                         },
                       ),
                     ],

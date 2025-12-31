@@ -146,7 +146,11 @@ class ProfileModel extends BaseModel {
             fileOptions: FileOptions(contentType: contentType, upsert: true),
           );
 
-      final publicUrl = _client.storage.from('avatars').getPublicUrl(path);
+      // Use Signed URL for better compatibility (even if bucket is private)
+      // Expiry set to ~10 years (315360000 seconds)
+      final publicUrl = await _client.storage
+          .from('avatars')
+          .createSignedUrl(path, 315360000);
 
       await _client
           .from('app_profiles')

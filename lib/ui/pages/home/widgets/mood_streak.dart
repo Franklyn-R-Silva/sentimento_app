@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -73,12 +74,13 @@ class MoodStreak extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text('🔥', style: TextStyle(fontSize: 24)),
-                Text(
+                AutoSizeText(
                   '$streakDays',
                   style: theme.titleLarge.override(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
+                  minFontSize: 14,
                 ),
               ],
             ),
@@ -89,18 +91,22 @@ class MoodStreak extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                AutoSizeText(
                   streakDays == 1
                       ? '1 dia de sequência'
                       : '$streakDays dias de sequência',
                   style: theme.titleMedium.override(
                     fontWeight: FontWeight.bold,
                   ),
+                  minFontSize: 12,
+                  maxLines: 1,
                 ),
                 const SizedBox(height: 4),
-                Text(
+                AutoSizeText(
                   _getMotivationalMessage(),
                   style: theme.bodySmall.override(color: theme.secondaryText),
+                  minFontSize: 10,
+                  maxLines: 2,
                 ),
                 if (longestStreak != null && longestStreak! > streakDays) ...[
                   const SizedBox(height: 8),
@@ -112,11 +118,15 @@ class MoodStreak extends StatelessWidget {
                         color: theme.tertiary,
                       ),
                       const SizedBox(width: 4),
-                      Text(
-                        'Recorde: $longestStreak dias',
-                        style: theme.labelSmall.override(
-                          color: theme.tertiary,
-                          fontWeight: FontWeight.w600,
+                      Expanded(
+                        child: AutoSizeText(
+                          'Recorde: $longestStreak dias',
+                          style: theme.labelSmall.override(
+                            color: theme.tertiary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          minFontSize: 9,
+                          maxLines: 1,
                         ),
                       ),
                     ],

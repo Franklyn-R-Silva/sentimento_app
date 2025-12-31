@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -21,16 +22,18 @@ class JournalEmptyState extends StatelessWidget {
             color: theme.secondaryText.withValues(alpha: 0.5),
           ),
           const SizedBox(height: 16),
-          Text(
+          AutoSizeText(
             'Nenhuma entrada encontrada',
             style: theme.titleMedium.override(color: theme.secondaryText),
+            minFontSize: 12,
           ),
           const SizedBox(height: 8),
-          Text(
+          AutoSizeText(
             'Comece a registrar seu humor!',
             style: theme.bodySmall.override(
               color: theme.secondaryText.withValues(alpha: 0.7),
             ),
+            minFontSize: 10,
           ),
         ],
       ),

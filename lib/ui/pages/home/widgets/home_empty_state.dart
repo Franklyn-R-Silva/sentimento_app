@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -25,12 +26,17 @@ class HomeEmptyState extends StatelessWidget {
             color: theme.primary.withValues(alpha: 0.5),
           ),
           const SizedBox(height: 16),
-          Text('Nenhum registro ainda', style: theme.titleMedium),
+          AutoSizeText(
+            'Nenhum registro ainda',
+            style: theme.titleMedium,
+            minFontSize: 12,
+          ),
           const SizedBox(height: 8),
-          Text(
+          AutoSizeText(
             'Toque no botão "Registrar" para adicionar seu primeiro registro de humor!',
             textAlign: TextAlign.center,
             style: theme.bodySmall.override(color: theme.secondaryText),
+            minFontSize: 10,
           ),
         ],
       ),

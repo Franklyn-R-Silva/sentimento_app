@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -66,13 +67,19 @@ class JournalEntryDetailSheet extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Humor: ${entry.nota}/5', style: theme.titleMedium),
+                    AutoSizeText(
+                      'Humor: ${entry.nota}/5',
+                      style: theme.titleMedium,
+                      minFontSize: 12,
+                    ),
                     const SizedBox(height: 4),
-                    Text(
+                    AutoSizeText(
                       '${entry.criadoEm.day}/${entry.criadoEm.month}/${entry.criadoEm.year} às ${entry.criadoEm.hour}:${entry.criadoEm.minute.toString().padLeft(2, '0')}',
                       style: theme.labelMedium.override(
                         color: theme.secondaryText,
                       ),
+                      minFontSize: 10,
+                      maxLines: 1,
                     ),
                   ],
                 ),
@@ -82,19 +89,25 @@ class JournalEntryDetailSheet extends StatelessWidget {
 
           if (entry.notaTexto != null && entry.notaTexto!.isNotEmpty) ...[
             const SizedBox(height: 24),
-            Text(
+            AutoSizeText(
               'Nota:',
               style: theme.labelMedium.override(color: theme.secondaryText),
+              minFontSize: 10,
             ),
             const SizedBox(height: 8),
-            Text(entry.notaTexto!, style: theme.bodyMedium),
+            AutoSizeText(
+              entry.notaTexto!,
+              style: theme.bodyMedium,
+              minFontSize: 10,
+            ),
           ],
 
           if (entry.tags.isNotEmpty) ...[
             const SizedBox(height: 24),
-            Text(
+            AutoSizeText(
               'Tags:',
               style: theme.labelMedium.override(color: theme.secondaryText),
+              minFontSize: 10,
             ),
             const SizedBox(height: 8),
             Wrap(
@@ -111,9 +124,10 @@ class JournalEntryDetailSheet extends StatelessWidget {
                         color: theme.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: Text(
+                      child: AutoSizeText(
                         tag.toString(),
                         style: theme.labelMedium.override(color: theme.primary),
+                        minFontSize: 9,
                       ),
                     ),
                   )
@@ -163,7 +177,11 @@ class JournalEntryDetailSheet extends StatelessWidget {
                     ),
                   ),
                   icon: Icon(Icons.delete_outline, color: theme.error),
-                  label: Text('Excluir', style: TextStyle(color: theme.error)),
+                  label: AutoSizeText(
+                    'Excluir',
+                    style: TextStyle(color: theme.error),
+                    minFontSize: 10,
+                  ),
                 ),
               ),
               const SizedBox(width: 16),
@@ -210,9 +228,10 @@ class JournalEntryDetailSheet extends StatelessWidget {
                     ),
                   ),
                   icon: const Icon(Icons.edit, color: Colors.white),
-                  label: const Text(
+                  label: AutoSizeText(
                     'Editar',
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
+                    minFontSize: 10,
                   ),
                 ),
               ),

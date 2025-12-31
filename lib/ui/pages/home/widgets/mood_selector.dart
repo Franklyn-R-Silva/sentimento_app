@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -38,7 +39,11 @@ class MoodSelector extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('Como você está se sentindo?', style: theme.titleMedium),
+        AutoSizeText(
+          'Como você está se sentindo?',
+          style: theme.titleMedium,
+          minFontSize: 12,
+        ),
         const SizedBox(height: 24),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -87,13 +92,14 @@ class MoodSelector extends StatelessWidget {
         const SizedBox(height: 16),
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
-          child: Text(
+          child: AutoSizeText(
             _labels[selectedMood - 1],
             key: ValueKey(selectedMood),
             style: theme.labelLarge.override(
               color: _colors[selectedMood - 1],
               fontWeight: FontWeight.w600,
             ),
+            minFontSize: 10,
           ),
         ),
       ],

@@ -10,17 +10,17 @@ O Sentimento App é uma aplicação Flutter para acompanhamento diário de humor
 
 O projeto segue uma arquitetura baseada em **Model-View-ViewModel (MVVM)** simplificada, combinada com o padrão **Repository/Manager** para serviços backend.
 
-* **Views (`ui/pages/`)**: Camada de apresentação. Widgets Flutter que constroem a interface. Devem ser "burros" e apenas reagir a mudanças de estado.
-* **Models (`*.model.dart`)**: Gerenciam o estado da View (`ChangeNotifier`, `FlutterFlowModel`). Contêm a lógica de UI, validação de campos e chamadas para serviços. **NÃO devem depender de BuildContext em métodos assíncronos.**
-* **Managers (`auth/`, `backend/`)**: Camada de infraestrutura. Gerenciam comunicação com APIs externas (Supabase, etc). Devem retornar Objetos de Domínio ou lançar Exceções, nunca manipular UI diretamente.
+- **Views (`ui/pages/`)**: Camada de apresentação. Widgets Flutter que constroem a interface. Devem ser "burros" e apenas reagir a mudanças de estado.
+- **Models (`*.model.dart`)**: Gerenciam o estado da View (`ChangeNotifier`, `FlutterFlowModel`). Contêm a lógica de UI, validação de campos e chamadas para serviços. **NÃO devem depender de BuildContext em métodos assíncronos.**
+- **Managers (`auth/`, `backend/`)**: Camada de infraestrutura. Gerenciam comunicação com APIs externas (Supabase, etc). Devem retornar Objetos de Domínio ou lançar Exceções, nunca manipular UI diretamente.
 
 ## Tecnologias Principais
 
-* **Flutter**: Framework UI.
-* **Supabase**: Backend-as-a-Service (Auth, Database, Storage).
-* **Provider**: Gerenciamento de estado e injeção de dependência.
-* **auto_size_text**: Widget para redimensionamento dinâmico de texto.
-* **Mocktail**: Testes unitários e mocks.
+- **Flutter**: Framework UI.
+- **Supabase**: Backend-as-a-Service (Auth, Database, Storage).
+- **Provider**: Gerenciamento de estado e injeção de dependência.
+- **auto_size_text**: Widget para redimensionamento dinâmico de texto.
+- **Mocktail**: Testes unitários e mocks.
 
 ## Diretrizes de Código
 
@@ -31,8 +31,7 @@ O projeto segue uma arquitetura baseada em **Model-View-ViewModel (MVVM)** simpl
 
 ## Estrutura de Pastas Relevante
 
-* `lib/ui/`: Telas e widgets.
-* `lib/auth/`: Lógica de autenticação.
-* `lib/backend/`: Integração com Supabase e banco de dados.
-* `test/`: Testes unitários e de widget.
-
+- `lib/ui/`: Telas e widgets.
+- `lib/auth/`: Lógica de autenticação.
+- `lib/backend/`: Integração com Supabase e banco de dados.
+- `test/`: Testes unitários e de widget.

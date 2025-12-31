@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:sentimento_app/backend/supabase.dart';
-import 'package:sentimento_app/backend/tables/fotos_anuais.dart';
 import 'package:sentimento_app/core/model.dart';
 
 enum GalleryFilter { all, thisMonth, thisYear }
@@ -105,7 +104,9 @@ class GalleryModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       }
 
       // Delete from database
-      await FotosAnuaisTable().delete((q) => q.eq('id', photo.id));
+      await FotosAnuaisTable().delete(
+        matchingRows: (q) => q.eq('id', photo.id),
+      );
 
       // Remove from local list
       _photos.removeWhere((p) => p.id == photo.id);

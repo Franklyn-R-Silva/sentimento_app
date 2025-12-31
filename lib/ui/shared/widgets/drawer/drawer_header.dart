@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -114,25 +115,27 @@ class _DrawerHeaderWidgetState extends State<DrawerHeaderWidget> {
                           'CachedNetworkImage error: $error for URL: $url',
                         );
                         return Center(
-                          child: Text(
+                          child: AutoSizeText(
                             widget.userName.isNotEmpty
                                 ? widget.userName[0].toUpperCase()
                                 : 'U',
                             style: widget.theme.headlineSmall.override(
                               color: Colors.white,
                             ),
+                            minFontSize: 10,
                           ),
                         );
                       },
                     )
                   : Center(
-                      child: Text(
+                      child: AutoSizeText(
                         widget.userName.isNotEmpty
                             ? widget.userName[0].toUpperCase()
                             : 'U',
                         style: widget.theme.headlineSmall.override(
                           color: Colors.white,
                         ),
+                        minFontSize: 10,
                       ),
                     ),
             ),
@@ -142,18 +145,20 @@ class _DrawerHeaderWidgetState extends State<DrawerHeaderWidget> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                AutoSizeText(
                   _getGreeting(),
                   style: widget.theme.labelMedium.override(
                     color: widget.theme.secondaryText,
                   ),
+                  minFontSize: 9,
                 ),
-                Text(
+                AutoSizeText(
                   widget.userName,
                   style: widget.theme.titleMedium.override(
                     fontWeight: FontWeight.w600,
                   ),
                   overflow: TextOverflow.ellipsis,
+                  minFontSize: 10,
                 ),
               ],
             ),

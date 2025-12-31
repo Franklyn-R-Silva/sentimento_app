@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -129,11 +130,16 @@ class ProfileHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Text(userName ?? 'Usuário', style: theme.titleLarge),
+          AutoSizeText(
+            userName ?? 'Usuário',
+            style: theme.titleLarge,
+            minFontSize: 12,
+          ),
           const SizedBox(height: 4),
-          Text(
+          AutoSizeText(
             userEmail ?? '',
             style: theme.labelMedium.override(color: theme.secondaryText),
+            minFontSize: 9,
           ),
         ],
       ),
@@ -152,9 +158,10 @@ class ProfileHeader extends StatelessWidget {
     }
 
     return Center(
-      child: Text(
+      child: AutoSizeText(
         initials,
         style: theme.displaySmall.override(color: Colors.white),
+        minFontSize: 14,
       ),
     );
   }

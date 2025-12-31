@@ -8,10 +8,12 @@ import 'package:provider/provider.dart';
 import 'package:sentimento_app/core/model.dart';
 import 'package:sentimento_app/core/nav/nav.dart';
 import 'package:sentimento_app/core/theme.dart';
+import 'package:sentimento_app/ui/shared/widgets/app_card.dart';
+import 'package:sentimento_app/ui/shared/widgets/app_list_tile.dart';
+import 'package:sentimento_app/ui/shared/widgets/app_section_header.dart';
 import 'profile.model.dart';
 import 'widgets/profile_header.dart';
 import 'widgets/profile_logout_button.dart';
-import 'widgets/profile_settings_tile.dart';
 
 export 'profile.model.dart';
 
@@ -88,24 +90,20 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                   const SizedBox(height: 32),
 
                   // Shortcuts Section
-                  _SectionHeader(title: 'Minha Conta', theme: theme),
+                  const AppSectionHeader(title: 'Minha Conta'),
                   const SizedBox(height: 12),
 
-                  Container(
-                    decoration: BoxDecoration(
-                      color: theme.secondaryBackground,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
+                  AppCard(
                     child: Column(
                       children: [
-                        ProfileSettingsTile(
+                        AppListTile(
                           icon: Icons.bar_chart_rounded,
                           title: 'Estatísticas',
                           subtitle: 'Minha evolução',
                           onTap: () => context.pushNamed('Stats'),
                         ),
                         Divider(height: 1, color: theme.alternate),
-                        ProfileSettingsTile(
+                        AppListTile(
                           icon: Icons.photo_library_rounded,
                           title: 'Galeria',
                           subtitle: 'Minhas recordações',
@@ -138,23 +136,4 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
   }
 }
 
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  final FlutterFlowTheme theme;
-
-  const _SectionHeader({required this.title, required this.theme});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: Text(
-        title,
-        style: theme.labelLarge.override(
-          color: theme.secondaryText,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
-}
+// _SectionHeader removed

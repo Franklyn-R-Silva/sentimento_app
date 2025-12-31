@@ -12,9 +12,9 @@ import 'package:sentimento_app/main.dart';
 import 'package:sentimento_app/services/notification_service.dart';
 import 'package:sentimento_app/ui/pages/settings/settings.model.dart';
 import 'package:sentimento_app/ui/pages/settings/widgets/schedule_dialog.dart';
-import 'package:sentimento_app/ui/pages/settings/widgets/settings_card.dart';
-import 'package:sentimento_app/ui/pages/settings/widgets/settings_row.dart';
-import 'package:sentimento_app/ui/pages/settings/widgets/settings_section_header.dart';
+import 'package:sentimento_app/ui/shared/widgets/app_card.dart';
+import 'package:sentimento_app/ui/shared/widgets/app_list_tile.dart';
+import 'package:sentimento_app/ui/shared/widgets/app_section_header.dart';
 
 class SettingsPageWidget extends StatefulWidget {
   const SettingsPageWidget({super.key});
@@ -75,13 +75,13 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Aparência
-            const SettingsSectionHeader(title: '🎨 Aparência'),
+            const AppSectionHeader(title: '🎨 Aparência'),
             const SizedBox(height: 12),
 
-            SettingsCard(
+            AppCard(
               child: Column(
                 children: [
-                  SettingsRow(
+                  AppListTile(
                     icon: Icons.dark_mode_rounded,
                     iconColor: const Color(0xFF5E35B1),
                     title: 'Modo Escuro',
@@ -98,7 +98,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                     ),
                   ),
                   Divider(color: theme.alternate, height: 1),
-                  SettingsRow(
+                  AppListTile(
                     icon: Icons.auto_awesome_rounded,
                     iconColor: const Color(0xFFFF9800),
                     title: 'Tema Automático',
@@ -130,7 +130,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
             const SizedBox(height: 24),
 
             // Notificações
-            SettingsSectionHeader(
+            AppSectionHeader(
               title: 'Notificações',
               iconWidget: Image.asset(
                 'assets/images/imagem_2.png',
@@ -140,10 +140,10 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
             ),
             const SizedBox(height: 12),
 
-            SettingsCard(
+            AppCard(
               child: Column(
                 children: [
-                  SettingsRow(
+                  AppListTile(
                     icon: Icons.notifications_rounded,
                     iconColor: const Color(0xFF4CAF50),
                     title: 'Notificações',
@@ -166,7 +166,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const SettingsSectionHeader(title: '⏰ Meus Horários'),
+                  const AppSectionHeader(title: '⏰ Meus Horários'),
                   IconButton(
                     icon: Icon(
                       Icons.add_circle_rounded,
@@ -201,11 +201,12 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: _model.schedules.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 8),
                   itemBuilder: (context, index) {
                     final schedule = _model.schedules[index];
-                    return SettingsCard(
-                      child: SettingsRow(
+                    return AppCard(
+                      child: AppListTile(
                         icon: Icons.alarm_rounded,
                         iconColor: theme.primary,
                         title: _formatTime(schedule.hour, schedule.minute),
@@ -238,12 +239,12 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
 
             const SizedBox(height: 24),
             // Outros
-            const SettingsSectionHeader(title: '⚙️ Outros'),
+            const AppSectionHeader(title: '⚙️ Outros'),
             const SizedBox(height: 12),
-            SettingsCard(
+            AppCard(
               child: Column(
                 children: [
-                  SettingsRow(
+                  AppListTile(
                     icon: Icons.settings_rounded,
                     iconColor: const Color(0xFF9E9E9E),
                     title: 'Configurações do Sistema',
@@ -251,7 +252,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                     onTap: () => AppSettings.openAppSettings(),
                   ),
                   const Divider(height: 1),
-                  SettingsRow(
+                  AppListTile(
                     icon: Icons.developer_mode_rounded,
                     iconColor: const Color(0xFF607D8B),
                     title: 'Debugar Agendamentos',
@@ -260,7 +261,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                       final pending = await NotificationService()
                           .getPendingNotifications();
                       if (context.mounted) {
-                        showDialog<void>(
+                        await showDialog<void>(
                           context: context,
                           builder: (context) {
                             return AlertDialog(

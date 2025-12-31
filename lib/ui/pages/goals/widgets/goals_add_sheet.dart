@@ -2,6 +2,7 @@
 import 'dart:ui';
 
 // Flutter imports:
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -114,16 +115,21 @@ class _GoalsAddSheetState extends State<GoalsAddSheet> {
                 const SizedBox(height: 24),
 
                 // Title
-                Text(
+                AutoSizeText(
                   'Nova Meta',
                   style: theme.headlineSmall.override(
                     fontWeight: FontWeight.bold,
                   ),
+                  minFontSize: 18,
                 ),
                 const SizedBox(height: 24),
 
                 // Emoji selector
-                Text('Escolha um ícone', style: theme.labelMedium),
+                AutoSizeText(
+                  'Escolha um ícone',
+                  style: theme.labelMedium,
+                  minFontSize: 10,
+                ),
                 const SizedBox(height: 12),
                 SizedBox(
                   height: 56,
@@ -162,7 +168,11 @@ class _GoalsAddSheetState extends State<GoalsAddSheet> {
                 const SizedBox(height: 20),
 
                 // Color selector
-                Text('Escolha uma cor', style: theme.labelMedium),
+                AutoSizeText(
+                  'Escolha uma cor',
+                  style: theme.labelMedium,
+                  minFontSize: 10,
+                ),
                 const SizedBox(height: 12),
                 SizedBox(
                   height: 44,
@@ -242,7 +252,11 @@ class _GoalsAddSheetState extends State<GoalsAddSheet> {
                 const SizedBox(height: 20),
 
                 // Target value
-                Text('Meta de dias', style: theme.labelMedium),
+                AutoSizeText(
+                  'Meta de dias',
+                  style: theme.labelMedium,
+                  minFontSize: 10,
+                ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
@@ -269,12 +283,13 @@ class _GoalsAddSheetState extends State<GoalsAddSheet> {
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Center(
-                          child: Text(
+                          child: AutoSizeText(
                             '$targetValue dias',
                             style: theme.titleMedium.override(
                               color: theme.primary,
                               fontWeight: FontWeight.bold,
                             ),
+                            minFontSize: 12,
                           ),
                         ),
                       ),
@@ -295,7 +310,11 @@ class _GoalsAddSheetState extends State<GoalsAddSheet> {
                 const SizedBox(height: 20),
 
                 // Frequency selector
-                Text('Frequência', style: theme.labelMedium),
+                AutoSizeText(
+                  'Frequência',
+                  style: theme.labelMedium,
+                  minFontSize: 10,
+                ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
@@ -347,12 +366,13 @@ class _GoalsAddSheetState extends State<GoalsAddSheet> {
                               strokeWidth: 2,
                             ),
                           )
-                        : Text(
+                        : AutoSizeText(
                             'Criar Meta',
                             style: theme.titleSmall.override(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
+                            minFontSize: 12,
                           ),
                   ),
                 ),
@@ -393,12 +413,13 @@ class _FrequencyChip extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           border: isSelected ? null : Border.all(color: theme.alternate),
         ),
-        child: Text(
+        child: AutoSizeText(
           label,
           style: theme.labelMedium.override(
             color: isSelected ? Colors.white : theme.primaryText,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
           ),
+          minFontSize: 10,
         ),
       ),
     );

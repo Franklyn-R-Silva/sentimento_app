@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -44,16 +45,25 @@ class HomeHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('${_getGreeting()} 👋', style: theme.headlineSmall),
-            const SizedBox(height: 4),
-            Text(
-              DateFormat("EEEE, d 'de' MMMM", 'pt_BR').format(DateTime.now()),
-              style: theme.labelMedium.override(color: theme.secondaryText),
-            ),
-          ],
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AutoSizeText(
+                '${_getGreeting()} 👋',
+                style: theme.headlineSmall,
+                minFontSize: 16,
+                maxLines: 1,
+              ),
+              const SizedBox(height: 4),
+              AutoSizeText(
+                DateFormat("EEEE, d 'de' MMMM", 'pt_BR').format(DateTime.now()),
+                style: theme.labelMedium.override(color: theme.secondaryText),
+                minFontSize: 10,
+                maxLines: 1,
+              ),
+            ],
+          ),
         ),
         // Mood indicator
         if (recentEntries.isNotEmpty)

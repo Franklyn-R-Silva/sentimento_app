@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -91,33 +92,39 @@ class MoodCard extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            DateFormat(
-                              'EEEE, d MMM',
-                              'pt_BR',
-                            ).format(entry.criadoEm),
-                            style: theme.titleSmall.override(
-                              fontWeight: FontWeight.w600,
+                          Expanded(
+                            child: AutoSizeText(
+                              DateFormat(
+                                'EEEE, d MMM',
+                                'pt_BR',
+                              ).format(entry.criadoEm),
+                              style: theme.titleSmall.override(
+                                fontWeight: FontWeight.w600,
+                              ),
+                              minFontSize: 10,
+                              maxLines: 1,
                             ),
                           ),
-                          Text(
+                          AutoSizeText(
                             DateFormat('HH:mm').format(entry.criadoEm),
                             style: theme.labelSmall.override(
                               color: theme.secondaryText,
                             ),
+                            minFontSize: 9,
                           ),
                         ],
                       ),
                       if (entry.notaTexto != null &&
                           entry.notaTexto!.isNotEmpty) ...[
                         const SizedBox(height: 8),
-                        Text(
+                        AutoSizeText(
                           entry.notaTexto!,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: theme.bodySmall.override(
                             color: theme.secondaryText,
                           ),
+                          minFontSize: 10,
                         ),
                       ],
                       if (entry.tags.isNotEmpty) ...[
@@ -137,11 +144,12 @@ class MoodCard extends StatelessWidget {
                                     color: theme.primary.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
-                                  child: Text(
+                                  child: AutoSizeText(
                                     '#$tag',
                                     style: theme.labelSmall.override(
                                       color: theme.primary,
                                     ),
+                                    minFontSize: 8,
                                   ),
                                 ),
                               )

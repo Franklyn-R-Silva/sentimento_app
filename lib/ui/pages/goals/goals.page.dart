@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -106,12 +107,13 @@ class _GoalsPageWidgetState extends State<GoalsPageWidget>
                 elevation: 8,
                 heroTag: 'add_goal_fab',
                 icon: const Icon(Icons.add_rounded, color: Colors.white),
-                label: Text(
+                label: AutoSizeText(
                   'Nova Meta',
                   style: theme.labelMedium.override(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
+                  minFontSize: 10,
                 ),
               ),
             ),
@@ -148,9 +150,10 @@ class _GoalsPageWidgetState extends State<GoalsPageWidget>
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 16,
                                     ),
-                                    child: Text(
+                                    child: AutoSizeText(
                                       'Em andamento',
                                       style: theme.titleMedium,
+                                      minFontSize: 12,
                                     ),
                                   ),
                                 ),
@@ -195,9 +198,10 @@ class _GoalsPageWidgetState extends State<GoalsPageWidget>
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 16,
                                     ),
-                                    child: Text(
+                                    child: AutoSizeText(
                                       'Concluídas 🎉',
                                       style: theme.titleMedium,
+                                      minFontSize: 12,
                                     ),
                                   ),
                                 ),

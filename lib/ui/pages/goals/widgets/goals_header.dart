@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -16,14 +17,16 @@ class GoalsHeader extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          AutoSizeText(
             'Minhas Metas',
             style: theme.headlineMedium.override(fontWeight: FontWeight.bold),
+            minFontSize: 18,
           ),
           const SizedBox(height: 4),
-          Text(
+          AutoSizeText(
             'Acompanhe seu progresso diário',
             style: theme.bodyMedium.override(color: theme.secondaryText),
+            minFontSize: 10,
           ),
         ],
       ),

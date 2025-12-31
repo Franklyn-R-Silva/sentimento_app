@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -40,21 +41,27 @@ class GoalsStatsCard extends StatelessWidget {
             child: Icon(icon, color: color, size: 22),
           ),
           const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                value,
-                style: theme.headlineSmall.override(
-                  color: color,
-                  fontWeight: FontWeight.bold,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AutoSizeText(
+                  value,
+                  style: theme.headlineSmall.override(
+                    color: color,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  minFontSize: 16,
+                  maxLines: 1,
                 ),
-              ),
-              Text(
-                label,
-                style: theme.labelSmall.override(color: theme.secondaryText),
-              ),
-            ],
+                AutoSizeText(
+                  label,
+                  style: theme.labelSmall.override(color: theme.secondaryText),
+                  minFontSize: 9,
+                  maxLines: 1,
+                ),
+              ],
+            ),
           ),
         ],
       ),

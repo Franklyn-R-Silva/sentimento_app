@@ -852,4 +852,414 @@ final List<Map<String, String>> kAllQuotes = [
     'text': 'Seja a mudança que você quer ver no mundo.',
     'author': 'Mahatma Gandhi',
   },
+  {'text': 'A persistência é o caminho do êxito.', 'author': 'Charles Chaplin'},
+  {
+    'text':
+        'O único lugar onde o sucesso vem antes do trabalho é no dicionário.',
+    'author': 'Albert Einstein',
+  },
+  {
+    'text':
+        'Acredite em si próprio e chegará um dia em que os outros não terão outra escolha senão acreditar com você.',
+    'author': 'Cynthia Kersey',
+  },
+  {
+    'text':
+        'Eu faço da dificuldade a minha motivação. A volta por cima vem na continuação.',
+    'author': 'Charlie Brown Jr.',
+  },
+  {
+    'text':
+        'Pedras no caminho? Eu guardo todas. Um dia vou construir um castelo.',
+    'author': 'Nemo Nox',
+  },
+  {
+    'text':
+        'É costume de um tolo, quando erra, queixar-se dos outros. É costume de um sábio queixar-se de si mesmo.',
+    'author': 'Sócrates',
+  },
+  {
+    'text':
+        'O verdadeiro heroísmo consiste em persistir por mais um momento quando tudo parece perdido.',
+    'author': 'W. F. Grenfel',
+  },
+  {
+    'text':
+        'Mesmo que já tenha feito uma longa caminhada, há sempre um novo caminho a fazer.',
+    'author': 'Santo Agostinho',
+  },
+  {
+    'text': 'Na plenitude da felicidade, cada dia é uma vida inteira.',
+    'author': 'Johann Goethe',
+  },
+  {
+    'text':
+        'Saber encontrar a alegria na alegria dos outros é o segredo da felicidade.',
+    'author': 'Georges Bernanos',
+  },
+  {
+    'text': 'A alegria de fazer o bem é a única felicidade verdadeira.',
+    'author': 'Leon Tolstói',
+  },
+  {
+    'text':
+        'O sucesso nasce do querer, da determinação e persistência em se chegar a um objetivo.',
+    'author': 'José de Alencar',
+  },
+  {
+    'text':
+        'Lute com determinação, abrace a vida com paixão, perca com classe e vença com ousadia.',
+    'author': 'Augusto Branco',
+  },
+  {
+    'text':
+        'Determinação, coragem e autoconfiança são fatores decisivos para o sucesso.',
+    'author': 'Dalai Lama',
+  },
+  {
+    'text':
+        'Talento é dom, é graça. E sucesso nada tem haver com sorte, mas com determinação e trabalho.',
+    'author': 'Augusto Branco',
+  },
+  {
+    'text':
+        'A arte de ser louco é jamais cometer a loucura de ser um sujeito normal.',
+    'author': 'Raul Seixas',
+  },
+  {
+    'text': 'O tempo é o melhor autor: sempre encontra um final perfeito.',
+    'author': 'Charles Chaplin',
+  },
+  {
+    'text': 'A vida é maravilhosa se não se tem medo dela.',
+    'author': 'Charles Chaplin',
+  },
+  {
+    'text': 'Imagine uma nova história para sua vida e acredite nela.',
+    'author': 'Paulo Coelho',
+  },
+  {
+    'text':
+        'Quando você quer alguma coisa, todo o universo conspira para que você realize o seu desejo.',
+    'author': 'Paulo Coelho',
+  },
+  {
+    'text': 'Só se vê bem com o coração, o essencial é invisível aos olhos.',
+    'author': 'Antoine de Saint-Exupéry',
+  },
+  {
+    'text': 'Tu te tornas eternamente responsável por aquilo que cativas.',
+    'author': 'Antoine de Saint-Exupéry',
+  },
+  {
+    'text':
+        'Ame a vida e os bons amigos, pois a vida é curta e os bons amigos são poucos.',
+    'author': 'Desconhecido',
+  },
+  {'text': 'Viver é desenhar sem borracha.', 'author': 'Millôr Fernandes'},
+  {
+    'text':
+        'A vida é a arte do encontro, embora haja tanto desencontro pela vida.',
+    'author': 'Vinicius de Moraes',
+  },
+  {
+    'text':
+        'Que a felicidade não dependa do tempo, nem da paisagem, nem da sorte, nem do dinheiro. Que ela possa vir com toda simplicidade, de dentro para fora, de cada um para todos.',
+    'author': 'Carlos Drummond de Andrade',
+  },
+  {
+    'text': 'Ser feliz sem motivo é a mais autêntica forma de felicidade.',
+    'author': 'Carlos Drummond de Andrade',
+  },
+  {
+    'text':
+        'Não importa onde você parou, em que momento da vida você cansou, o que importa é que sempre é possível e necessário "recomeçar".',
+    'author': 'Carlos Drummond de Andrade',
+  },
+  {
+    'text':
+        'A amizade é o conforto indescritível de nos sentirmos seguros com uma pessoa, sem ser preciso pesar o que se diz, nem medir o que se faz.',
+    'author': 'George Eliot',
+  },
+  {
+    'text':
+        'A verdadeira amizade é aquela que nos permite falar, ao amigo, de todos os seus defeitos e de todas as nossas qualidades.',
+    'author': 'Millôr Fernandes',
+  },
+  {
+    'text':
+        'Um amigo se faz rapidamente; já a amizade é um fruto que amadurece lentamente.',
+    'author': 'Aristóteles',
+  },
+  {
+    'text': 'Não há solidão mais triste do que a do homem sem amizade.',
+    'author': 'Francis Bacon',
+  },
+  {
+    'text': 'A melhor maneira de começar o dia é agradecer.',
+    'author': 'Desconhecido',
+  },
+  {'text': 'Gratidão é a memória do coração.', 'author': 'Antístenes'},
+  {
+    'text': 'A gratidão é o único tesouro dos humildes.',
+    'author': 'William Shakespeare',
+  },
+  {
+    'text':
+        'Quem acolhe um benefício com gratidão, paga a primeira prestação da sua dívida.',
+    'author': 'Sêneca',
+  },
+  {
+    'text': 'Aprendi que o silêncio também é resposta.',
+    'author': 'Desconhecido',
+  },
+  {'text': 'O silêncio é a oração dos sábios.', 'author': 'Augusto Cury'},
+  {
+    'text':
+        'No fim, tudo dá certo, e se não deu certo é porque ainda não chegou ao fim.',
+    'author': 'Fernando Sabino',
+  },
+  {
+    'text':
+        'Felicidade é a certeza de que a nossa vida não está se passando inutilmente.',
+    'author': 'Érico Veríssimo',
+  },
+  {
+    'text':
+        'O mundo é grande e cabe nesta janela sobre o mar. O mar é grande e cabe na cama e no colchão de amar. O amor é grande e cabe no breve espaço de beijar.',
+    'author': 'Carlos Drummond de Andrade',
+  },
+  {
+    'text': 'Tenho em mim todos os sonhos do mundo.',
+    'author': 'Fernando Pessoa',
+  },
+  {
+    'text': 'Tudo vale a pena se a alma não é pequena.',
+    'author': 'Fernando Pessoa',
+  },
+  {'text': 'Põe quanto és no mínimo que fazes.', 'author': 'Fernando Pessoa'},
+  {'text': 'Para viajar basta existir.', 'author': 'Fernando Pessoa'},
+  {
+    'text': 'Navegar é preciso; viver não é preciso.',
+    'author': 'Fernando Pessoa',
+  },
+  {'text': 'A esperança é o pão de cada dia.', 'author': 'Ruy Barbosa'},
+  {
+    'text':
+        'Maior que a tristeza de não haver vencido é a vergonha de não ter lutado.',
+    'author': 'Ruy Barbosa',
+  },
+  {
+    'text': 'Quem não luta pelos seus direitos não é digno deles.',
+    'author': 'Ruy Barbosa',
+  },
+  {
+    'text':
+        'A liberdade não é um luxo dos tempos de bonança; é, sobretudo, o maior elemento de estabilidade das instituições.',
+    'author': 'Ruy Barbosa',
+  },
+  {
+    'text': 'A vida é o dever que nós trouxemos para fazer em casa.',
+    'author': 'Mário Quintana',
+  },
+  {
+    'text': 'O passado não reconhece o seu lugar: está sempre presente.',
+    'author': 'Mário Quintana',
+  },
+  {'text': 'Eles passarão... eu passarinho!', 'author': 'Mário Quintana'},
+  {'text': 'Sonhar é acordar-se para dentro.', 'author': 'Mário Quintana'},
+  {
+    'text':
+        'Se as coisas são inatingíveis... ora! Não é motivo para não querê-las... Que tristes os caminhos, se não fora a presença distante das estrelas!',
+    'author': 'Mário Quintana',
+  },
+  {'text': 'A amizade é um amor que nunca morre.', 'author': 'Mário Quintana'},
+  {
+    'text':
+        'O segredo é não correr atrás das borboletas... é cuidar do jardim para que elas venham até você.',
+    'author': 'Mário Quintana',
+  },
+  {
+    'text':
+        'Renda-se, como eu me rendi. Mergulhe no que você não conhece como eu mergulhei. Não se preocupe em entender, viver ultrapassa qualquer entendimento.',
+    'author': 'Clarice Lispector',
+  },
+  {
+    'text': 'Liberdade é pouco. O que eu desejo ainda não tem nome.',
+    'author': 'Clarice Lispector',
+  },
+  {
+    'text':
+        'Não quero ter a terrível limitação de quem vive apenas do que é passível de fazer sentido. Eu não: quero uma verdade inventada.',
+    'author': 'Clarice Lispector',
+  },
+  {
+    'text':
+        'Que ninguém se engane, só se consegue a simplicidade através de muito trabalho.',
+    'author': 'Clarice Lispector',
+  },
+  {
+    'text':
+        'Até cortar os próprios defeitos pode ser perigoso. Nunca se sabe qual é o defeito que sustenta nosso edifício inteiro.',
+    'author': 'Clarice Lispector',
+  },
+  {
+    'text':
+        'Passei a vida tentando corrigir os erros que cometi na minha ânsia de acertar.',
+    'author': 'Clarice Lispector',
+  },
+  {
+    'text':
+        'Sucesso é conseguir o que você quer. Felicidade é gostar do que você conseguiu.',
+    'author': 'Dale Carnegie',
+  },
+  {
+    'text': 'A única forma de multiplicar a felicidade é dividi-la.',
+    'author': 'Paul Scherrer',
+  },
+  {
+    'text':
+        'Não existe um caminho para a felicidade. A felicidade é o caminho.',
+    'author': 'Thich Nhat Hanh',
+  },
+  {
+    'text': 'A alegria evita mil males e prolonga a vida.',
+    'author': 'William Shakespeare',
+  },
+  {
+    'text': 'Quem investe na fé, não precisa contar com a sorte.',
+    'author': 'Desconhecido',
+  },
+  {
+    'text':
+        'O impossível é apenas uma grande palavra jogada ao vento por homens pequenos.',
+    'author': 'Muhammad Ali',
+  },
+  {
+    'text':
+        'Eu odiava cada minuto dos treinos, mas dizia para mim mesmo: Não desista! Sofra agora e viva o resto de sua vida como um campeão.',
+    'author': 'Muhammad Ali',
+  },
+  {
+    'text':
+        'Aquele que não tem coragem de assumir riscos não alcançará nada na vida.',
+    'author': 'Muhammad Ali',
+  },
+  {
+    'text': 'Voe como uma borboleta, ferroe como uma abelha.',
+    'author': 'Muhammad Ali',
+  },
+  {
+    'text': 'Não conte os dias, faça os dias contarem.',
+    'author': 'Muhammad Ali',
+  },
+  {
+    'text': 'A força de vontade deve ser mais forte do que a habilidade.',
+    'author': 'Muhammad Ali',
+  },
+  {
+    'text': 'O homem que não tem imaginação, não tem asas.',
+    'author': 'Muhammad Ali',
+  },
+  {
+    'text': 'Se você sonha em me vencer, é melhor acordar e pedir desculpas.',
+    'author': 'Muhammad Ali',
+  },
+  {
+    'text':
+        'Servir aos outros é o aluguel que você paga pelo seu quarto aqui na Terra.',
+    'author': 'Muhammad Ali',
+  },
+  {
+    'text': 'Eu sou o maior; disse isso mesmo antes de saber que o era.',
+    'author': 'Muhammad Ali',
+  },
+  {
+    'text':
+        'Os campeões não são feitos em academias. Os campeões são feitos de algo que eles têm profundamente dentro de si — um desejo, um sonho, uma visão.',
+    'author': 'Muhammad Ali',
+  },
+  {
+    'text': 'O silêncio é de ouro e muitas vezes é a melhor resposta.',
+    'author': 'Muhammad Ali',
+  },
+  {
+    'text': 'A sabedoria é saber o que fazer; a virtude é fazer.',
+    'author': 'David Jordan',
+  },
+  {'text': 'Saber e não fazer é ainda não saber.', 'author': 'Zen Provérbio'},
+  {'text': 'Um dia de cada vez, e tudo se resolve.', 'author': 'Desconhecido'},
+  {
+    'text':
+        'Não se preocupe com o que os outros pensam. Eles estão muito preocupados com o que você pensa deles.',
+    'author': 'Desconhecido',
+  },
+  {
+    'text': 'A vida é muito curta para ser pequena.',
+    'author': 'Benjamin Disraeli',
+  },
+  {
+    'text': 'O segredo do sucesso é a constância do objetivo.',
+    'author': 'Benjamin Disraeli',
+  },
+  {'text': 'A vida é feita de escolhas.', 'author': 'Desconhecido'},
+  {
+    'text':
+        'Seja forte, não como as ondas que tudo destroem, mas como as rochas que tudo suportam.',
+    'author': 'Desconhecido',
+  },
+  {
+    'text': 'O melhor projeto em que você pode trabalhar é você mesmo.',
+    'author': 'Desconhecido',
+  },
+  {
+    'text': 'Cuide de seu corpo, é o único lugar que você tem para viver.',
+    'author': 'Jim Rohn',
+  },
+  {
+    'text': 'Disciplina é a ponte entre metas e realizações.',
+    'author': 'Jim Rohn',
+  },
+  {
+    'text':
+        'Se você não está disposto a arriscar, esteja disposto a uma vida comum.',
+    'author': 'Jim Rohn',
+  },
+  {
+    'text':
+        'Ou você diminui seus sonhos ou aumenta suas habilidades. A escolha é sua.',
+    'author': 'Jim Rohn',
+  },
+  {
+    'text':
+        'Motivação é o que te faz começar. Hábito é o que te faz continuar.',
+    'author': 'Jim Rohn',
+  },
+  {
+    'text':
+        'Aproveite as pequenas coisas, pois um dia você pode olhar para trás e perceber que elas eram grandes coisas.',
+    'author': 'Robert Brault',
+  },
+  {
+    'text':
+        'A vida é 10% do que acontece com você e 90% de como você reage a isso.',
+    'author': 'Lou Holtz',
+  },
+  {
+    'text': 'Não deixe que o medo de errar a impeça de jogar.',
+    'author': 'A Nova Cinderela',
+  },
+  {
+    'text': 'A única forma de fazer um grande trabalho é amar o que se faz.',
+    'author': 'Steve Jobs',
+  },
+  {
+    'text':
+        'O seu tempo é limitado, então não o gaste vivendo a vida de outra pessoa.',
+    'author': 'Steve Jobs',
+  },
+  {
+    'text': 'Tenha coragem de seguir o seu coração e a sua intuição.',
+    'author': 'Steve Jobs',
+  },
 ];

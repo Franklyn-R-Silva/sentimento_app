@@ -1262,4 +1262,318 @@ final List<Map<String, String>> kAllQuotes = [
     'text': 'Tenha coragem de seguir o seu coração e a sua intuição.',
     'author': 'Steve Jobs',
   },
+  {
+    'text': 'A melhor vingança é um sucesso estrondoso.',
+    'author': 'Frank Sinatra',
+  },
+  {
+    'text':
+        'A coragem é a resistência ao medo, o domínio do medo, e não a ausência do medo.',
+    'author': 'Mark Twain',
+  },
+  {'text': 'Você perde 100% dos tiros que não dá.', 'author': 'Wayne Gretzky'},
+  {
+    'text':
+        'A vida é o que acontece enquanto você está ocupado fazendo outros planos.',
+    'author': 'John Lennon',
+  },
+  {
+    'text':
+        'Defina o sucesso em seus próprios termos, alcance-o em seus próprios termos e viva uma vida que o faça orgulhoso.',
+    'author': 'Anne Sweeney',
+  },
+  {
+    'text': 'A única maneira de fazer um bom trabalho é amar o que você faz.',
+    'author': 'Steve Jobs',
+  },
+  {
+    'text': 'Não espere. O tempo nunca será "apropriado".',
+    'author': 'Napoleon Hill',
+  },
+  {
+    'text': 'Acredite que você pode e você já está no meio do caminho.',
+    'author': 'Theodore Roosevelt',
+  },
+  {
+    'text':
+        'O sucesso é caminhar de fracasso em fracasso sem perder o entusiasmo.',
+    'author': 'Winston Churchill',
+  },
+  {
+    'text':
+        'O que você faz fala tão alto que eu não consigo ouvir o que você diz.',
+    'author': 'Ralph Waldo Emerson',
+  },
+  {
+    'text': 'Seja a mudança que você deseja ver no mundo.',
+    'author': 'Mahatma Gandhi',
+  },
+  {
+    'text': 'A imaginação é mais importante que o conhecimento.',
+    'author': 'Albert Einstein',
+  },
+  {
+    'text':
+        'A lógica pode levar de A a B, mas a imaginação te leva a qualquer lugar.',
+    'author': 'Albert Einstein',
+  },
+  {
+    'text':
+        'Não tente ser uma pessoa de sucesso. Tente ser uma pessoa de valor.',
+    'author': 'Albert Einstein',
+  },
+  {
+    'text':
+        'Duas coisas são infinitas: o universo e a estupidez humana. E eu não tenho certeza sobre o universo.',
+    'author': 'Albert Einstein',
+  },
+  {
+    'text': 'A coisa mais bela que podemos experimentar é o mistério.',
+    'author': 'Albert Einstein',
+  },
+  {
+    'text':
+        'A vida é como andar de bicicleta. Para ter equilíbrio, você tem que se manter em movimento.',
+    'author': 'Albert Einstein',
+  },
+  {
+    'text': 'No meio da dificuldade encontra-se a oportunidade.',
+    'author': 'Albert Einstein',
+  },
+  {
+    'text':
+        'A paz não pode ser mantida à força; ela só pode ser alcançada pela compreensão.',
+    'author': 'Albert Einstein',
+  },
+  {
+    'text':
+        'Eu não tenho talentos especiais. Sou apenas apaixonadamente curioso.',
+    'author': 'Albert Einstein',
+  },
+  {
+    'text':
+        'A educação é o que resta depois de ter esquecido o que se aprendeu na escola.',
+    'author': 'Albert Einstein',
+  },
+  {
+    'text': 'O sucesso é a soma de pequenos esforços repetidos dia após dia.',
+    'author': 'Robert Collier',
+  },
+  {
+    'text': 'Tudo o que você sempre quis está do outro lado do medo.',
+    'author': 'George Addair',
+  },
+  {
+    'text':
+        'Sonhe como se você fosse viver para sempre. Viva como se você fosse morrer hoje.',
+    'author': 'James Dean',
+  },
+  {
+    'text': 'Faça o que puder, onde estiver, com o que tiver.',
+    'author': 'Theodore Roosevelt',
+  },
+  {
+    'text':
+        'Se você quer algo que nunca teve, você precisa fazer algo que nunca fez.',
+    'author': 'Thomas Jefferson',
+  },
+  {
+    'text':
+        'A única pessoa que você está destinado a se tornar é a pessoa que você decide ser.',
+    'author': 'Ralph Waldo Emerson',
+  },
+  {
+    'text':
+        'Comece de onde você está. Use o que você tem. Faça o que você pode.',
+    'author': 'Arthur Ashe',
+  },
+  {'text': 'A vida não é sobre ter, é sobre dar.', 'author': 'Kevin Kruse'},
+  {
+    'text':
+        'Sorte é o que acontece quando a preparação encontra a oportunidade.',
+    'author': 'Sêneca',
+  },
+  {
+    'text':
+        'Aprenda como se você fosse viver para sempre. Viva como se você fosse morrer amanhã.',
+    'author': 'Mahatma Gandhi',
+  },
+  {
+    'text': 'Mude seus pensamentos e você muda seu mundo.',
+    'author': 'Norman Vincent Peale',
+  },
+  {
+    'text': 'Não é o que olhamos que importa, é o que vemos.',
+    'author': 'Henry David Thoreau',
+  },
+  {
+    'text': 'O futuro pertence àqueles que acreditam na beleza de seus sonhos.',
+    'author': 'Eleanor Roosevelt',
+  },
+  {
+    'text': 'O propósito da vida é uma vida de propósito.',
+    'author': 'Robert Byrne',
+  },
+  {
+    'text': 'A felicidade não é algo pronto. Ela vem de suas próprias ações.',
+    'author': 'Dalai Lama',
+  },
+  {
+    'text':
+        'Lembre-se de que não conseguir o que você quer é algumas vezes um lance de sorte.',
+    'author': 'Dalai Lama',
+  },
+  {
+    'text':
+        'O nosso principal propósito nesta vida é ajudar os outros. E se você não pode ajudá-los, pelo menos não os machuque.',
+    'author': 'Dalai Lama',
+  },
+  {
+    'text':
+        'A felicidade não é a ausência de problemas, é a habilidade de lidar com eles.',
+    'author': 'Steve Maraboli',
+  },
+  {'text': 'Tudo tem beleza, mas nem todo mundo vê.', 'author': 'Confúcio'},
+  {
+    'text': 'Não importa o quão devagar você vá, desde que você não pare.',
+    'author': 'Confúcio',
+  },
+  {
+    'text':
+        'A vontade de vencer, o desejo de sucesso, o impulso para alcançar o seu pleno potencial... estas são as chaves que irão abrir a porta para a excelência pessoal.',
+    'author': 'Confúcio',
+  },
+  {
+    'text': 'Para onde quer que você vá, vá com todo o seu coração.',
+    'author': 'Confúcio',
+  },
+  {
+    'text':
+        'Escolha um trabalho que você ame e você nunca terá que trabalhar um dia em sua vida.',
+    'author': 'Confúcio',
+  },
+  {
+    'text':
+        'A melhor época para plantar uma árvore foi há 20 anos. A segunda melhor é agora.',
+    'author': 'Provérbio Chinês',
+  },
+  {
+    'text':
+        'O fracasso não me superará se minha determinação de ter sucesso for forte o suficiente.',
+    'author': 'Og Mandino',
+  },
+  {
+    'text': 'Sempre parece impossível até que seja feito.',
+    'author': 'Nelson Mandela',
+  },
+  {
+    'text':
+        'A maior glória em viver não está em nunca cair, mas em nos levantarmos cada vez que caímos.',
+    'author': 'Nelson Mandela',
+  },
+  {
+    'text':
+        'A educação é a arma mais poderosa que você pode usar para mudar o mundo.',
+    'author': 'Nelson Mandela',
+  },
+  {
+    'text':
+        'A aparência das coisas muda de acordo com as emoções; e assim vemos magia e beleza nelas, mas, na verdade, a magia e a beleza estão em nós.',
+    'author': 'Kahlil Gibran',
+  },
+  {
+    'text':
+        'Acredite em si mesmo! Tenha fé em suas habilidades! Sem uma confiança humilde, porém razoável, em seus próprios poderes, você não pode ser bem-sucedido ou feliz.',
+    'author': 'Norman Vincent Peale',
+  },
+  {
+    'text': 'Se você está passando pelo inferno, continue caminhando.',
+    'author': 'Winston Churchill',
+  },
+  {'text': 'Nunca, nunca, nunca desista.', 'author': 'Winston Churchill'},
+  {
+    'text': 'A atitude é uma pequena coisa que faz uma grande diferença.',
+    'author': 'Winston Churchill',
+  },
+  {
+    'text':
+        'O pessimista vê dificuldade em cada oportunidade; o otimista vê oportunidade em cada dificuldade.',
+    'author': 'Winston Churchill',
+  },
+  {
+    'text': 'Melhorar é mudar; ser perfeito é mudar muitas vezes.',
+    'author': 'Winston Churchill',
+  },
+  {
+    'text':
+        'A coragem é a primeira das qualidades humanas porque garante todas as outras.',
+    'author': 'Aristóteles',
+  },
+  {
+    'text':
+        'Você nunca cruza o oceano se não tiver coragem de perder a costa de vista.',
+    'author': 'Cristóvão Colombo',
+  },
+  {
+    'text': 'A mente é tudo. Você se torna aquilo que você pensa.',
+    'author': 'Buda',
+  },
+  {
+    'text':
+        'Três coisas não podem ser escondidas por muito tempo: o sol, a lua e a verdade.',
+    'author': 'Buda',
+  },
+  {
+    'text': 'A dor é inevitável. O sofrimento é opcional.',
+    'author': 'Provérbio Budista',
+  },
+  {
+    'text':
+        'O segredo da saúde, mental e corporal, está em não se lamentar pelo passado, não se preocupar com o futuro, nem se adiantar aos problemas, mas viver sabia e seriamente o presente.',
+    'author': 'Buda',
+  },
+  {
+    'text':
+        'Você, o seu ser, tanto quanto qualquer pessoa em todo o universo, merece o seu amor e sua afeição.',
+    'author': 'Buda',
+  },
+  {'text': 'A paz vem de dentro. Não a procure fora.', 'author': 'Buda'},
+  {
+    'text':
+        'Milhares de velas podem ser acesas de uma única vela, e a vida da vela não será encurtada. Felicidade nunca diminui ao ser compartilhada.',
+    'author': 'Buda',
+  },
+  {
+    'text':
+        'Somos moldados por nossos pensamentos; nós nos tornamos aquilo que pensamos.',
+    'author': 'Buda',
+  },
+  {'text': 'A melhor vingança é viver bem.', 'author': 'Jerry Seinfeld'},
+  {
+    'text': 'A jornada de mil milhas começa com um único passo.',
+    'author': 'Lao Tzu',
+  },
+  {
+    'text':
+        'Aquele que domina os outros é forte; aquele que domina a si mesmo é poderoso.',
+    'author': 'Lao Tzu',
+  },
+  {
+    'text': 'A natureza não tem pressa, contudo tudo é realizado.',
+    'author': 'Lao Tzu',
+  },
+  {
+    'text':
+        'A vida é uma série de mudanças naturais e espontâneas. Não resista a elas; isso só cria tristeza. Deixe a realidade ser realidade. Deixe as coisas fluírem naturalmente para onde elas quiserem.',
+    'author': 'Lao Tzu',
+  },
+  {
+    'text':
+        'Cuidado com seus pensamentos, pois eles se tornam palavras. Cuidado com suas palavras, pois elas se tornam ações. Cuidado com suas ações, pois elas se tornam hábitos. Cuidado com seus hábitos, pois eles se tornam seu caráter. Cuidado com seu caráter, pois ele se torna seu destino.',
+    'author': 'Lao Tzu',
+  },
+  {
+    'text': 'Um líder é um vendedor de esperança.',
+    'author': 'Napoleão Bonaparte',
+  },
 ];

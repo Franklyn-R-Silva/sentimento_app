@@ -202,10 +202,10 @@ class _HomePageWidgetState extends State<HomePageWidget> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => HomeAddMoodSheet(
-        onSave: (mood, note) {
+        onSave: (mood, note, tags) {
           if (_model.isAddingEntry) return;
           Navigator.pop(context);
-          _model.addEntry(context, mood, note, []);
+          _model.addEntry(context, mood, note, tags);
         },
       ),
     );

@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/ui/pages/home/widgets/mood_selector.dart';
+import 'package:sentimento_app/ui/shared/widgets/tag_selector.dart';
 
 class HomeAddMoodSheet extends StatefulWidget {
-  final void Function(int mood, String? note) onSave;
+  final void Function(int mood, String? note, List<String> tags) onSave;
 
   const HomeAddMoodSheet({super.key, required this.onSave});
 
@@ -16,6 +17,7 @@ class HomeAddMoodSheet extends StatefulWidget {
 
 class _HomeAddMoodSheetState extends State<HomeAddMoodSheet> {
   int selectedMood = 3;
+  List<String> selectedTags = [];
   late TextEditingController textController;
 
   @override
@@ -44,21 +46,32 @@ class _HomeAddMoodSheetState extends State<HomeAddMoodSheet> {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Handle
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: theme.alternate,
-                  borderRadius: BorderRadius.circular(2),
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: theme.alternate,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
               ),
               const SizedBox(height: 24),
+
+              Center(
+                child: Text(
+                  'Como você está se sentindo?',
+                  style: theme.titleMedium,
+                ),
+              ),
+              const SizedBox(height: 16),
 
               // Mood selector
               MoodSelector(
@@ -68,12 +81,25 @@ class _HomeAddMoodSheetState extends State<HomeAddMoodSheet> {
 
               const SizedBox(height: 24),
 
+              // Tags Section
+              Text('O que está acontecendo?', style: theme.bodyMedium),
+              const SizedBox(height: 12),
+              TagSelector(
+                selectedTags: selectedTags,
+                onSelectionChanged: (tags) =>
+                    setState(() => selectedTags = tags),
+              ),
+
+              const SizedBox(height: 24),
+
               // Note input
+              Text('Quer adicionar algum detalhe?', style: theme.bodyMedium),
+              const SizedBox(height: 8),
               TextField(
                 controller: textController,
                 maxLines: 3,
                 decoration: InputDecoration(
-                  hintText: 'Como foi seu dia? (opcional)',
+                  hintText: 'Hoje eu senti gratidão por...',
                   hintStyle: theme.bodyMedium.override(
                     color: theme.secondaryText,
                   ),
@@ -98,6 +124,7 @@ class _HomeAddMoodSheetState extends State<HomeAddMoodSheet> {
                     widget.onSave(
                       selectedMood,
                       textController.text.isEmpty ? null : textController.text,
+                      selectedTags,
                     );
                   },
                   style: ElevatedButton.styleFrom(

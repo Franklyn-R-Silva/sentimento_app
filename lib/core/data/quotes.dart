@@ -650,4 +650,206 @@ final List<Map<String, String>> kAllQuotes = [
     'author': 'Voltaire',
   },
   {'text': 'A leitura engrandece a alma.', 'author': 'Voltaire'},
+  {'text': 'A vida é uma aventura ousada ou nada.', 'author': 'Helen Keller'},
+  {
+    'text': 'O sucesso é ir de fracasso em fracasso sem perder o entusiasmo.',
+    'author': 'Winston Churchill',
+  },
+  {'text': 'Tudo o que você pode imaginar é real.', 'author': 'Pablo Picasso'},
+  {
+    'text': 'Não espere por oportunidades, crie-as.',
+    'author': 'George Bernard Shaw',
+  },
+  {
+    'text': 'A vida encolhe ou se expande na proporção da sua coragem.',
+    'author': 'Anaïs Nin',
+  },
+  {
+    'text': 'Onde quer que você vá, vá com todo o seu coração.',
+    'author': 'Confúcio',
+  },
+  {
+    'text': 'Acredite e aja como se fosse impossível falhar.',
+    'author': 'Charles Kettering',
+  },
+  {
+    'text':
+        'O que você faz hoje é importante porque você está trocando um dia da sua vida por isso.',
+    'author': 'Desconhecido',
+  },
+  {
+    'text': 'A melhor maneira de começar é parar de falar e começar a fazer.',
+    'author': 'Walt Disney',
+  },
+  {'text': 'Não deixe o ontem ocupar muito do hoje.', 'author': 'Will Rogers'},
+  {
+    'text':
+        'Você aprende mais com o fracasso do que com o sucesso. Não deixe ele te parar.',
+    'author': 'Desconhecido',
+  },
+  {
+    'text':
+        'Não é o mais forte que sobrevive, nem o mais inteligente, mas o que melhor se adapta às mudanças.',
+    'author': 'Charles Darwin',
+  },
+  {
+    'text': 'A criatividade é a inteligência se divertindo.',
+    'author': 'Albert Einstein',
+  },
+  {
+    'text':
+        'Faça o que você ama e não precisará trabalhar um único dia na sua vida.',
+    'author': 'Confúcio',
+  },
+  {
+    'text':
+        'A vida é 10% do que acontece comigo e 90% de como eu reajo a isso.',
+    'author': 'Charles Swindoll',
+  },
+  {
+    'text':
+        'Acredite no seu potencial. Mesmo que o mundo diga não, diga sim para si mesmo.',
+    'author': 'Desconhecido',
+  },
+  {
+    'text':
+        'O segredo da mudança é focar toda a sua energia, não em lutar contra o velho, mas em construir o novo.',
+    'author': 'Sócrates',
+  },
+  {
+    'text': 'Pequenas coisas feitas com grande amor mudam o mundo.',
+    'author': 'Madre Teresa',
+  },
+  {
+    'text':
+        'A felicidade não é algo que você adia para o futuro; é algo que você projeta para o presente.',
+    'author': 'Jim Rohn',
+  },
+  {
+    'text': 'A única maneira de fazer um bom trabalho é amando o que você faz.',
+    'author': 'Steve Jobs',
+  },
+  {
+    'text':
+        'A vida é como andar de bicicleta. Para manter o equilíbrio, você deve continuar se movendo.',
+    'author': 'Albert Einstein',
+  },
+  {
+    'text':
+        'O sucesso parece estar conectado com a ação. Pessoas de sucesso se mantêm em movimento. Elas cometem erros, mas não desistem.',
+    'author': 'Conrad Hilton',
+  },
+  {
+    'text': 'A persistência realiza o impossível.',
+    'author': 'Provérbio Chinês',
+  },
+  {
+    'text': 'Não importa o quão devagar você vá, desde que você não pare.',
+    'author': 'Confúcio',
+  },
+  {
+    'text': 'A energia e a persistência conquistam todas as coisas.',
+    'author': 'Benjamin Franklin',
+  },
+  {
+    'text': 'Ganhadores nunca desistem e quem desiste nunca ganha.',
+    'author': 'Vince Lombardi',
+  },
+  {
+    'text':
+        'A força não vem da capacidade física. Vem de uma vontade indomável.',
+    'author': 'Mahatma Gandhi',
+  },
+  {
+    'text': 'Eu não falhei. Apenas descobri 10 mil maneiras que não funcionam.',
+    'author': 'Thomas Edison',
+  },
+  {
+    'text':
+        'A verdadeira coragem é ir atrás de seus sonhos mesmo quando todos dizem que é impossível.',
+    'author': 'Cora Coralina',
+  },
+  {
+    'text':
+        'Otimismo é a fé em ação. Nada se pode levar a efeito sem otimismo.',
+    'author': 'Helen Keller',
+  },
+  {
+    'text':
+        'Tudo o que a mente humana pode conceber e acreditar, ela pode conquistar.',
+    'author': 'Napoleon Hill',
+  },
+  {
+    'text': 'A felicidade é a única coisa que se multiplica quando dividida.',
+    'author': 'Albert Schweitzer',
+  },
+  {
+    'text':
+        'Sorte é o que acontece quando a preparação encontra a oportunidade.',
+    'author': 'Sêneca',
+  },
+  {
+    'text': 'O homem que move montanhas começa carregando pedras pequenas.',
+    'author': 'Provérbio Chinês',
+  },
+  {
+    'text':
+        'A melhor época para plantar uma árvore foi há 20 anos. A segunda melhor é agora.',
+    'author': 'Provérbio Chinês',
+  },
+  {
+    'text':
+        'Se você quer ir rápido, vá sozinho. Se quer ir longe, vá acompanhado.',
+    'author': 'Provérbio Africano',
+  },
+  {
+    'text':
+        'Você nunca é velho demais para definir um novo objetivo ou sonhar um novo sonho.',
+    'author': 'C.S. Lewis',
+  },
+  {
+    'text': 'O que você faria se não tivesse medo?',
+    'author': 'Spencer Johnson',
+  },
+  {
+    'text':
+        'A única pessoa que você está destinado a se tornar é a pessoa que você decide ser.',
+    'author': 'Ralph Waldo Emerson',
+  },
+  {'text': 'Sonhe grande e ouse falhar.', 'author': 'Norman Vaughan'},
+  {
+    'text': 'A ação é a chave fundamental para todo o sucesso.',
+    'author': 'Pablo Picasso',
+  },
+  {
+    'text':
+        'A vida é 10% o que acontece com você e 90% como você reage a isso.',
+    'author': 'Charles R. Swindoll',
+  },
+  {'text': 'Faça de cada dia a sua obra-prima.', 'author': 'John Wooden'},
+  {'text': 'A jornada é a recompensa.', 'author': 'Provérbio Chinês'},
+  {
+    'text': 'O sucesso é a soma de pequenos esforços repetidos dia após dia.',
+    'author': 'Robert Collier',
+  },
+  {
+    'text': 'Acredite em si mesmo e tudo será possível.',
+    'author': 'Desconhecido',
+  },
+  {
+    'text': 'Não espere por circunstâncias ideais, elas nunca chegam.',
+    'author': 'Desconhecido',
+  },
+  {
+    'text': 'O medo de falhar nunca deve superar a vontade de vencer.',
+    'author': 'Desconhecido',
+  },
+  {
+    'text': 'A gratidão transforma o que temos em suficiente.',
+    'author': 'Melodie Beattie',
+  },
+  {
+    'text': 'Seja a mudança que você quer ver no mundo.',
+    'author': 'Mahatma Gandhi',
+  },
 ];

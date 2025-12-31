@@ -3,13 +3,18 @@ import 'dart:math';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 
 // Project imports:
 import 'package:sentimento_app/core/theme.dart';
-
 import 'package:sentimento_app/core/data/quotes.dart';
 
 class DailyQuoteWidget extends StatefulWidget {
@@ -26,16 +31,63 @@ class _DailyQuoteWidgetState extends State<DailyQuoteWidget> {
   @override
   void initState() {
     super.initState();
-    _pickRandomQuote();
+    _pickQuoteByTime();
   }
 
-  void _pickRandomQuote() {
-    final random = Random();
-    final index = random.nextInt(kAllQuotes.length);
+  void _pickQuoteByTime() {
+    if (kAllQuotes.isEmpty) {
+      _quote = "Sem frases hoje.";
+      _author = "";
+      return;
+    }
+
+    final now = DateTime.now();
+    // 0: Morning (00-11), 1: Afternoon (12-17), 2: Evening (18-23)
+    final int period = now.hour < 12
+        ? 0
+        : now.hour < 18
+        ? 1
+        : 2;
+
+    // Calculate day of year
+    final int dayOfYear = int.parse(DateFormat("D").format(now));
+
+    // Create a stable index based on day and period
+    // Used to ensure the same quote is shown for the same period
+    final int seed = (dayOfYear * 3) + period;
+    final int index = seed % kAllQuotes.length;
+
     setState(() {
       _quote = kAllQuotes[index]['text']!;
       _author = kAllQuotes[index]['author']!;
     });
+  }
+
+  Future<void> _copyToClipboard() async {
+    await Clipboard.setData(ClipboardData(text: '"$_quote" - $_author'));
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Frase copiada!'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
+  Future<void> _shareToWhatsApp() async {
+    final text = '"$_quote" - $_author\n\nEnviado do Sentimento App';
+
+    try {
+      final link = WhatsAppUnilink(text: text);
+      await launchUrl(
+        Uri.parse(link.toString()),
+        mode: LaunchMode.externalApplication,
+      );
+    } catch (e) {
+      // Fallback to share_plus if WhatsApp fails or not installed logic needs it
+      await Share.share(text);
+    }
   }
 
   @override
@@ -54,15 +106,47 @@ class _DailyQuoteWidgetState extends State<DailyQuoteWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(Icons.format_quote_rounded, color: theme.primary, size: 24),
-              const SizedBox(width: 8),
-              Text(
-                'Frase do Dia',
-                style: theme.labelMedium.override(
-                  color: theme.primary,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                children: [
+                  Icon(
+                    Icons.format_quote_rounded,
+                    color: theme.primary,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Frase do Dia',
+                    style: theme.labelMedium.override(
+                      color: theme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.copy,
+                      size: 20,
+                      color: theme.secondaryText,
+                    ),
+                    onPressed: _copyToClipboard,
+                    tooltip: 'Copiar',
+                  ),
+                  IconButton(
+                    icon: FaIcon(
+                      FontAwesomeIcons.whatsapp,
+                      size: 20,
+                      color: theme.success,
+                    ),
+                    onPressed: _shareToWhatsApp,
+                    tooltip: 'WhatsApp',
+                  ),
+                ],
               ),
             ],
           ),

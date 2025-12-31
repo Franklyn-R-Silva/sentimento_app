@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:app_settings/app_settings.dart';
-// Actually, without provider/riverpod setup, simpler is best.
-// But the user asked for MVVM/Model. FlutterFlow usually uses a 'model' instance.
 
 // Project imports:
 import 'package:sentimento_app/core/theme.dart';
@@ -15,6 +13,10 @@ import 'package:sentimento_app/ui/pages/settings/widgets/schedule_dialog.dart';
 import 'package:sentimento_app/ui/shared/widgets/app_card.dart';
 import 'package:sentimento_app/ui/shared/widgets/app_list_tile.dart';
 import 'package:sentimento_app/ui/shared/widgets/app_section_header.dart';
+
+// Actually, without provider/riverpod setup, simpler is best.
+// But the user asked for MVVM/Model. FlutterFlow usually uses a 'model' instance.
+
 
 class SettingsPageWidget extends StatefulWidget {
   const SettingsPageWidget({super.key});

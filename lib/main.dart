@@ -1,8 +1,8 @@
 // Flutter imports:
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logger/logger.dart';
@@ -16,6 +16,7 @@ import 'package:sentimento_app/core/nav/nav.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/core/util.dart';
 import 'package:sentimento_app/services/notification_service.dart';
+import 'package:sentimento_app/services/toast_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -117,6 +118,7 @@ class MyAppState extends State<MyApp> {
       darkTheme: ThemeData(brightness: Brightness.dark),
       themeMode: _themeMode,
       routerConfig: _router,
+      scaffoldMessengerKey: ToastService.scaffoldMessengerKey,
     );
   }
 }

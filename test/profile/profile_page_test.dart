@@ -1,10 +1,15 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
+
+// Project imports:
+import 'package:sentimento_app/auth/base_auth_user_provider.dart';
 import 'package:sentimento_app/main.dart';
 import 'package:sentimento_app/ui/pages/profile/profile.page.dart';
-import 'package:sentimento_app/auth/base_auth_user_provider.dart';
 import '../mocks/mocks.dart';
 
 // Mock for MyAppState to handle setThemeMode

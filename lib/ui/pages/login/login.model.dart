@@ -1,12 +1,15 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Project imports:
 // Package imports:
 import 'package:shared_preferences/shared_preferences.dart';
 
+// Project imports:
 import 'package:sentimento_app/auth/supabase_auth/auth_util.dart' as auth_util;
 import 'package:sentimento_app/core/model.dart';
+
+// Project imports:
+
 
 class LoginModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   LoginModel({auth_util.SupabaseAuthManager? authManager})

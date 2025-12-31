@@ -1,6 +1,10 @@
-// Package imports:
+// Dart imports:
 import 'dart:typed_data';
+
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mocktail/mocktail.dart';

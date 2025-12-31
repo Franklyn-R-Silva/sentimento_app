@@ -1,12 +1,14 @@
-// Flutter imports:
+// Dart imports:
 import 'dart:async';
-import 'package:flutter/material.dart';
+
+// Flutter imports:
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:image_picker/image_picker.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:image_picker/image_picker.dart';
 
 // Project imports:
 import 'package:sentimento_app/auth/auth_manager.dart';

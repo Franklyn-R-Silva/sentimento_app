@@ -1,21 +1,21 @@
 // Flutter imports:
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:provider/provider.dart';
 
 // Project imports:
 import 'package:sentimento_app/backend/services/data_refresh_service.dart';
 import 'package:sentimento_app/core/model.dart';
 import 'package:sentimento_app/core/theme.dart';
+import 'package:sentimento_app/ui/shared/widgets/app_card.dart';
+import 'package:sentimento_app/ui/shared/widgets/app_section_header.dart';
 import 'stats.model.dart';
 import 'widgets/dynamic_chart.dart';
 import 'widgets/stats_distribution_chart.dart';
 import 'widgets/stats_mood_breakdown.dart';
 import 'widgets/stats_overview.dart';
-import 'package:sentimento_app/ui/shared/widgets/app_card.dart';
-import 'package:sentimento_app/ui/shared/widgets/app_section_header.dart';
 
 export 'stats.model.dart';
 

@@ -1,9 +1,15 @@
+// Dart imports:
 import 'dart:async';
 import 'dart:io';
 
+// Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+// Package imports:
 import 'package:flutter_test/flutter_test.dart';
+
+// Project imports:
 import 'package:sentimento_app/ui/pages/profile/widgets/profile_header.dart';
 
 // Helper to mock HTTP responses for Image.network

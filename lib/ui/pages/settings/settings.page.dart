@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:app_settings/app_settings.dart';
-import 'package:provider/provider.dart'; // Assuming provider is available or we use simple SetState if not.
 // Actually, without provider/riverpod setup, simpler is best.
 // But the user asked for MVVM/Model. FlutterFlow usually uses a 'model' instance.
 

@@ -438,7 +438,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
         await supabase.auth.signOut();
 
         if (context.mounted) {
-          Navigator.of(
+          await Navigator.of(
             context,
           ).pushNamedAndRemoveUntil('Login', (route) => false);
           ToastService.showSuccess('Conta excluída com sucesso.');

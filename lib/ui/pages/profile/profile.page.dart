@@ -125,6 +125,67 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                     },
                   ),
 
+                  const SizedBox(height: 24),
+
+                  // Danger Zone
+                  SizedBox(
+                    width: double.infinity,
+                    child: TextButton.icon(
+                      onPressed: () async {
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (alertDialogContext) {
+                            return AlertDialog(
+                              title: const Text('Deletar Conta'),
+                              content: const Text(
+                                'Tem certeza que deseja deletar sua conta? Esta ação é irreversível e todos os seus dados serão perdidos.',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(
+                                    alertDialogContext,
+                                  ).pop(false),
+                                  child: const Text('Cancelar'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.of(
+                                    alertDialogContext,
+                                  ).pop(true),
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: Colors.red,
+                                  ),
+                                  child: const Text('Deletar'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+
+                        if (confirm == true) {
+                          if (!context.mounted) return;
+                          await model.deleteAccount(context);
+                          if (context.mounted) {
+                            context.goNamed('Login');
+                          }
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.delete_forever_rounded,
+                        color: Colors.red,
+                      ),
+                      label: Text(
+                        'Deletar minha conta',
+                        style: theme.bodyMedium.override(
+                          color: Colors.red,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                    ),
+                  ),
+
                   const SizedBox(height: 50),
                 ],
               ),

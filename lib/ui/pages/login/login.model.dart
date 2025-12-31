@@ -141,7 +141,7 @@ class LoginModel extends BaseModel {
     return success;
   }
 
-  Future<bool> resetPassword() async {
+  Future<bool> resetPassword(BuildContext context) async {
     bool success = false;
     await runSafe(() async {
       if (emailAddressController!.text.isEmpty) {

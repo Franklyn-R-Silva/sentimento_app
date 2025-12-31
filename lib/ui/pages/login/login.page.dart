@@ -208,7 +208,9 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                     );
                                     return;
                                   }
-                                  final success = await model.resetPassword();
+                                  final success = await model.resetPassword(
+                                    context,
+                                  );
                                   if (success) {
                                     ToastService.showSuccess(
                                       'Email de recuperação enviado!',

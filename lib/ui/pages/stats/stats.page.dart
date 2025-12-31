@@ -14,6 +14,8 @@ import 'widgets/dynamic_chart.dart';
 import 'widgets/stats_distribution_chart.dart';
 import 'widgets/stats_mood_breakdown.dart';
 import 'widgets/stats_overview.dart';
+import 'package:sentimento_app/ui/shared/widgets/app_card.dart';
+import 'package:sentimento_app/ui/shared/widgets/app_section_header.dart';
 
 export 'stats.model.dart';
 
@@ -121,16 +123,23 @@ class _StatsPageWidgetState extends State<StatsPageWidget> {
                         const SizedBox(height: 24),
 
                         // Dynamic Chart
-                        Text('Evolução do Humor', style: theme.titleMedium),
+                        const AppSectionHeader(title: 'Evolução do Humor'),
                         const SizedBox(height: 12),
-                        DynamicChart(
-                          entries: model.getFilteredEntries(),
-                          period: model.selectedPeriod,
+                        AppCard(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: DynamicChart(
+                              entries: model.getFilteredEntries(),
+                              period: model.selectedPeriod,
+                            ),
+                          ),
                         ),
 
                         const SizedBox(height: 32),
 
                         // Overview cards
+                        const AppSectionHeader(title: 'Visão Geral'),
+                        const SizedBox(height: 12),
                         StatsOverview(
                           averageMood: model.averageMood,
                           totalEntries: model.totalEntries,
@@ -140,16 +149,24 @@ class _StatsPageWidgetState extends State<StatsPageWidget> {
                         const SizedBox(height: 24),
 
                         // Mood average breakdown
-                        StatsMoodBreakdown(
-                          averageMood: model.averageMood,
-                          totalEntries: model.totalEntries,
+                        const AppSectionHeader(title: 'Média por Humor'),
+                        const SizedBox(height: 12),
+                        AppCard(
+                          child: StatsMoodBreakdown(
+                            averageMood: model.averageMood,
+                            totalEntries: model.totalEntries,
+                          ),
                         ),
 
                         const SizedBox(height: 24),
 
                         // Distribution chart
-                        StatsDistributionChart(
-                          moodDistribution: model.moodDistribution,
+                        const AppSectionHeader(title: 'Distribuição'),
+                        const SizedBox(height: 12),
+                        AppCard(
+                          child: StatsDistributionChart(
+                            moodDistribution: model.moodDistribution,
+                          ),
                         ),
 
                         const SizedBox(height: 40),

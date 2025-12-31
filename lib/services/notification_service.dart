@@ -199,8 +199,9 @@ class NotificationService {
     }
   }
 
-  /// Show a local notification
-  Future<void> _showLocalNotification({
+  /// Show an instant notification (Public)
+  Future<void> showInstantNotification({
+    int id = 0,
     required String title,
     required String body,
     String? payload,
@@ -225,11 +226,19 @@ class NotificationService {
       iOS: iosDetails,
     );
 
-    await _localNotifications.show(
-      DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      title,
-      body,
-      details,
+    await _localNotifications.show(id, title, body, details, payload: payload);
+  }
+
+  /// Show a local notification (Private internal use)
+  Future<void> _showLocalNotification({
+    required String title,
+    required String body,
+    String? payload,
+  }) async {
+    await showInstantNotification(
+      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title: title,
+      body: body,
       payload: payload,
     );
   }

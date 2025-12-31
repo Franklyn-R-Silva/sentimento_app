@@ -290,6 +290,22 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                     subtitle: 'Abrir configurações do Android',
                     onTap: () => AppSettings.openAppSettings(),
                   ),
+                  Divider(color: theme.alternate, height: 1),
+                  AppListTile(
+                    icon: Icons.notifications_active_rounded,
+                    iconColor: const Color(0xFFFFC107),
+                    title: 'Testar Notificação Agora',
+                    subtitle: 'Disparar notificação instantânea (Debug)',
+                    onTap: () async {
+                      await NotificationService().showInstantNotification(
+                        id: 999,
+                        title: 'Teste de Notificação 🔔',
+                        body:
+                            'Se você está vendo isso, as notificações funcionam!',
+                      );
+                      ToastService.showSuccess('Notificação enviada!');
+                    },
+                  ),
                   const Divider(height: 1),
                   AppListTile(
                     icon: Icons.developer_mode_rounded,

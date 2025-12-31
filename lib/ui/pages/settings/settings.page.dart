@@ -3,14 +3,20 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:app_settings/app_settings.dart';
+import 'package:provider/provider.dart'; // Assuming provider is available or we use simple SetState if not.
+// Actually, without provider/riverpod setup, simpler is best.
+// But the user asked for MVVM/Model. FlutterFlow usually uses a 'model' instance.
 
 // Project imports:
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/main.dart';
 import 'package:sentimento_app/services/notification_service.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:sentimento_app/ui/pages/settings/settings.model.dart';
+import 'package:sentimento_app/ui/pages/settings/widgets/schedule_dialog.dart';
+import 'package:sentimento_app/ui/pages/settings/widgets/settings_card.dart';
+import 'package:sentimento_app/ui/pages/settings/widgets/settings_row.dart';
+import 'package:sentimento_app/ui/pages/settings/widgets/settings_section_header.dart';
 
-/// SettingsPageWidget - Página de configurações dedicada
 class SettingsPageWidget extends StatefulWidget {
   const SettingsPageWidget({super.key});
 
@@ -22,24 +28,25 @@ class SettingsPageWidget extends StatefulWidget {
 }
 
 class _SettingsPageWidgetState extends State<SettingsPageWidget> {
-  bool _notificationsEnabled = true;
+  late SettingsModel _model;
 
   @override
   void initState() {
     super.initState();
-    _loadSettings();
+    _model = SettingsModel(); // Initialize model
+    _model.initState(context);
+    // Listen to model changes to rebuild
+    _model.addListener(_onModelUpdated);
   }
 
-  Future<void> _loadSettings() async {
-    final enabled = await NotificationService().areNotificationsEnabled();
-    if (mounted) {
-      setState(() {
-        _notificationsEnabled = enabled;
-      });
-    }
+  @override
+  void dispose() {
+    _model.removeListener(_onModelUpdated);
+    _model.dispose();
+    super.dispose();
   }
 
-  void _refresh() {
+  void _onModelUpdated() {
     if (mounted) setState(() {});
   }
 
@@ -47,7 +54,6 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
   Widget build(BuildContext context) {
     final theme = FlutterFlowTheme.of(context);
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final schedules = NotificationService().schedules;
 
     return Scaffold(
       backgroundColor: theme.primaryBackground,
@@ -70,13 +76,13 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Aparência
-            _SectionHeader(title: '🎨 Aparência', theme: theme),
+            SettingsSectionHeader(title: '🎨 Aparência'),
             const SizedBox(height: 12),
 
-            _SettingCard(
+            SettingsCard(
               child: Column(
                 children: [
-                  _SettingRow(
+                  SettingsRow(
                     icon: Icons.dark_mode_rounded,
                     iconColor: const Color(0xFF5E35B1),
                     title: 'Modo Escuro',
@@ -93,7 +99,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                     ),
                   ),
                   Divider(color: theme.alternate, height: 1),
-                  _SettingRow(
+                  SettingsRow(
                     icon: Icons.auto_awesome_rounded,
                     iconColor: const Color(0xFFFF9800),
                     title: 'Tema Automático',
@@ -120,17 +126,13 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                   ),
                 ],
               ),
-                  ],
-                ),
-              ),
             ),
 
             const SizedBox(height: 24),
 
             // Notificações
-            _SectionHeader(
+            SettingsSectionHeader(
               title: 'Notificações',
-              theme: theme,
               iconWidget: Image.asset(
                 'assets/images/imagem_2.png',
                 width: 24,
@@ -139,21 +141,18 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
             ),
             const SizedBox(height: 12),
 
-            _SettingCard(
+            SettingsCard(
               child: Column(
                 children: [
-                  _SettingRow(
+                  SettingsRow(
                     icon: Icons.notifications_rounded,
                     iconColor: const Color(0xFF4CAF50),
                     title: 'Notificações',
                     subtitle: 'Ativar lembretes do aplicativo',
                     trailing: Switch.adaptive(
-                      value: _notificationsEnabled,
+                      value: _model.notificationsEnabled,
                       onChanged: (value) async {
-                        setState(() => _notificationsEnabled = value);
-                        await NotificationService().setNotificationsEnabled(
-                          value,
-                        );
+                        await _model.setNotificationsEnabled(value);
                       },
                       activeTrackColor: theme.primary,
                       inactiveTrackColor: theme.alternate,
@@ -162,41 +161,70 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                 ],
               ),
             ),
-// ...
+
+            if (_model.notificationsEnabled) ...[
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SettingsSectionHeader(title: '⏰ Meus Horários'),
+                  IconButton(
+                    icon: Icon(
+                      Icons.add_circle_rounded,
+                      color: theme.primary,
+                      size: 28,
+                    ),
+                    onPressed: () async {
+                      final result = await showDialog<bool>(
+                        context: context,
+                        builder: (_) => const ScheduleDialog(),
+                      );
+                      if (result == true) _model.refresh();
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              if (_model.schedules.isEmpty)
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Text(
+                      'Nenhum horário configurado',
+                      style: theme.bodyMedium.override(
+                        color: theme.secondaryText,
+                      ),
+                    ),
+                  ),
+                )
               else
                 ListView.separated(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: schedules.length,
+                  itemCount: _model.schedules.length,
                   separatorBuilder: (_, __) => const SizedBox(height: 8),
                   itemBuilder: (context, index) {
-                    final schedule = schedules[index];
-                    return _SettingCard(
-                      child: _SettingRow(
+                    final schedule = _model.schedules[index];
+                    return SettingsCard(
+                      child: SettingsRow(
                         icon: Icons.alarm_rounded,
                         iconColor: theme.primary,
                         title: _formatTime(schedule.hour, schedule.minute),
                         subtitle: _formatDays(schedule.activeDays),
-                        onTap: () => _openScheduleDialog(context, schedule),
+                        onTap: () async {
+                          final result = await showDialog<bool>(
+                            context: context,
+                            builder: (_) => ScheduleDialog(schedule: schedule),
+                          );
+                          if (result == true) _model.refresh();
+                        },
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Switch.adaptive(
                               value: schedule.isEnabled,
-                              onChanged: (val) async {
-                                final updated = NotificationSchedule(
-                                  id: schedule.id,
-                                  title: schedule.title,
-                                  body: schedule.body,
-                                  hour: schedule.hour,
-                                  minute: schedule.minute,
-                                  activeDays: schedule.activeDays,
-                                  isEnabled: val,
-                                );
-                                await NotificationService().updateSchedule(
-                                  updated,
-                                );
-                                _refresh();
+                              onChanged: (val) {
+                                _model.updateSchedule(schedule, val);
                               },
                               activeTrackColor: theme.primary,
                               inactiveTrackColor: theme.alternate,
@@ -208,316 +236,92 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                   },
                 ),
             ],
-// ...
-  void _openScheduleDialog(
-    BuildContext context, [
-    NotificationSchedule? schedule,
-  ]) {
-    final theme = FlutterFlowTheme.of(context);
 
-    TimeOfDay selectedTime = schedule != null
-        ? TimeOfDay(hour: schedule.hour, minute: schedule.minute)
-        : const TimeOfDay(hour: 8, minute: 0);
-
-    final List<int> selectedDays = schedule != null
-        ? List<int>.from(schedule.activeDays)
-        : [1, 2, 3, 4, 5, 6, 7]; // Default all days
-
-    showDialog<void>(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setDialogState) {
-            return AlertDialog(
-              backgroundColor: theme.secondaryBackground,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              title: Text(
-                schedule == null ? 'Novo Lembrete' : 'Editar Lembrete',
-                style: theme.titleMedium,
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Time Picker Button
-                  GestureDetector(
-                    onTap: () async {
-                      final time = await showTimePicker(
-                        context: context,
-                        initialTime: selectedTime,
-                      );
-                      if (time != null) {
-                        setDialogState(() => selectedTime = time);
-                      }
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 16,
-                        horizontal: 24,
-                      ),
-                      decoration: BoxDecoration(
-                        color: theme.primaryBackground,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: theme.primary),
-                      ),
-                      child: Text(
-                        selectedTime.format(context),
-                        style: theme.displaySmall.override(
-                          color: theme.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text('Dias da Semana:', style: theme.bodyMedium),
-                  ),
-                  const SizedBox(height: 8),
-
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: List.generate(7, (index) {
-                      final dayIndex = index + 1; // 1 = Mon
-                      // Custom labels: Mon(1)=S, Tue(2)=T, Wed(3)=Q, Thu(4)=Q, Fri(5)=S, Sat(6)=S, Sun(7)=D
-                      final displayLabel = [
-                        'S',
-                        'T',
-                        'Q',
-                        'Q',
-                        'S',
-                        'S',
-                        'D',
-                      ][index];
-                      final isSelected = selectedDays.contains(dayIndex);
-
-                      return FilterChip(
-                        label: Text(displayLabel),
-                        selected: isSelected,
-                        onSelected: (selected) {
-                          setDialogState(() {
-                            if (selected) {
-                              selectedDays.add(dayIndex);
-                            } else {
-                              selectedDays.remove(dayIndex);
-                            }
-                          });
-                        },
-                        selectedColor: theme.primary,
-                        labelStyle: TextStyle(
-                          color: isSelected
-                              ? Colors.white
-                              : theme.secondaryText,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        backgroundColor: theme.primaryBackground,
-                        side: BorderSide(
-                          color: isSelected ? theme.primary : theme.alternate,
-                        ),
-                        shape: const CircleBorder(),
-                        showCheckmark: false,
-                        padding: const EdgeInsets.all(4),
-                      );
-                    }),
-                  ),
-                ],
-              ),
-              actions: [
-                if (schedule != null)
-                  TextButton(
-                    onPressed: () async {
-                      await NotificationService().deleteSchedule(schedule.id);
-                      if (context.mounted && Navigator.canPop(context)) {
-                        Navigator.pop(context);
-                      }
-                      _refresh();
-                    },
-                    child: Text(
-                      'Excluir',
-                      style: TextStyle(color: theme.error),
-                    ),
-                  ),
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(
-                    'Cancelar',
-                    style: TextStyle(color: theme.secondaryText),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    if (selectedDays.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: const Text(
-                            'Selecione pelo menos um dia.',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          backgroundColor: theme.error,
-                        ),
-                      );
-                      return;
-                    }
-
-                    final newSchedule = NotificationSchedule(
-                      id:
-                          schedule?.id ??
-                          DateTime.now().millisecondsSinceEpoch.toString(),
-                      hour: selectedTime.hour,
-                      minute: selectedTime.minute,
-                      title: 'Lembrete do Sentimento',
-                      body: 'Hora de registrar como você está se sentindo!',
-                      activeDays: selectedDays..sort(),
-                      isEnabled: true,
-                    );
-
-                    if (schedule == null) {
-                      await NotificationService().addSchedule(newSchedule);
-                    } else {
-                      await NotificationService().updateSchedule(newSchedule);
-                    }
-
-                    if (context.mounted && Navigator.canPop(context)) {
-                      Navigator.pop(context);
-                    }
-                    _refresh();
-                  },
-                  child: Text('Salvar', style: TextStyle(color: theme.primary)),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  final FlutterFlowTheme theme;
-  final Widget? iconWidget;
-
-  const _SectionHeader({
-    required this.title,
-    required this.theme,
-    this.iconWidget,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        if (iconWidget != null) ...[
-          iconWidget!,
-          const SizedBox(width: 8),
-        ],
-        Text(
-          title,
-          style: theme.titleMedium.override(fontWeight: FontWeight.w600),
-        ),
-      ],
-    );
-  }
-}
-
-class _SettingCard extends StatelessWidget {
-  final Widget child;
-
-  const _SettingCard({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = FlutterFlowTheme.of(context);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.secondaryBackground,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: theme.primary.withAlpha(25),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: child,
-    );
-  }
-}
-
-class _SettingRow extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final String title;
-  final String subtitle;
-  final Widget? trailing;
-  final VoidCallback? onTap;
-
-  const _SettingRow({
-    required this.icon,
-    required this.iconColor,
-    required this.title,
-    required this.subtitle,
-    this.trailing,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = FlutterFlowTheme.of(context);
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: iconColor.withAlpha(40),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(icon, color: iconColor, size: 22),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
+            const SizedBox(height: 24),
+            // Outros
+            SettingsSectionHeader(title: '⚙️ Outros'),
+            const SizedBox(height: 12),
+            SettingsCard(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: theme.bodyLarge),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: theme.labelSmall.override(
-                      color: theme.secondaryText,
-                    ),
+                  SettingsRow(
+                    icon: Icons.settings_rounded,
+                    iconColor: const Color(0xFF9E9E9E),
+                    title: 'Configurações do Sistema',
+                    subtitle: 'Abrir configurações do Android',
+                    onTap: () => AppSettings.openAppSettings(),
+                  ),
+                  const Divider(height: 1),
+                  SettingsRow(
+                    icon: Icons.developer_mode_rounded,
+                    iconColor: const Color(0xFF607D8B),
+                    title: 'Debugar Agendamentos',
+                    subtitle: 'Ver lista de próximos lembretes',
+                    onTap: () async {
+                      final pending = await NotificationService()
+                          .getPendingNotifications();
+                      if (context.mounted) {
+                        showDialog<void>(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Agendamentos Pendentes'),
+                              content: SizedBox(
+                                width: double.maxFinite,
+                                height: 300,
+                                child: pending.isEmpty
+                                    ? const Center(
+                                        child: Text(
+                                          "Nenhum agendamento pendente",
+                                        ),
+                                      )
+                                    : ListView.builder(
+                                        itemCount: pending.length,
+                                        itemBuilder: (context, index) {
+                                          final p = pending[index];
+                                          return ListTile(
+                                            title: Text(
+                                              "ID: ${p.id} - ${p.title}",
+                                            ),
+                                            subtitle: Text(
+                                              "Body: ${p.body}\nPayload: ${p.payload}",
+                                            ),
+                                          );
+                                        },
+                                      ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('Fechar'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
                   ),
                 ],
               ),
             ),
-            if (trailing != null)
-              trailing!
-            else if (onTap != null)
-              Icon(Icons.chevron_right_rounded, color: theme.secondaryText),
+            const SizedBox(height: 40),
           ],
         ),
       ),
     );
   }
-}
 
-extension ListSorted<T> on List<T> {
-  List<T> sorted([int Function(T a, T b)? compare]) {
-    final list = List<T>.from(this);
-    list.sort(compare);
-    return list;
+  String _formatTime(int hour, int minute) {
+    return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+  }
+
+  String _formatDays(List<int> days) {
+    if (days.length == 7) return 'Todos os dias';
+    if (days.isEmpty) return 'Nenhum dia';
+
+    // Map 1=Mon, 7=Sun
+    const weekDays = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+    return days.map((d) => weekDays[d - 1]).join(', ');
   }
 }

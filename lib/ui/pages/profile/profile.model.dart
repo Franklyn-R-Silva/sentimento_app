@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:image_picker/image_picker.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Project imports:
 import 'package:sentimento_app/auth/supabase_auth/auth_util.dart';

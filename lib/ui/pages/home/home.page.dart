@@ -14,7 +14,7 @@ import 'package:sentimento_app/ui/pages/home/widgets/home_empty_state.dart';
 import 'package:sentimento_app/ui/pages/home/widgets/home_header.dart';
 import 'package:sentimento_app/ui/pages/home/widgets/mood_card.dart';
 import 'package:sentimento_app/ui/pages/home/widgets/mood_streak.dart';
-import 'package:sentimento_app/ui/pages/home/widgets/weekly_chart.dart';
+import 'package:sentimento_app/ui/pages/home/widgets/daily_quote_widget.dart';
 import 'package:sentimento_app/ui/shared/widgets/gradient_card.dart';
 import 'home.model.dart';
 
@@ -102,6 +102,14 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                   .animate()
                                   .fade(duration: 400.ms)
                                   .slideY(begin: -0.2, end: 0),
+
+                              const SizedBox(height: 24),
+
+                              // Daily Quote
+                              const DailyQuoteWidget()
+                                  .animate()
+                                  .fade(delay: 50.ms)
+                                  .slideX(begin: -0.1, end: 0),
 
                               const SizedBox(height: 24),
 

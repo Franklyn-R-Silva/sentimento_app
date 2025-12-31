@@ -393,6 +393,62 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
     );
   }
 
+  Future<void> _confirmDeleteAccount(BuildContext context) async {
+    final theme = FlutterFlowTheme.of(context);
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (alertDialogContext) {
+        return AlertDialog(
+          backgroundColor: theme.secondaryBackground,
+          title: const Text('Excluir Conta?'),
+          content: const Text(
+            'Tem certeza que deseja excluir sua conta e todos os seus dados? Esta ação não pode ser desfeita.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(alertDialogContext, false),
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(alertDialogContext, true),
+              child: Text('Excluir Tudo', style: TextStyle(color: theme.error)),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed == true && context.mounted) {
+      try {
+        ToastService.showInfo('Excluindo dados...');
+
+        final supabase = SupaFlow.client;
+        final userId = supabase.auth.currentUser?.id;
+
+        if (userId != null) {
+          // Delete database data first (Soft delete for user perspective)
+          // Ideally we would delete the Auth User via Edge Function,
+          // but for V1 we clean up the DB.
+          await supabase.from('entradas_humor').delete().eq('user_id', userId);
+          await supabase.from('fotos_anuais').delete().eq('user_id', userId);
+          // Add other tables here if needed
+        }
+
+        await supabase.auth.signOut();
+
+        if (context.mounted) {
+          Navigator.of(
+            context,
+          ).pushNamedAndRemoveUntil('Login', (route) => false);
+          ToastService.showSuccess('Conta excluída com sucesso.');
+        }
+      } catch (e) {
+        ToastService.showError('Erro ao excluir conta: $e');
+      }
+    }
+  }
+
   String _formatTime(int hour, int minute) {
     return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
   }

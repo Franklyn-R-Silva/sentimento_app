@@ -6,6 +6,7 @@ import 'package:app_settings/app_settings.dart';
 
 // Project imports:
 import 'package:sentimento_app/backend/supabase.dart';
+import 'package:sentimento_app/backend/tables/entradas_humor.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/main.dart';
 import 'package:sentimento_app/services/notification_service.dart';
@@ -239,8 +240,6 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
             AppCard(
               child: Column(
                 children: [
-                  // TODO: Feature Module #2 - PDF Report
-                  // Implement functionality to generate and share a PDF report of mood history
                   AppListTile(
                     icon: Icons.picture_as_pdf_rounded,
                     iconColor: const Color(0xFFE91E63),

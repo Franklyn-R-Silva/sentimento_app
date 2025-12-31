@@ -31,6 +31,40 @@ O projeto adota o padrão **MVVM (Model-View-ViewModel) Pragmático**, estrutura
 - **Navegação**: GoRouter.
 - **Banco de Dados Local**: Shared Preferences.
 
+## 🛠️ Stack Tecnológica
+
+![Skills](https://go-skill-icons.vercel.app/api/icons?i=flutter,dart,supabase,firebase,git,github,androidstudio&theme=dark)
+
+### Core
+
+- **Flutter & Dart**: Framework e linguagem base para o desenvolvimento cross-platform.
+- **MVVM Pragmático**: Padrão de projeto focado em produtividade solo, separando View, ViewModel e Model.
+
+### Backend & Persistência
+
+- **Supabase**: Gerenciamento de banco de dados em tempo real, autenticação e armazenamento.
+- **Firebase Messaging**: Implementação de notificações push e comunicação na nuvem.
+- **Shared Preferences**: Armazenamento local de estados persistentes do app.
+- **Flutter Dotenv**: Gestão de variáveis de ambiente e segurança de chaves.
+
+### Gerenciamento de Estado e Navegação
+
+- **Provider**: Gerenciamento de estado reativo e injeção de dependência.
+- **Get It**: Localizador de serviços para desacoplamento de classes.
+- **GoRouter**: Navegação declarativa e robusta baseada em rotas.
+
+### UI & Experiência do Usuário
+
+- **FL Chart**: Gráficos estatísticos de humor e desempenho.
+- **Flutter Animate**: Adição de efeitos visuais e micro-interações fluidas.
+- **Flutter Map & Geolocator**: Integração de mapas e serviços de localização GPS.
+- **Table Calendar**: Calendário interativo para visualização do histórico emocional.
+
+### Qualidade e Testes
+
+- **Mocktail**: Criação de mocks para testes de unidade e integração sem dependência de internet.
+- **Flutter Test**: Garantia de integridade da lógica de negócio nos ViewModels.
+
 ### Estrutura de Camadas:
 
 1. **Model**: Representação imutável dos dados (ex: `lib/backend/tables`).

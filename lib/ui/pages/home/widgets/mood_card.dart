@@ -159,7 +159,9 @@ class MoodCard extends StatelessWidget {
                                     vertical: 2,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: theme.alternate.withOpacity(0.5),
+                                    color: theme.alternate.withValues(
+                                      alpha: 0.5,
+                                    ),
                                     borderRadius: BorderRadius.circular(8),
                                     border: Border.all(
                                       color: theme.alternate,

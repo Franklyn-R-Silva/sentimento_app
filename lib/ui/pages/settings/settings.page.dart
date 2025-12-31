@@ -13,6 +13,7 @@ import 'package:sentimento_app/services/notification_service.dart';
 import 'package:sentimento_app/services/pdf_service.dart';
 import 'package:sentimento_app/services/toast_service.dart';
 import 'package:sentimento_app/ui/pages/settings/settings.model.dart';
+import 'package:sentimento_app/ui/pages/settings/debug/debug_page.dart';
 import 'package:sentimento_app/ui/pages/settings/widgets/schedule_dialog.dart';
 import 'package:sentimento_app/ui/shared/widgets/app_card.dart';
 import 'package:sentimento_app/ui/shared/widgets/app_list_tile.dart';
@@ -294,16 +295,15 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                   AppListTile(
                     icon: Icons.notifications_active_rounded,
                     iconColor: const Color(0xFFFFC107),
-                    title: 'Testar Notificação Agora',
-                    subtitle: 'Disparar notificação instantânea (Debug)',
-                    onTap: () async {
-                      await NotificationService().showInstantNotification(
-                        id: 999,
-                        title: 'Teste de Notificação 🔔',
-                        body:
-                            'Se você está vendo isso, as notificações funcionam!',
+                    title: 'Área de Testes (Dev)',
+                    subtitle: 'Ferramentas de debug e testes visuais',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const DebugPage(),
+                        ),
                       );
-                      ToastService.showSuccess('Notificação enviada!');
                     },
                   ),
                   const Divider(height: 1),

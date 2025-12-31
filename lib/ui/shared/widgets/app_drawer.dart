@@ -173,7 +173,7 @@ class AppDrawer extends StatelessWidget {
                     color: const Color(0xFF607D8B),
                     onTap: () {
                       Navigator.pop(context);
-                      Navigator.pushNamed(context, '/settings');
+                      context.pushNamed('Settings');
                     },
                   ),
                 ],

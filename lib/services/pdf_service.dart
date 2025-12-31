@@ -13,11 +13,11 @@ class PdfService {
 
     // Map mood score to text/emoji (simplified)
     String getMoodLabel(int score) {
-      if (score >= 4) return 'Muito Bem 😄';
-      if (score == 3) return 'Bem 🙂';
-      if (score == 2) return 'Neutro 😐';
-      if (score == 1) return 'Mal 😔';
-      return 'Muito Mal 😢';
+      if (score >= 4) return 'Muito Bem';
+      if (score == 3) return 'Bem';
+      if (score == 2) return 'Neutro';
+      if (score == 1) return 'Mal';
+      return 'Muito Mal';
     }
 
     pdf.addPage(
@@ -47,7 +47,7 @@ class PdfService {
                 ),
                 pw.SizedBox(height: 10),
                 pw.Text(
-                  'Humor: ${getMoodLabel(moodScore)}',
+                  'Humor: ${getMoodLabel(moodScore)} ($moodScore/5)',
                   style: const pw.TextStyle(fontSize: 18),
                 ),
 
@@ -159,15 +159,15 @@ class PdfService {
               final note = (entry.notaTexto ?? '').replaceAll('\n', ' ');
               String moodLabel = '';
               if (entry.nota >= 4) {
-                moodLabel = '😄';
+                moodLabel = 'Muito Bem';
               } else if (entry.nota == 3) {
-                moodLabel = '🙂';
+                moodLabel = 'Bem';
               } else if (entry.nota == 2) {
-                moodLabel = '😐';
+                moodLabel = 'Neutro';
               } else if (entry.nota == 1) {
-                moodLabel = '😔';
+                moodLabel = 'Mal';
               } else {
-                moodLabel = '😢';
+                moodLabel = 'Muito Mal';
               }
 
               return [

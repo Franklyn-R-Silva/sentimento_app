@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:auto_size_text/auto_size_text.dart';
 
 // Project imports:
 import 'package:sentimento_app/core/theme.dart';
@@ -29,17 +28,15 @@ class GoalsEmptyState extends StatelessWidget {
               child: const Text('🎯', style: TextStyle(fontSize: 48)),
             ),
             const SizedBox(height: 24),
-            AutoSizeText(
+            Text(
               'Nenhuma meta ainda',
               style: theme.titleMedium.override(fontWeight: FontWeight.w600),
-              minFontSize: 14,
             ),
             const SizedBox(height: 8),
-            AutoSizeText(
+            Text(
               'Crie sua primeira meta e comece\na acompanhar seu progresso!',
               textAlign: TextAlign.center,
               style: theme.bodyMedium.override(color: theme.secondaryText),
-              minFontSize: 10,
             ),
           ],
         ),

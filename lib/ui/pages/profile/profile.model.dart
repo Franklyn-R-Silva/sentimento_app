@@ -198,4 +198,12 @@ class ProfileModel extends BaseModel {
       ToastService.showSuccess('Senha alterada com sucesso!');
     });
   }
+
+  Future<void> deleteAccount(BuildContext context) async {
+    await runSafe(() async {
+      await authManager.deleteUser(context);
+      // Ensure we clear local state and navigate out
+      await authManager.signOut();
+    });
+  }
 }

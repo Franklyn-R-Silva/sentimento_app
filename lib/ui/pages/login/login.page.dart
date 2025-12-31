@@ -194,6 +194,38 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                 !model.passwordVisibility,
                           ),
 
+                          if (!model.isCreateAccount)
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: TextButton(
+                                onPressed: () async {
+                                  if (model
+                                      .emailAddressController!
+                                      .text
+                                      .isEmpty) {
+                                    ToastService.showWarning(
+                                      'Informe seu email primeiro',
+                                    );
+                                    return;
+                                  }
+                                  final success = await model.resetPassword();
+                                  if (success) {
+                                    ToastService.showSuccess(
+                                      'Email de recuperação enviado!',
+                                    );
+                                  }
+                                },
+                                child: Text(
+                                  'Esqueci minha senha',
+                                  style: theme.bodyMedium.override(
+                                    color: theme.primary,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+
                           const SizedBox(height: 24),
 
                           SizedBox(

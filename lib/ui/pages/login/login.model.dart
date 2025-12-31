@@ -140,4 +140,20 @@ class LoginModel extends BaseModel {
     });
     return success;
   }
+
+  Future<bool> resetPassword() async {
+    bool success = false;
+    await runSafe(() async {
+      if (emailAddressController!.text.isEmpty) {
+        throw ValidationException('Informe seu email para recuperar a senha');
+      }
+
+      await authManager.resetPassword(
+        email: emailAddressController!.text,
+        context: context,
+      );
+      success = true;
+    });
+    return success;
+  }
 }

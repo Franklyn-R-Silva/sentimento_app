@@ -3,39 +3,60 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Project imports:
 import 'package:sentimento_app/backend/tables/entradas_humor.dart';
+import 'package:sentimento_app/backend/supabase.dart';
 import 'package:sentimento_app/core/theme.dart';
 
-class HomeHeader extends StatelessWidget {
+class HomeHeader extends StatefulWidget {
   final List<EntradasHumorRow> recentEntries;
 
   const HomeHeader({super.key, required this.recentEntries});
+
+  @override
+  State<HomeHeader> createState() => _HomeHeaderState();
+}
+
+class _HomeHeaderState extends State<HomeHeader> {
+  String? _avatarUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null) return;
+
+    try {
+      final data = await SupaFlow.client
+          .from('app_profiles')
+          .select('avatar_url')
+          .eq('id', user.id)
+          .maybeSingle();
+
+      if (mounted && data != null && data['avatar_url'] != null) {
+        setState(() {
+          _avatarUrl = data['avatar_url'] as String;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading home header profile: $e');
+    }
+  }
 
   String _getGreeting() {
     final hour = DateTime.now().hour;
     if (hour < 12) return 'Bom dia';
     if (hour < 18) return 'Boa tarde';
     return 'Boa noite';
-  }
-
-  String _getEmojiForMood(int mood) {
-    switch (mood) {
-      case 1:
-        return '😢';
-      case 2:
-        return '😟';
-      case 3:
-        return '😐';
-      case 4:
-        return '🙂';
-      case 5:
-        return '😄';
-      default:
-        return '😐';
-    }
   }
 
   @override
@@ -62,7 +83,6 @@ class HomeHeader extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    // Greeting Hand Animation could go here
                     const Text('👋', style: TextStyle(fontSize: 24)),
                   ],
                 ),
@@ -92,43 +112,57 @@ class HomeHeader extends StatelessWidget {
             ),
           ),
           // User Avatar / Profile Button
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: theme.secondaryBackground,
-              boxShadow: [
-                BoxShadow(
-                  color: theme.primaryText.withValues(alpha: 0.1),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-              border: Border.all(color: theme.primaryBackground, width: 2),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(24),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    // Navigate to profile or settings
-                    // Navigator.pushNamed(context, '/settings');
-                    // For now, simple feedback
-                  },
-                  child: Center(
-                    child: Icon(
-                      Icons.person_outline_rounded,
-                      color: theme.primaryText,
-                      size: 24,
-                    ),
+          GestureDetector(
+            onTap: () {
+              context.pushNamed('Profile');
+            },
+            child: Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: theme.secondaryBackground,
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.primaryText.withValues(alpha: 0.1),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
                   ),
-                ),
+                ],
+                border: Border.all(color: theme.primaryBackground, width: 2),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(25),
+                child: (_avatarUrl != null && _avatarUrl!.isNotEmpty)
+                    ? CachedNetworkImage(
+                        imageUrl: _avatarUrl!,
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: theme.primary,
+                          ),
+                        ),
+                        errorWidget: (context, url, error) =>
+                            _buildFallbackAvatar(theme),
+                      )
+                    : _buildFallbackAvatar(theme),
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildFallbackAvatar(FlutterFlowTheme theme) {
+    return Center(
+      child: Icon(
+        Icons.person_outline_rounded,
+        color: theme.primaryText,
+        size: 24,
       ),
     );
   }

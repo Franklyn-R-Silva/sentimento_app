@@ -9,6 +9,7 @@ import 'package:sentimento_app/backend/services/data_refresh_service.dart';
 import 'package:sentimento_app/core/model.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'stats.model.dart';
+import 'widgets/dynamic_chart.dart';
 import 'widgets/stats_distribution_chart.dart';
 import 'widgets/stats_mood_breakdown.dart';
 import 'widgets/stats_overview.dart';
@@ -63,7 +64,7 @@ class _StatsPageWidgetState extends State<StatsPageWidget> {
               backgroundColor: Colors.transparent,
               elevation: 0,
               title: Text(
-                'Estatísticas',
+                'Minha Evolução',
                 style: theme.headlineMedium.override(color: theme.primaryText),
               ),
               centerTitle: false,
@@ -75,6 +76,59 @@ class _StatsPageWidgetState extends State<StatsPageWidget> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Period Selector
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: theme.secondaryBackground,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: theme.alternate.withValues(alpha: 0.5),
+                            ),
+                          ),
+                          padding: const EdgeInsets.all(4),
+                          child: Row(
+                            children: [
+                              _buildPeriodButton(
+                                context,
+                                'Dia',
+                                StatsPeriod.daily,
+                                model,
+                              ),
+                              _buildPeriodButton(
+                                context,
+                                'Semana',
+                                StatsPeriod.weekly,
+                                model,
+                              ),
+                              _buildPeriodButton(
+                                context,
+                                'Mês',
+                                StatsPeriod.monthly,
+                                model,
+                              ),
+                              _buildPeriodButton(
+                                context,
+                                'Ano',
+                                StatsPeriod.annual,
+                                model,
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(height: 24),
+
+                        // Dynamic Chart
+                        Text('Evolução do Humor', style: theme.titleMedium),
+                        const SizedBox(height: 12),
+                        DynamicChart(
+                          entries: model.getFilteredEntries(),
+                          period: model.selectedPeriod,
+                        ),
+
+                        const SizedBox(height: 32),
+
                         // Overview cards
                         StatsOverview(
                           averageMood: model.averageMood,
@@ -84,7 +138,7 @@ class _StatsPageWidgetState extends State<StatsPageWidget> {
 
                         const SizedBox(height: 24),
 
-                        // Mood average indicator
+                        // Mood average breakdown
                         StatsMoodBreakdown(
                           averageMood: model.averageMood,
                           totalEntries: model.totalEntries,
@@ -96,11 +150,45 @@ class _StatsPageWidgetState extends State<StatsPageWidget> {
                         StatsDistributionChart(
                           moodDistribution: model.moodDistribution,
                         ),
+
+                        const SizedBox(height: 40),
                       ],
                     ),
                   ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildPeriodButton(
+    BuildContext context,
+    String label,
+    StatsPeriod period,
+    StatsModel model,
+  ) {
+    final theme = FlutterFlowTheme.of(context);
+    final isSelected = model.selectedPeriod == period;
+
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => model.selectedPeriod = period,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          decoration: BoxDecoration(
+            color: isSelected ? theme.primary : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            label,
+            style: theme.bodyMedium.override(
+              color: isSelected ? Colors.white : theme.secondaryText,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+            ),
+          ),
+        ),
       ),
     );
   }

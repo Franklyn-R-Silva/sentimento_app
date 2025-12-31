@@ -36,62 +36,90 @@ class AppDrawer extends StatelessWidget {
             // Header acolhedor
             DrawerHeaderWidget(userName: userName, theme: theme),
 
-            const SizedBox(height: 8),
-
-            // Mensagem de apoio do dia
-            DailyMessage(theme: theme),
-
             const SizedBox(height: 16),
 
-            // Navegação principal
+            // Shortcuts Grid (Main Features)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Acesso Rápido',
+                    style: theme.labelMedium.override(
+                      color: theme.secondaryText,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      _buildShortcut(
+                        context,
+                        theme,
+                        icon: Icons.home_rounded,
+                        label: 'Início',
+                        color: theme.primary,
+                        onTap: () {
+                          Navigator.pop(context);
+                          context.goNamed('Main');
+                        },
+                      ),
+                      const SizedBox(width: 12),
+                      _buildShortcut(
+                        context,
+                        theme,
+                        icon: Icons.bar_chart_rounded,
+                        label: 'Evolução',
+                        color: const Color(0xFF2196F3),
+                        onTap: () {
+                          Navigator.pop(context);
+                          context.pushNamed('Stats');
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      _buildShortcut(
+                        context,
+                        theme,
+                        icon: Icons.book_rounded,
+                        label: 'Diário',
+                        color: const Color(0xFF4CAF50),
+                        onTap: () {
+                          Navigator.pop(context);
+                          context.pushNamed('Journal');
+                        },
+                      ),
+                      const SizedBox(width: 12),
+                      _buildShortcut(
+                        context,
+                        theme,
+                        icon: Icons.camera_alt_rounded,
+                        label: 'Fotos',
+                        color: const Color(0xFFFF9800),
+                        onTap: () {
+                          Navigator.pop(context);
+                          context.pushNamed('FotosAnuais');
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 24),
+            const Divider(height: 1),
+            const SizedBox(height: 16),
+
+            // Secondary Navigation
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 children: [
-                  DrawerNavSection(title: 'Sua Jornada', theme: theme),
-                  DrawerNavItem(
-                    icon: Icons.home_rounded,
-                    label: 'Início',
-                    subtitle: 'Seu espaço seguro',
-                    color: theme.primary,
-                    onTap: () {
-                      Navigator.pop(context);
-                      context.goNamed('Main');
-                    },
-                  ),
-                  DrawerNavItem(
-                    icon: Icons.book_rounded,
-                    label: 'Meu Diário',
-                    subtitle: 'Suas memórias e sentimentos',
-                    color: const Color(0xFF4CAF50),
-                    onTap: () {
-                      Navigator.pop(context);
-                      context.pushNamed('Journal');
-                    },
-                  ),
-                  DrawerNavItem(
-                    icon: Icons.bar_chart_rounded,
-                    label: 'Minha Evolução',
-                    subtitle: 'Veja seu progresso',
-                    color: const Color(0xFF2196F3),
-                    onTap: () {
-                      Navigator.pop(context);
-                      context.pushNamed('Stats');
-                    },
-                  ),
-                  DrawerNavItem(
-                    icon: Icons.camera_alt_rounded,
-                    label: 'Fotos 365 Dias',
-                    subtitle: 'Uma foto por dia',
-                    color: const Color(0xFFFF9800),
-                    onTap: () {
-                      Navigator.pop(context);
-                      context.pushNamed('FotosAnuais');
-                    },
-                  ),
-
-                  const SizedBox(height: 16),
-
                   DrawerNavSection(title: 'Cuidado Pessoal', theme: theme),
                   DrawerNavItem(
                     icon: Icons.spa_rounded,
@@ -129,16 +157,6 @@ class AppDrawer extends StatelessWidget {
 
                   DrawerNavSection(title: 'Configurações', theme: theme),
                   DrawerNavItem(
-                    icon: Icons.settings_rounded,
-                    label: 'Configurações',
-                    subtitle: 'Tema, notificações e mais',
-                    color: const Color(0xFF607D8B),
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, '/settings');
-                    },
-                  ),
-                  DrawerNavItem(
                     icon: Icons.person_rounded,
                     label: 'Meu Perfil',
                     subtitle: 'Suas informações',
@@ -146,6 +164,16 @@ class AppDrawer extends StatelessWidget {
                     onTap: () {
                       Navigator.pop(context);
                       context.pushNamed('Profile');
+                    },
+                  ),
+                  DrawerNavItem(
+                    icon: Icons.settings_rounded,
+                    label: 'Configurações',
+                    subtitle: 'Tema e preferências',
+                    color: const Color(0xFF607D8B),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, '/settings');
                     },
                   ),
                 ],
@@ -158,6 +186,53 @@ class AppDrawer extends StatelessWidget {
               child: DrawerLogoutButton(theme: theme),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShortcut(
+    BuildContext context,
+    FlutterFlowTheme theme, {
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: theme.secondaryBackground,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: theme.alternate.withValues(alpha: 0.5)),
+            boxShadow: [
+              BoxShadow(
+                color: theme.primary.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(icon, color: color, size: 20),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                label,
+                style: theme.bodyMedium.override(fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
         ),
       ),
     );

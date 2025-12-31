@@ -30,6 +30,15 @@ class StatsModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     notifyListeners();
   }
 
+  StatsPeriod _selectedPeriod = StatsPeriod.weekly;
+  StatsPeriod get selectedPeriod => _selectedPeriod;
+  set selectedPeriod(StatsPeriod value) {
+    _selectedPeriod = value;
+    _recalculateStats();
+  }
+
+  List<EntradasHumorRow> _allEntries = [];
+
   @override
   void initState(BuildContext context) {}
 
@@ -51,47 +60,119 @@ class StatsModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       }
 
       // Fetch all entries for the user
-      final entries = await EntradasHumorTable().queryRows(
+      _allEntries = await EntradasHumorTable().queryRows(
         queryFn: (q) =>
             q.eq('user_id', userId).order('criado_em', ascending: true),
       );
 
-      if (entries.isEmpty) {
-        _averageMood = 0;
-        _totalEntries = 0;
-        _currentStreak = 0;
-        _longestStreak = 0;
-        _moodDistribution = {};
-        notifyListeners();
-        return;
-      }
-
-      // Calculate total entries
-      _totalEntries = entries.length;
-
-      // Calculate average mood
-      if (entries.isNotEmpty) {
-        _averageMood =
-            entries.map((e) => e.nota).reduce((a, b) => a + b) / entries.length;
-      }
-
-      // Calculate mood distribution
-      _moodDistribution = {};
-      for (final entry in entries) {
-        final mood = entry.nota;
-        _moodDistribution[mood] = (_moodDistribution[mood] ?? 0) + 1;
-      }
-
-      // Calculate streaks
-      final streaks = calculateStreaks(entries);
-      _currentStreak = streaks['current'] ?? 0;
-      _longestStreak = streaks['longest'] ?? 0;
-
-      notifyListeners();
+      _recalculateStats();
     } catch (e) {
       debugPrint('Error loading stats: $e');
     } finally {
       isLoading = false;
+    }
+  }
+
+  void _recalculateStats() {
+    // 1. Filter entries based on selected period
+    final now = DateTime.now();
+    List<EntradasHumorRow> filteredEntries;
+
+    switch (_selectedPeriod) {
+      case StatsPeriod.daily:
+        filteredEntries = _allEntries.where((e) {
+          return e.criadoEm.year == now.year &&
+              e.criadoEm.month == now.month &&
+              e.criadoEm.day == now.day;
+        }).toList();
+        break;
+      case StatsPeriod.weekly:
+        // Last 7 days including today
+        final startOfWeek = now.subtract(const Duration(days: 6));
+        final startOfDay = DateTime(
+          startOfWeek.year,
+          startOfWeek.month,
+          startOfWeek.day,
+        );
+        filteredEntries = _allEntries.where((e) {
+          return e.criadoEm.isAfter(startOfDay) ||
+              e.criadoEm.isAtSameMomentAs(startOfDay);
+        }).toList();
+        break;
+      case StatsPeriod.monthly:
+        filteredEntries = _allEntries.where((e) {
+          return e.criadoEm.year == now.year && e.criadoEm.month == now.month;
+        }).toList();
+        break;
+      case StatsPeriod.annual:
+        filteredEntries = _allEntries.where((e) {
+          return e.criadoEm.year == now.year;
+        }).toList();
+        break;
+    }
+
+    if (filteredEntries.isEmpty) {
+      _averageMood = 0;
+      _totalEntries = 0;
+      // Streak uses all entries, so we don't reset it here usually,
+      // but for "period stats" maybe it makes sense to show period specific data?
+      // Let's keep streak as global (all time) as it's more standard.
+      // actually, streaks are global.
+      _moodDistribution = {};
+    } else {
+      _totalEntries = filteredEntries.length;
+      _averageMood =
+          filteredEntries.map((e) => e.nota).reduce((a, b) => a + b) /
+          filteredEntries.length;
+
+      _moodDistribution = {};
+      for (final entry in filteredEntries) {
+        final mood = entry.nota;
+        _moodDistribution[mood] = (_moodDistribution[mood] ?? 0) + 1;
+      }
+    }
+
+    // Streaks are always calculated on ALL data for accuracy?
+    // User asked for stats per period. But "Current Streak" implies "up to today".
+    // "Total entries" should definitely be filtered.
+    // "Average mood" should definitely be filtered.
+    // Let's calculate streaks globally as that's the standard definition.
+    final streaks = calculateStreaks(_allEntries);
+    _currentStreak = streaks['current'] ?? 0;
+    _longestStreak = streaks['longest'] ?? 0;
+
+    notifyListeners();
+  }
+
+  // Helper to get entries for charts (public access if needed by widgets)
+  List<EntradasHumorRow> getFilteredEntries() {
+    final now = DateTime.now();
+    switch (_selectedPeriod) {
+      case StatsPeriod.daily:
+        return _allEntries.where((e) {
+          return e.criadoEm.year == now.year &&
+              e.criadoEm.month == now.month &&
+              e.criadoEm.day == now.day;
+        }).toList();
+      case StatsPeriod.weekly:
+        final startOfWeek = now.subtract(const Duration(days: 6));
+        final startOfDay = DateTime(
+          startOfWeek.year,
+          startOfWeek.month,
+          startOfWeek.day,
+        );
+        return _allEntries.where((e) {
+          return e.criadoEm.isAfter(startOfDay) ||
+              e.criadoEm.isAtSameMomentAs(startOfDay);
+        }).toList();
+      case StatsPeriod.monthly:
+        return _allEntries.where((e) {
+          return e.criadoEm.year == now.year && e.criadoEm.month == now.month;
+        }).toList();
+      case StatsPeriod.annual:
+        return _allEntries.where((e) {
+          return e.criadoEm.year == now.year;
+        }).toList();
     }
   }
 
@@ -141,3 +222,5 @@ class StatsModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     return {'current': currentStreak, 'longest': longestStreak};
   }
 }
+
+enum StatsPeriod { daily, weekly, monthly, annual }

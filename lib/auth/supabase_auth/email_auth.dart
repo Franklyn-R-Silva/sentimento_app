@@ -20,9 +20,5 @@ Future<User?> emailCreateAccountFunc(
     data: data,
   );
 
-  // If the Supabase project is configured to not let users sign in until the
-  // email has been confirmed, the user returned in the AuthResponse still has
-  // all the user info. But since the user shouldn't be able to sign in without
-  // their email verified, return a null User.
-  return res.user?.lastSignInAt == null ? null : res.user;
+  return res.user;
 }

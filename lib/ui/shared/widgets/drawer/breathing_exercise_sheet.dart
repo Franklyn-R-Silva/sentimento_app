@@ -7,6 +7,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 // Project imports:
 import 'package:sentimento_app/core/theme.dart';
 
+// TODO: Feature Module #3 - Enhancements
+// [ ] Add background sounds (Rain, Forest, White Noise) using audioplayers
+// [ ] Implement "Panic Button" for immediate Grounding Technique (5-4-3-2-1 method)
+// [ ] Allow customizable breathing patterns (4-7-8, Box Breathing)
+
 class BreathingExerciseSheet extends StatefulWidget {
   final FlutterFlowTheme theme;
 

@@ -231,6 +231,31 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
             ],
 
             const SizedBox(height: 24),
+            // Dados e Privacidade
+            const AppSectionHeader(title: '🔒 Dados'),
+            const SizedBox(height: 12),
+            AppCard(
+              child: Column(
+                children: [
+                  // TODO: Feature Module #2 - PDF Report
+                  // Implement functionality to generate and share a PDF report of mood history
+                  AppListTile(
+                    icon: Icons.picture_as_pdf_rounded,
+                    iconColor: const Color(0xFFE91E63),
+                    title: 'Exportar Relatório',
+                    subtitle: 'Gerar PDF para terapeuta (Em Breve)',
+                    onTap: () {
+                      ToastService.showInfo(
+                        'Funcionalidade em desenvolvimento',
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
             // Outros
             const AppSectionHeader(title: '⚙️ Outros'),
             const SizedBox(height: 12),

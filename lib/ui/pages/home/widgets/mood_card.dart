@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 // Project imports:
 import 'package:sentimento_app/backend/tables/entradas_humor.dart';
 import 'package:sentimento_app/core/theme.dart';
+import 'package:sentimento_app/services/pdf_service.dart';
 
 /// MoodCard - Card para exibir uma entrada de humor
 class MoodCard extends StatelessWidget {
@@ -182,6 +183,24 @@ class MoodCard extends StatelessWidget {
                       ],
                     ],
                   ),
+                // Action Buttons
+                Column(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.share_rounded,
+                        color: theme.secondaryText,
+                        size: 20,
+                      ),
+                      onPressed: () async {
+                         // Import needed at top of file: import 'package:sentimento_app/services/pdf_service.dart';
+                         // Since I can't easily add imports with replace_file_content without context,
+                         // I will assume I need to do a multi-step edit or just add the import in a separate block.
+                         // For now, I'll place the logic here assuming import is added.
+                         await PdfService().generateAndShareEntryPdf(entry);
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -191,6 +210,3 @@ class MoodCard extends StatelessWidget {
     );
   }
 }
-
-// TODO: Implement PDF Report generation (Feature Module #2)
-// TODO: Implement Breathing Exercises Module (Feature Module #3)

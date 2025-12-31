@@ -6,6 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Project imports:
 import 'package:sentimento_app/auth/supabase_auth/auth_util.dart';
@@ -91,6 +92,100 @@ class MyAppState extends State<MyApp> {
       const Duration(seconds: 1),
       () => _appStateNotifier.stopShowingSplashImage(),
     );
+
+    // Check first run for permissions
+    _checkFirstRunPermissions();
+  }
+
+  /// Check if this is first run and show permission dialog
+  Future<void> _checkFirstRunPermissions() async {
+    final prefs = await SharedPreferences.getInstance();
+    final hasSeenPermissions = prefs.getBool('has_seen_permissions') ?? false;
+
+    if (!hasSeenPermissions && mounted) {
+      // Wait for navigation to complete
+      await Future<void>.delayed(const Duration(seconds: 2));
+      if (mounted) {
+        _showPermissionDialog();
+      }
+    }
+  }
+
+  /// Show first-run permission dialog
+  void _showPermissionDialog() {
+    final theme = FlutterFlowTheme.of(context);
+
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: theme.primary.withAlpha(40),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(Icons.notifications_active, color: theme.primary),
+            ),
+            const SizedBox(width: 12),
+            const Text('Permissões'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Para uma melhor experiência, precisamos de algumas permissões:',
+              style: theme.bodyMedium,
+            ),
+            const SizedBox(height: 16),
+            _PermissionItem(
+              icon: Icons.notifications_rounded,
+              title: 'Notificações',
+              description: 'Lembretes diários sobre humor e metas',
+            ),
+            const SizedBox(height: 12),
+            _PermissionItem(
+              icon: Icons.schedule_rounded,
+              title: 'Alarmes',
+              description: 'Agendamento de lembretes',
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.setBool('has_seen_permissions', true);
+              if (context.mounted) Navigator.pop(context);
+            },
+            child: Text('Depois', style: TextStyle(color: theme.secondaryText)),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.setBool('has_seen_permissions', true);
+              if (context.mounted) Navigator.pop(context);
+              // Permissions are already requested by NotificationService.initialize()
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: theme.primary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: const Text(
+              'Permitir',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void setThemeMode(ThemeMode mode) => setState(() {
@@ -115,6 +210,53 @@ class MyAppState extends State<MyApp> {
       darkTheme: ThemeData(brightness: Brightness.dark),
       themeMode: _themeMode,
       routerConfig: _router,
+    );
+  }
+}
+
+/// Permission item widget for the first-run dialog
+class _PermissionItem extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String description;
+
+  const _PermissionItem({
+    required this.icon,
+    required this.title,
+    required this.description,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FlutterFlowTheme.of(context);
+
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: theme.primary.withAlpha(25),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, color: theme.primary, size: 20),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: theme.bodyMedium.override(fontWeight: FontWeight.w600),
+              ),
+              Text(
+                description,
+                style: theme.labelSmall.override(color: theme.secondaryText),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

@@ -9,6 +9,7 @@ environment:
   sdk: ^3.10.3
 
 dependencies:
+  app_settings: ^7.0.0
   auto_size_text: ^3.0.0
   cached_network_image: ^3.4.1
   collection: ^1.17.2

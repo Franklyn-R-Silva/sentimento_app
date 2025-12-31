@@ -1,9 +1,13 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:app_settings/app_settings.dart';
+
 // Project imports:
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/main.dart';
+import 'package:sentimento_app/services/notification_service.dart';
 
 /// SettingsPageWidget - Página de configurações dedicada
 class SettingsPageWidget extends StatefulWidget {
@@ -115,8 +119,12 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                     subtitle: 'Receber lembretes e dicas',
                     trailing: Switch.adaptive(
                       value: _notificationsEnabled,
-                      onChanged: (value) =>
-                          setState(() => _notificationsEnabled = value),
+                      onChanged: (value) async {
+                        setState(() => _notificationsEnabled = value);
+                        await NotificationService().setNotificationsEnabled(
+                          value,
+                        );
+                      },
                       activeTrackColor: theme.primary,
                       inactiveTrackColor: theme.alternate,
                     ),
@@ -273,6 +281,60 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                           ],
                         ),
                       );
+                    },
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Permissões
+            _SectionHeader(title: '⚙️ Permissões', theme: theme),
+            const SizedBox(height: 12),
+
+            _SettingCard(
+              child: Column(
+                children: [
+                  _SettingRow(
+                    icon: Icons.notifications_active_rounded,
+                    iconColor: const Color(0xFF4CAF50),
+                    title: 'Permissão de Notificações',
+                    subtitle: 'Gerenciar nas configurações do sistema',
+                    onTap: () => AppSettings.openAppSettings(
+                      type: AppSettingsType.notification,
+                    ),
+                  ),
+                  Divider(color: theme.alternate, height: 1),
+                  _SettingRow(
+                    icon: Icons.settings_rounded,
+                    iconColor: const Color(0xFF607D8B),
+                    title: 'Configurações do App',
+                    subtitle: 'Abrir configurações do sistema',
+                    onTap: () => AppSettings.openAppSettings(),
+                  ),
+                  Divider(color: theme.alternate, height: 1),
+                  _SettingRow(
+                    icon: Icons.bug_report_rounded,
+                    iconColor: const Color(0xFFFF9800),
+                    title: 'Testar Notificação',
+                    subtitle: 'Enviar uma notificação de teste',
+                    onTap: () async {
+                      await NotificationService().sendTestNotification();
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: const Text(
+                              'Notificação de teste enviada!',
+                            ),
+                            backgroundColor: theme.success,
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        );
+                      }
                     },
                   ),
                 ],

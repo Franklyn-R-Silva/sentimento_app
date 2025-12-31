@@ -64,7 +64,7 @@ class _BreathingExerciseSheetState extends State<BreathingExerciseSheet>
     });
 
     if (_isRunning) {
-      _controller.forward();
+      await _controller.forward();
       if (_selectedSound != 'silence') {
         await _audioPlayer.play(AssetSource('sounds/$_selectedSound.mp3'));
         await _audioPlayer.setReleaseMode(ReleaseMode.loop);

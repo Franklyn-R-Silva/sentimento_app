@@ -152,22 +152,23 @@ class PdfService {
             style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold),
           ),
           pw.SizedBox(height: 10),
-          pw.Table.fromTextArray(
+          pw.TableHelper.fromTextArray(
             headers: ['Data', 'Humor', 'Tags', 'Nota'],
             data: entries.map((entry) {
               final date = DateFormat('dd/MM HH:mm').format(entry.criadoEm);
               final note = (entry.notaTexto ?? '').replaceAll('\n', ' ');
               String moodLabel = '';
-              if (entry.nota >= 4)
+              if (entry.nota >= 4) {
                 moodLabel = '😄';
-              else if (entry.nota == 3)
+              } else if (entry.nota == 3) {
                 moodLabel = '🙂';
-              else if (entry.nota == 2)
+              } else if (entry.nota == 2) {
                 moodLabel = '😐';
-              else if (entry.nota == 1)
+              } else if (entry.nota == 1) {
                 moodLabel = '😔';
-              else
+              } else {
                 moodLabel = '😢';
+              }
 
               return [
                 date,

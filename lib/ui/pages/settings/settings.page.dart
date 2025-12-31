@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:app_settings/app_settings.dart';
 
 // Project imports:
+import 'package:sentimento_app/backend/supabase.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/main.dart';
 import 'package:sentimento_app/services/notification_service.dart';
+import 'package:sentimento_app/services/pdf_service.dart';
 import 'package:sentimento_app/services/toast_service.dart';
 import 'package:sentimento_app/ui/pages/settings/settings.model.dart';
 import 'package:sentimento_app/ui/pages/settings/widgets/schedule_dialog.dart';

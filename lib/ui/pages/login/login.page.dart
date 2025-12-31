@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -124,22 +125,24 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                           const SizedBox(height: 32),
 
                           // App name
-                          Text(
+                          AutoSizeText(
                             'Sentimento',
                             style: theme.displaySmall.override(
                               fontFamily: 'Inter Tight',
                               color: theme.primary,
                               fontWeight: FontWeight.bold,
                             ),
+                            minFontSize: 24,
                           ),
 
                           const SizedBox(height: 8),
 
-                          Text(
+                          AutoSizeText(
                             'Acompanhe seu humor diariamente',
                             style: theme.bodyMedium.override(
                               color: theme.secondaryText,
                             ),
+                            minFontSize: 10,
                           ),
 
                           const SizedBox(height: 48),
@@ -232,7 +235,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                             ),
                                       ),
                                     )
-                                  : Text(
+                                  : AutoSizeText(
                                       model.isCreateAccount
                                           ? 'Criar Conta'
                                           : 'Entrar',
@@ -240,6 +243,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                         color: Colors.white,
                                         fontWeight: FontWeight.w600,
                                       ),
+                                      minFontSize: 12,
                                     ),
                             ),
                           ),
@@ -294,11 +298,12 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 16,
                                 ),
-                                child: Text(
+                                child: AutoSizeText(
                                   'ou continue com',
                                   style: theme.labelSmall.override(
                                     color: theme.secondaryText,
                                   ),
+                                  minFontSize: 9,
                                 ),
                               ),
                               Expanded(child: Divider(color: theme.alternate)),
@@ -439,7 +444,7 @@ class _SocialButton extends StatelessWidget {
           children: [
             Icon(icon, color: theme.primaryText, size: 24),
             const SizedBox(width: 8),
-            Text(label, style: theme.labelMedium),
+            AutoSizeText(label, style: theme.labelMedium, minFontSize: 10),
           ],
         ),
       ),

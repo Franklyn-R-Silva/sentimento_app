@@ -37,6 +37,7 @@ dependencies:
   latlong2: 0.9.1
   logger: ^2.0.1
   page_transition: ^2.2.1
+  printing: ^5.14.2
   provider: ^6.1.5+1
   rxdart: ^0.27.7
   shared_preferences: ^2.2.0
@@ -45,6 +46,10 @@ dependencies:
   timeago: ^3.7.1
   timezone: ^0.10.0
   url_launcher: ^6.1.11
+  pdf: ^3.10.0
+  printing: ^5.11.0
+  share_plus: ^7.0.0
+  audioplayers: ^5.0.0
   whatsapp_unilink: ^2.1.0
 
 dev_dependencies:

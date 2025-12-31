@@ -85,7 +85,6 @@ class MoodCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 16),
                 // Content
-                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -114,42 +113,60 @@ class MoodCard extends StatelessWidget {
                           ),
                         ],
                       ),
+
+                      // Note with Icon
                       if (entry.notaTexto != null &&
                           entry.notaTexto!.isNotEmpty) ...[
                         const SizedBox(height: 8),
-                        AutoSizeText(
-                          entry.notaTexto!,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.bodySmall.override(
-                            color: theme.secondaryText,
-                          ),
-                          minFontSize: 10,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(Icons.notes, size: 14, color: theme.secondaryText),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: AutoSizeText(
+                                entry.notaTexto!,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.bodySmall.override(
+                                  color: theme.secondaryText,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                                minFontSize: 10,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
+
+                      // Tags
                       if (entry.tags.isNotEmpty) ...[
                         const SizedBox(height: 8),
                         Wrap(
-                          spacing: 6,
+                          spacing: 4, // Tighter spacing
                           runSpacing: 4,
                           children: entry.tags
-                              .take(3)
+                              .take(4) // Show 4 tags
                               .map(
                                 (tag) => Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 8,
-                                    vertical: 4,
+                                    vertical: 2,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: theme.primary.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(12),
+                                    color: theme.alternate.withOpacity(0.5),
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: theme.alternate,
+                                      width: 0.5,
+                                    ),
                                   ),
-                                  child: AutoSizeText(
+                                  child: Text(
                                     '#$tag',
                                     style: theme.labelSmall.override(
-                                      color: theme.primary,
+                                      color: theme.secondaryText,
+                                      fontSize: 10,
                                     ),
-                                    minFontSize: 8,
                                   ),
                                 ),
                               )
@@ -167,3 +184,6 @@ class MoodCard extends StatelessWidget {
     );
   }
 }
+
+// TODO: Implement PDF Report generation (Feature Module #2)
+// TODO: Implement Breathing Exercises Module (Feature Module #3)

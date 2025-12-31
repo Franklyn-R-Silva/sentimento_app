@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:cached_network_image/cached_network_image.dart';
 
 // Project imports:
 import 'package:sentimento_app/backend/tables/fotos_anuais.dart';

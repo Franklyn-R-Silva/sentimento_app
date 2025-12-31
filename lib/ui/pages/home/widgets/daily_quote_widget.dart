@@ -10,6 +10,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 // Project imports:
 import 'package:sentimento_app/core/theme.dart';
 
+import 'package:sentimento_app/core/data/quotes.dart';
+
 class DailyQuoteWidget extends StatefulWidget {
   const DailyQuoteWidget({super.key});
 
@@ -21,51 +23,6 @@ class _DailyQuoteWidgetState extends State<DailyQuoteWidget> {
   late String _quote;
   late String _author;
 
-  final List<Map<String, String>> _quotes = [
-    {
-      'text': 'A felicidade não é algo pronto. Ela vem de suas próprias ações.',
-      'author': 'Dalai Lama',
-    },
-    {
-      'text': 'O único modo de fazer um ótimo trabalho é amar o que você faz.',
-      'author': 'Steve Jobs',
-    },
-    {
-      'text':
-          'A vida é 10% o que acontece com você e 90% como você reage a isso.',
-      'author': 'Charles R. Swindoll',
-    },
-    {
-      'text': 'Acredite que você pode, e você já está no meio do caminho.',
-      'author': 'Theodore Roosevelt',
-    },
-    {
-      'text': 'Não conte os dias, faça os dias contarem.',
-      'author': 'Muhammad Ali',
-    },
-    {
-      'text': 'O sucesso é a soma de pequenos esforços repetidos dia após dia.',
-      'author': 'Robert Collier',
-    },
-    {
-      'text': 'Tudo o que você sempre quis está do outro lado do medo.',
-      'author': 'George Addair',
-    },
-    {
-      'text': 'A melhor maneira de prever o futuro é criá-lo.',
-      'author': 'Peter Drucker',
-    },
-    {
-      'text': 'Não espere. O tempo nunca será o ideal.',
-      'author': 'Napoleon Hill',
-    },
-    {
-      'text':
-          'Você é mais corajoso do que acredita, mais forte do que parece e mais inteligente do que pensa.',
-      'author': 'A.A. Milne',
-    },
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -74,10 +31,10 @@ class _DailyQuoteWidgetState extends State<DailyQuoteWidget> {
 
   void _pickRandomQuote() {
     final random = Random();
-    final index = random.nextInt(_quotes.length);
+    final index = random.nextInt(kAllQuotes.length);
     setState(() {
-      _quote = _quotes[index]['text']!;
-      _author = _quotes[index]['author']!;
+      _quote = kAllQuotes[index]['text']!;
+      _author = kAllQuotes[index]['author']!;
     });
   }
 

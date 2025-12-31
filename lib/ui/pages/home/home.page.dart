@@ -15,6 +15,7 @@ import 'package:sentimento_app/ui/pages/home/widgets/home_header.dart';
 import 'package:sentimento_app/ui/pages/home/widgets/mood_card.dart';
 import 'package:sentimento_app/ui/pages/home/widgets/mood_streak.dart';
 import 'package:sentimento_app/ui/pages/home/widgets/daily_quote_widget.dart';
+import 'package:sentimento_app/ui/pages/home/widgets/weekly_chart.dart';
 import 'package:sentimento_app/ui/shared/widgets/gradient_card.dart';
 import 'home.model.dart';
 

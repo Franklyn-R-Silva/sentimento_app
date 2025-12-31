@@ -7,7 +7,6 @@ import 'package:fl_chart/fl_chart.dart';
 // Project imports:
 import 'package:sentimento_app/backend/tables/entradas_humor.dart';
 import 'package:sentimento_app/core/theme.dart';
-import 'package:sentimento_app/ui/shared/widgets/gradient_card.dart';
 import '../stats.model.dart';
 
 class DynamicChart extends StatelessWidget {

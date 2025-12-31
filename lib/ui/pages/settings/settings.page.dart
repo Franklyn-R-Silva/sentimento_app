@@ -377,7 +377,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                     ),
                   ),
                   Divider(color: theme.alternate, height: 1),
-                  AppListTile(
+                  const AppListTile(
                     icon: Icons.favorite_rounded,
                     iconColor: Colors.redAccent,
                     title: 'Feito com carinho',

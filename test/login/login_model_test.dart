@@ -45,7 +45,7 @@ void main() {
       when(() => mockAuthManager.signInWithEmail(any(), any())).thenAnswer((
         _,
       ) async {
-        expect(model.isLoading, true);
+        expect(model.isBusy, true);
         return null;
       });
 
@@ -53,7 +53,7 @@ void main() {
       model.passwordController!.text = 'password';
 
       await model.login();
-      expect(model.isLoading, false);
+      expect(model.isBusy, false);
     });
   });
 }

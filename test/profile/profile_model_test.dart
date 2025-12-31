@@ -171,7 +171,7 @@ void main() {
           fileOptions: any(named: 'fileOptions'),
         ),
       ).called(1);
-      expect(model.isUploading, false);
+      expect(model.isBusy, false);
     });
   });
 }

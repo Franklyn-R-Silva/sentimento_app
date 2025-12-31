@@ -143,13 +143,13 @@ class MyAppState extends State<MyApp> {
               style: theme.bodyMedium,
             ),
             const SizedBox(height: 16),
-            _PermissionItem(
+            const _PermissionItem(
               icon: Icons.notifications_rounded,
               title: 'Notificações',
               description: 'Lembretes diários sobre humor e metas',
             ),
             const SizedBox(height: 12),
-            _PermissionItem(
+            const _PermissionItem(
               icon: Icons.schedule_rounded,
               title: 'Alarmes',
               description: 'Agendamento de lembretes',

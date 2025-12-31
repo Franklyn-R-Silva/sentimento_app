@@ -228,9 +228,9 @@ class JournalEntryDetailSheet extends StatelessWidget {
                     ),
                   ),
                   icon: const Icon(Icons.edit, color: Colors.white),
-                  label: AutoSizeText(
+                  label: const AutoSizeText(
                     'Editar',
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: Colors.white),
                     minFontSize: 10,
                   ),
                 ),

@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -22,7 +21,7 @@ class GoalsModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       _metas.where((m) => m.concluido).toList();
 
   // Check-in history for consistency graph
-  Map<String, List<DateTime>> _checkinsHistory = {};
+  final Map<String, List<DateTime>> _checkinsHistory = {};
   Map<String, List<DateTime>> get checkinsHistory => _checkinsHistory;
 
   bool _isLoading = false;

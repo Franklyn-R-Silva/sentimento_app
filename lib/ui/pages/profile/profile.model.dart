@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:sentimento_app/auth/supabase_auth/auth_util.dart';
 import 'package:sentimento_app/backend/supabase.dart';
 import 'package:sentimento_app/core/model.dart';
+import 'package:sentimento_app/services/toast_service.dart';
 
 class ProfileModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   final SupabaseClient? supabaseClient;
@@ -156,16 +157,12 @@ class ProfileModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       _avatarUrl = publicUrl;
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Foto de perfil atualizada!')),
-        );
+        ToastService.showSuccess('Foto de perfil atualizada!');
       }
     } catch (e) {
       debugPrint('Upload Error: $e');
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao atualizar foto: ${e.toString()}')),
-        );
+        ToastService.showError('Erro ao atualizar foto: ${e.toString()}');
       }
     } finally {
       _isUploading = false;
@@ -182,25 +179,17 @@ class ProfileModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     final confirmPassword = confirmPasswordController?.text;
 
     if (password == null || password.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Digite a nova senha')));
+      ToastService.showWarning('Digite a nova senha');
       return;
     }
 
     if (password != confirmPassword) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('As senhas não conferem')));
+      ToastService.showWarning('As senhas não conferem');
       return;
     }
 
     if (password.length < 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('A senha deve ter pelo menos 6 caracteres'),
-        ),
-      );
+      ToastService.showWarning('A senha deve ter pelo menos 6 caracteres');
       return;
     }
 

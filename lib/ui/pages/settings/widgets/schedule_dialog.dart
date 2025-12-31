@@ -124,9 +124,8 @@ class _ScheduleDialogState extends State<ScheduleDialog> {
           TextButton(
             onPressed: () async {
               await NotificationService().deleteSchedule(widget.schedule!.id);
-              if (mounted) {
-                Navigator.pop(context, true); // true = refresh needed
-              }
+              if (!context.mounted) return;
+              Navigator.pop(context, true); // true = refresh needed
             },
             child: Text('Excluir', style: TextStyle(color: theme.error)),
           ),
@@ -167,7 +166,8 @@ class _ScheduleDialogState extends State<ScheduleDialog> {
               await NotificationService().updateSchedule(newSchedule);
             }
 
-            if (mounted) Navigator.pop(context, true); // true = refresh needed
+            if (!context.mounted) return;
+            Navigator.pop(context, true); // true = refresh needed
           },
           child: Text('Salvar', style: TextStyle(color: theme.primary)),
         ),

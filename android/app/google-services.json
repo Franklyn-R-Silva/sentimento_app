@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "114611755820",
+    "project_id": "sentimento-app-oficial",
+    "storage_bucket": "sentimento-app-oficial.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:114611755820:android:3a0e758e632af482496a89",
+        "android_client_info": {
+          "package_name": "com.example.sentimento_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEt4gJUDjaxmshR7GrMRbNpmNn39A12U0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:114611755820:android:f1b66736f96f2cd0496a89",
+        "android_client_info": {
+          "package_name": "com.franklyn.sentimento_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEt4gJUDjaxmshR7GrMRbNpmNn39A12U0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

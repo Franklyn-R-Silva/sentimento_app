@@ -1,5 +1,4 @@
 // Dart imports:
-import 'dart:math';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
@@ -51,8 +50,8 @@ class _DailyQuoteWidgetState extends State<DailyQuoteWidget>
 
   void _pickQuoteByTime({required bool updateState}) {
     if (kAllQuotes.isEmpty) {
-      _quote = "Sem frases hoje.";
-      _author = "";
+      _quote = 'Sem frases hoje.';
+      _author = '';
       if (updateState && mounted) setState(() {});
       return;
     }
@@ -66,14 +65,14 @@ class _DailyQuoteWidgetState extends State<DailyQuoteWidget>
         : 2;
 
     // Calculate day of year
-    final int dayOfYear = int.parse(DateFormat("D").format(now));
+    final int dayOfYear = int.parse(DateFormat('D').format(now));
 
     // Create a stable index based on day and period
     final int seed = (dayOfYear * 3) + period;
     final int index = seed % kAllQuotes.length;
 
-    final String newQuote = kAllQuotes[index]['text'] ?? "Frase indisponível";
-    final String newAuthor = kAllQuotes[index]['author'] ?? "Desconhecido";
+    final String newQuote = kAllQuotes[index]['text'] ?? 'Frase indisponível';
+    final String newAuthor = kAllQuotes[index]['author'] ?? 'Desconhecido';
 
     if (updateState && mounted) {
       setState(() {

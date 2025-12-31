@@ -11,6 +11,8 @@ import 'package:sentimento_app/core/nav/nav.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'login.model.dart';
 
+import 'package:sentimento_app/services/toast_service.dart';
+
 export 'login.model.dart';
 
 class LoginPageWidget extends StatefulWidget {
@@ -208,14 +210,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                       if (!context.mounted) return;
 
                                       if (error != null) {
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          SnackBar(
-                                            content: Text(error),
-                                            backgroundColor: Colors.red,
-                                          ),
-                                        );
+                                        ToastService.showError(error);
                                       } else {
                                         context.goNamedAuth('Main', true);
                                       }
@@ -325,12 +320,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                 icon: Icons.g_mobiledata_rounded,
                                 label: 'Google',
                                 onTap: () {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: const Text('Em breve!'),
-                                      backgroundColor: theme.primary,
-                                    ),
-                                  );
+                                  ToastService.showInfo('Em breve!');
                                 },
                               ),
                               const SizedBox(width: 16),
@@ -338,12 +328,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                 icon: Icons.apple_rounded,
                                 label: 'Apple',
                                 onTap: () {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: const Text('Em breve!'),
-                                      backgroundColor: theme.primary,
-                                    ),
-                                  );
+                                  ToastService.showInfo('Em breve!');
                                 },
                               ),
                             ],

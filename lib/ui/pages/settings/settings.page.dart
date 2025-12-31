@@ -8,6 +8,7 @@ import 'package:app_settings/app_settings.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/main.dart';
 import 'package:sentimento_app/services/notification_service.dart';
+import 'package:sentimento_app/services/toast_service.dart';
 import 'package:sentimento_app/ui/pages/settings/settings.model.dart';
 import 'package:sentimento_app/ui/pages/settings/widgets/schedule_dialog.dart';
 import 'package:sentimento_app/ui/shared/widgets/app_card.dart';
@@ -16,7 +17,6 @@ import 'package:sentimento_app/ui/shared/widgets/app_section_header.dart';
 
 // Actually, without provider/riverpod setup, simpler is best.
 // But the user asked for MVVM/Model. FlutterFlow usually uses a 'model' instance.
-
 
 class SettingsPageWidget extends StatefulWidget {
   const SettingsPageWidget({super.key});
@@ -108,16 +108,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                     trailing: TextButton(
                       onPressed: () {
                         MyApp.of(context).setThemeMode(ThemeMode.system);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text('Tema automático ativado'),
-                            backgroundColor: theme.primary,
-                            behavior: SnackBarBehavior.floating,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        );
+                        ToastService.showSuccess('Tema automático ativado');
                       },
                       child: Text(
                         'Ativar',

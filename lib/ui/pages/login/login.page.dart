@@ -200,18 +200,19 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                             width: double.infinity,
                             height: 56,
                             child: ElevatedButton(
-                              onPressed: model.isLoading
+                              onPressed: model.isBusy
                                   ? null
                                   : () async {
-                                      final error = model.isCreateAccount
+                                      final success = model.isCreateAccount
                                           ? await model.createAccount()
                                           : await model.login();
 
                                       if (!context.mounted) return;
 
-                                      if (error != null) {
-                                        ToastService.showError(error);
-                                      } else {
+                                      if (!context.mounted) return;
+
+                                      // Errors are handled by runSafe (ToastService)
+                                      if (success) {
                                         context.goNamedAuth('Main', true);
                                       }
                                     },
@@ -223,7 +224,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                 ),
                                 elevation: 0,
                               ),
-                              child: model.isLoading
+                              child: model.isBusy
                                   ? const SizedBox(
                                       width: 24,
                                       height: 24,

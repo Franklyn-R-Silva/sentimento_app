@@ -83,7 +83,7 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                     userName: model.userName,
                     userEmail: model.userEmail,
                     avatarUrl: model.avatarUrl,
-                    isUploading: model.isUploading,
+                    isUploading: model.isBusy,
                     onAvatarTap: () => model.uploadAvatarImage(context),
                   ),
 

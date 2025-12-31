@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:image_picker/image_picker.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Project imports:
 import 'package:sentimento_app/auth/supabase_auth/auth_util.dart';
 import 'package:sentimento_app/backend/supabase.dart';
-import 'package:sentimento_app/core/model.dart';
+import 'package:sentimento_app/core/base_model.dart';
+import 'package:sentimento_app/core/exceptions/app_exceptions.dart';
 import 'package:sentimento_app/services/toast_service.dart';
 
-class ProfileModel extends FlutterFlowModel<Widget> with ChangeNotifier {
+class ProfileModel extends BaseModel {
   final SupabaseClient? supabaseClient;
   final ImagePicker? imagePicker;
   ProfileModel({this.supabaseClient, this.imagePicker});
@@ -43,9 +45,6 @@ class ProfileModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   String? _avatarUrl;
   String? get avatarUrl => _avatarUrl;
 
-  bool _isUploading = false;
-  bool get isUploading => _isUploading;
-
   bool _notificationsEnabled = true;
   bool get notificationsEnabled => _notificationsEnabled;
   set notificationsEnabled(bool value) {
@@ -53,8 +52,12 @@ class ProfileModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     notifyListeners();
   }
 
+  // NOTE: isUploading replaced by isBusy from BaseModel
+
   @override
-  void initState(BuildContext context) {}
+  void initState(BuildContext context) {
+    super.initState(context);
+  }
 
   @override
   void dispose() {
@@ -75,11 +78,12 @@ class ProfileModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         user?.email?.split('@').first ??
         'Usuário';
 
-    // Try to get avatar from metadata first (common for social logins)
+    // Try to get avatar from metadata first
     _avatarUrl = user?.userMetadata?['avatar_url'] as String?;
 
-    // Fetch profile data from app_profiles for avatar_url (overwrites metadata if present)
-    _fetchProfileData();
+    // Fetch profile data from app_profiles
+    // We don't await this here to not block UI init, but we run it safe
+    runSafe(() => _fetchProfileData(), showErrorToast: false);
   }
 
   Future<void> _fetchProfileData() async {
@@ -106,6 +110,7 @@ class ProfileModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       }
     } catch (e) {
       debugPrint('Error fetching profile: $e');
+      throw NetworkException('Erro ao carregar perfil: $e');
     }
   }
 
@@ -119,12 +124,9 @@ class ProfileModel extends FlutterFlowModel<Widget> with ChangeNotifier {
 
     if (image == null) return;
 
-    _isUploading = true;
-    notifyListeners();
-
-    try {
+    await runSafe(() async {
       final user = _client.auth.currentUser;
-      if (user == null) return;
+      if (user == null) throw AuthException('Usuário não autenticado');
 
       final fileBytes = await image.readAsBytes();
       final fileExt = image.path.split('.').last;
@@ -136,7 +138,6 @@ class ProfileModel extends FlutterFlowModel<Widget> with ChangeNotifier {
           ? 'image/jpeg'
           : 'image/$fileExt';
 
-      // Upload to 'avatars' bucket
       await _client.storage
           .from('avatars')
           .uploadBinary(
@@ -145,58 +146,50 @@ class ProfileModel extends FlutterFlowModel<Widget> with ChangeNotifier {
             fileOptions: FileOptions(contentType: contentType, upsert: true),
           );
 
-      // Get Public URL
       final publicUrl = _client.storage.from('avatars').getPublicUrl(path);
 
-      // Update app_profiles
       await _client
           .from('app_profiles')
           .update({'avatar_url': publicUrl})
           .eq('id', user.id);
 
       _avatarUrl = publicUrl;
-
-      if (context.mounted) {
-        ToastService.showSuccess('Foto de perfil atualizada!');
-      }
-    } catch (e) {
-      debugPrint('Upload Error: $e');
-      if (context.mounted) {
-        ToastService.showError('Erro ao atualizar foto: ${e.toString()}');
-      }
-    } finally {
-      _isUploading = false;
       notifyListeners();
-    }
+
+      ToastService.showSuccess('Foto de perfil atualizada!');
+    });
   }
 
   Future<void> signOut(BuildContext context) async {
-    await authManager.signOut();
+    await runSafe(() async {
+      await authManager.signOut();
+    });
   }
 
   Future<void> updatePassword(BuildContext context) async {
     final password = changePasswordController?.text;
     final confirmPassword = confirmPasswordController?.text;
 
-    if (password == null || password.isEmpty) {
-      ToastService.showWarning('Digite a nova senha');
-      return;
-    }
+    await runSafe(() async {
+      if (password == null || password.isEmpty) {
+        throw ValidationException('Digite a nova senha');
+      }
 
-    if (password != confirmPassword) {
-      ToastService.showWarning('As senhas não conferem');
-      return;
-    }
+      if (password != confirmPassword) {
+        throw ValidationException('As senhas não conferem');
+      }
 
-    if (password.length < 6) {
-      ToastService.showWarning('A senha deve ter pelo menos 6 caracteres');
-      return;
-    }
+      if (password.length < 6) {
+        throw ValidationException('A senha deve ter pelo menos 6 caracteres');
+      }
 
-    await authManager.updatePassword(newPassword: password, context: context);
+      await authManager.updatePassword(newPassword: password, context: context);
 
-    // Clear fields on success (optional, or close dialog)
-    changePasswordController?.clear();
-    confirmPasswordController?.clear();
+      // Clear fields on success
+      changePasswordController?.clear();
+      confirmPasswordController?.clear();
+
+      ToastService.showSuccess('Senha alterada com sucesso!');
+    });
   }
 }

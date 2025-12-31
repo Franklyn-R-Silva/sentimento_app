@@ -117,8 +117,13 @@ class _LoginPageWidgetState extends State<LoginPageWidget>
                                 ),
                               ],
                             ),
-                            child: const Center(
-                              child: Text('😊', style: TextStyle(fontSize: 48)),
+                            child: Center(
+                              child: Image.asset(
+                                'assets/images/imagem_2.png',
+                                width: 64,
+                                height: 64,
+                                fit: BoxFit.contain,
+                              ),
                             ),
                           ),
 

@@ -9,9 +9,6 @@ class SettingsModel extends ChangeNotifier {
     _loadSettings();
   }
 
-  void dispose() {
-    super.dispose();
-  }
 
   Future<void> _loadSettings() async {
     final enabled = await NotificationService().areNotificationsEnabled();

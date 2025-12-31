@@ -75,7 +75,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Aparência
-            SettingsSectionHeader(title: '🎨 Aparência'),
+            const SettingsSectionHeader(title: '🎨 Aparência'),
             const SizedBox(height: 12),
 
             SettingsCard(
@@ -166,7 +166,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SettingsSectionHeader(title: '⏰ Meus Horários'),
+                  const SettingsSectionHeader(title: '⏰ Meus Horários'),
                   IconButton(
                     icon: Icon(
                       Icons.add_circle_rounded,
@@ -238,7 +238,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
 
             const SizedBox(height: 24),
             // Outros
-            SettingsSectionHeader(title: '⚙️ Outros'),
+            const SettingsSectionHeader(title: '⚙️ Outros'),
             const SizedBox(height: 12),
             SettingsCard(
               child: Column(
@@ -271,7 +271,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                                 child: pending.isEmpty
                                     ? const Center(
                                         child: Text(
-                                          "Nenhum agendamento pendente",
+                                          'Nenhum agendamento pendente',
                                         ),
                                       )
                                     : ListView.builder(
@@ -280,10 +280,10 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                                           final p = pending[index];
                                           return ListTile(
                                             title: Text(
-                                              "ID: ${p.id} - ${p.title}",
+                                              'ID: ${p.id} - ${p.title}',
                                             ),
                                             subtitle: Text(
-                                              "Body: ${p.body}\nPayload: ${p.payload}",
+                                              'Body: ${p.body}\nPayload: ${p.payload}',
                                             ),
                                           );
                                         },

@@ -121,8 +121,9 @@ class _ScheduleDialogState extends State<ScheduleDialog> {
           TextButton(
             onPressed: () async {
               await NotificationService().deleteSchedule(widget.schedule!.id);
-              if (mounted)
+              if (mounted) {
                 Navigator.pop(context, true); // true = refresh needed
+              }
             },
             child: Text('Excluir', style: TextStyle(color: theme.error)),
           ),

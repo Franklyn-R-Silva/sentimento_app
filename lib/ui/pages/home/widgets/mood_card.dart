@@ -85,6 +85,7 @@ class MoodCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 16),
                 // Content
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -121,7 +122,11 @@ class MoodCard extends StatelessWidget {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(Icons.notes, size: 14, color: theme.secondaryText),
+                            Icon(
+                              Icons.notes,
+                              size: 14,
+                              color: theme.secondaryText,
+                            ),
                             const SizedBox(width: 4),
                             Expanded(
                               child: AutoSizeText(

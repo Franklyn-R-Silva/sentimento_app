@@ -65,11 +65,10 @@ class _BreathingExerciseSheetState extends State<BreathingExerciseSheet>
 
     if (_isRunning) {
       _controller.forward();
-      // TODO: Add actual sound files to assets/sounds/
-      // if (_selectedSound != 'silence') {
-      //   await _audioPlayer.play(AssetSource('sounds/$_selectedSound.mp3'));
-      //   await _audioPlayer.setReleaseMode(ReleaseMode.loop);
-      // }
+      if (_selectedSound != 'silence') {
+        await _audioPlayer.play(AssetSource('sounds/$_selectedSound.mp3'));
+        await _audioPlayer.setReleaseMode(ReleaseMode.loop);
+      }
     } else {
       _controller.stop();
       await _audioPlayer.stop();
@@ -304,7 +303,7 @@ class _BreathingExerciseSheetState extends State<BreathingExerciseSheet>
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: isSelected
-                  ? theme.primary.withOpacity(0.1)
+                  ? theme.primary.withValues(alpha: 0.1)
                   : theme.primaryBackground,
               shape: BoxShape.circle,
               border: Border.all(

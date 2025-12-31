@@ -243,11 +243,31 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                     icon: Icons.picture_as_pdf_rounded,
                     iconColor: const Color(0xFFE91E63),
                     title: 'Exportar Relatório',
-                    subtitle: 'Gerar PDF para terapeuta (Em Breve)',
-                    onTap: () {
-                      ToastService.showInfo(
-                        'Funcionalidade em desenvolvimento',
-                      );
+                    subtitle: 'Gerar PDF com histórico de 30 dias',
+                    onTap: () async {
+                      try {
+                        ToastService.showInfo('Gerando relatório...');
+
+                        final records = await SupaFlow.client
+                            .from('entradas_humor')
+                            .select()
+                            .order('criado_em', ascending: false)
+                            .limit(30)
+                            .withConverter(
+                              (data) => data
+                                  .map((map) => EntradasHumorRow(map))
+                                  .toList(),
+                            );
+
+                        if (records.isEmpty) {
+                          ToastService.showInfo('Nenhum registro encontrado.');
+                          return;
+                        }
+
+                        await PdfService().generateAndShareFullReport(records);
+                      } catch (e) {
+                        ToastService.showError('Erro ao gerar PDF: $e');
+                      }
                     },
                   ),
                 ],

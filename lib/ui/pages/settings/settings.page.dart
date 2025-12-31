@@ -6,7 +6,6 @@ import 'package:app_settings/app_settings.dart';
 
 // Project imports:
 import 'package:sentimento_app/backend/supabase.dart';
-import 'package:sentimento_app/backend/tables/entradas_humor.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/main.dart';
 import 'package:sentimento_app/services/notification_service.dart';
@@ -300,7 +299,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
+                        MaterialPageRoute<void>(
                           builder: (context) => const DebugPage(),
                         ),
                       );

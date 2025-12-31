@@ -14,6 +14,7 @@ import 'package:sentimento_app/backend/supabase.dart';
 import 'package:sentimento_app/core/nav/nav.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/core/util.dart';
+import 'package:sentimento_app/services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +33,14 @@ void main() async {
     logger.i('Supabase initialize com sucesso!');
   } catch (e) {
     logger.e('Erro ao iniciar Supabase: $e');
+  }
+
+  // Initialize Firebase and Notifications
+  try {
+    await NotificationService().initialize();
+    logger.i('NotificationService inicializado com sucesso!');
+  } catch (e) {
+    logger.e('Erro ao iniciar NotificationService: $e');
   }
 
   await FlutterFlowTheme.initialize();

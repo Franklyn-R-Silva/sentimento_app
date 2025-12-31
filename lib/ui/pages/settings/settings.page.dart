@@ -359,6 +359,33 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                 ],
               ),
             ),
+            const SizedBox(height: 24),
+            // Sobre
+            const AppSectionHeader(title: 'ℹ️ Sobre'),
+            const SizedBox(height: 12),
+            AppCard(
+              child: Column(
+                children: [
+                  AppListTile(
+                    icon: Icons.info_outline_rounded,
+                    iconColor: theme.primary,
+                    title: 'Versão do App',
+                    subtitle: 'v1.0.0',
+                    trailing: Text(
+                      'Estável',
+                      style: theme.bodyMedium.override(color: theme.success),
+                    ),
+                  ),
+                  Divider(color: theme.alternate, height: 1),
+                  AppListTile(
+                    icon: Icons.favorite_rounded,
+                    iconColor: Colors.redAccent,
+                    title: 'Feito com carinho',
+                    subtitle: 'Sentimento App',
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 40),
           ],
         ),

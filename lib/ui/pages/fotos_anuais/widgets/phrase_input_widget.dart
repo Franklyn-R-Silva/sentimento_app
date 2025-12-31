@@ -30,6 +30,7 @@ class PhraseInputWidget extends StatelessWidget {
             TextFormField(
               controller: model.fraseController,
               maxLines: 3,
+              maxLength: 500,
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 hintText: 'Como foi o seu dia? Escreva algo marcante...',

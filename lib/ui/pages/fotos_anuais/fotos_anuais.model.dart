@@ -5,6 +5,7 @@ import 'dart:typed_data';
 // Flutter imports:
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:geolocator/geolocator.dart';
@@ -239,6 +240,8 @@ class FotosAnuaisModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         'lng': _currentLocation?.longitude,
         'data_foto': _selectedDate.toIso8601String(),
       });
+
+      await HapticFeedback.mediumImpact();
 
       if (!context.mounted) return true;
 

@@ -51,7 +51,7 @@ class _TagSelectorState extends State<TagSelector> {
             widget.onSelectionChanged(newTags);
           },
           backgroundColor: theme.primaryBackground,
-          selectedColor: theme.primary.withOpacity(0.2),
+          selectedColor: theme.secondaryText.withValues(alpha: 0.2),
           checkmarkColor: theme.primary,
           labelStyle: theme.bodyMedium.override(
             color: isSelected ? theme.primary : theme.secondaryText,

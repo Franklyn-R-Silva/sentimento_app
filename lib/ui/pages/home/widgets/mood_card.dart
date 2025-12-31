@@ -1,3 +1,4 @@
+```
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -183,6 +184,7 @@ class MoodCard extends StatelessWidget {
                       ],
                     ],
                   ),
+                ),
                 // Action Buttons
                 Column(
                   children: [

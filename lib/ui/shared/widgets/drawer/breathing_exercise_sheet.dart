@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:audioplayers/audioplayers.dart';
-import 'package:auto_size_text/auto_size_text.dart';
+
 import 'package:flutter_animate/flutter_animate.dart';
 
 // Project imports:
@@ -58,7 +58,7 @@ class _BreathingExerciseSheetState extends State<BreathingExerciseSheet>
     super.dispose();
   }
 
-  void _toggleExercise() async {
+  Future<void> _toggleExercise() async {
     setState(() {
       _isRunning = !_isRunning;
     });
@@ -77,7 +77,7 @@ class _BreathingExerciseSheetState extends State<BreathingExerciseSheet>
   }
 
   void _showPanicDialog() {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: widget.theme.secondaryBackground,
@@ -188,14 +188,14 @@ class _BreathingExerciseSheetState extends State<BreathingExerciseSheet>
                       shape: BoxShape.circle,
                       gradient: RadialGradient(
                         colors: [
-                          theme.primary.withOpacity(0.6),
-                          theme.secondary.withOpacity(0.4),
-                          theme.tertiary.withOpacity(0.2),
+                          theme.primary.withValues(alpha: 0.6),
+                          theme.secondary.withValues(alpha: 0.4),
+                          theme.tertiary.withValues(alpha: 0.2),
                         ],
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: theme.primary.withOpacity(0.3),
+                          color: theme.primary.withValues(alpha: 0.3),
                           blurRadius: 30 * _animation.value,
                           spreadRadius: 5 * _animation.value,
                         ),

@@ -88,12 +88,13 @@ class MyAppState extends State<MyApp> {
     _appStateNotifier = AppStateNotifier.instance;
     _router = createRouter(_appStateNotifier);
     userStream = sentimentoAppSupabaseUserStream()
-      ..listen((user) => _appStateNotifier.update(user));
+      ..listen((user) {
+        _appStateNotifier.update(user);
+        if (_appStateNotifier.showingSplashImage) {
+          _appStateNotifier.stopShowingSplashImage();
+        }
+      });
     jwtTokenStream.listen((_) {});
-    Future.delayed(
-      const Duration(seconds: 1),
-      () => _appStateNotifier.stopShowingSplashImage(),
-    );
   }
 
   void setThemeMode(ThemeMode mode) => setState(() {

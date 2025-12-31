@@ -42,6 +42,7 @@ class AppStateNotifier extends ChangeNotifier {
   BaseAuthUser? initialUser;
   BaseAuthUser? user;
   bool showSplashImage = true;
+  bool get showingSplashImage => showSplashImage;
   String? _redirectLocation;
 
   /// Determine the current user's state.

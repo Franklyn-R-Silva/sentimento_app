@@ -22,7 +22,7 @@ class NotificationService {
   factory NotificationService() => _instance;
   NotificationService._internal();
 
-  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  late final FirebaseMessaging _messaging;
   final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
 
@@ -41,8 +41,8 @@ class NotificationService {
     // Initialize timezone
     tz.initializeTimeZones();
 
-    // Initialize Firebase
-    await Firebase.initializeApp();
+    // Firebase is initialized in main.dart now
+    _messaging = FirebaseMessaging.instance;
 
     // Set up background message handler
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);

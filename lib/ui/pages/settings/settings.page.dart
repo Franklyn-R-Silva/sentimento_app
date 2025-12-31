@@ -23,13 +23,31 @@ class SettingsPageWidget extends StatefulWidget {
 
 class _SettingsPageWidgetState extends State<SettingsPageWidget> {
   bool _notificationsEnabled = true;
-  bool _dailyReminder = true;
-  TimeOfDay _reminderTime = const TimeOfDay(hour: 20, minute: 0);
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
+  }
+
+  Future<void> _loadSettings() async {
+    final enabled = await NotificationService().areNotificationsEnabled();
+    if (mounted) {
+      setState(() {
+        _notificationsEnabled = enabled;
+      });
+    }
+  }
+
+  void _refresh() {
+    if (mounted) setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = FlutterFlowTheme.of(context);
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final schedules = NotificationService().schedules;
 
     return Scaffold(
       backgroundColor: theme.primaryBackground,
@@ -117,7 +135,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                     icon: Icons.notifications_rounded,
                     iconColor: const Color(0xFF4CAF50),
                     title: 'Notificações',
-                    subtitle: 'Receber lembretes e dicas',
+                    subtitle: 'Ativar lembretes do aplicativo',
                     trailing: Switch.adaptive(
                       value: _notificationsEnabled,
                       onChanged: (value) async {
@@ -130,45 +148,89 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                       inactiveTrackColor: theme.alternate,
                     ),
                   ),
-                  Divider(color: theme.alternate, height: 1),
-                  _SettingRow(
-                    icon: Icons.access_time_rounded,
-                    iconColor: const Color(0xFF2196F3),
-                    title: 'Lembrete Diário',
-                    subtitle: 'Receber lembrete para registrar humor',
-                    trailing: Switch.adaptive(
-                      value: _dailyReminder,
-                      onChanged: _notificationsEnabled
-                          ? (value) => setState(() => _dailyReminder = value)
-                          : null,
-                      activeTrackColor: theme.primary,
-                      inactiveTrackColor: theme.alternate,
-                    ),
-                  ),
-                  if (_dailyReminder && _notificationsEnabled) ...[
-                    Divider(color: theme.alternate, height: 1),
-                    _SettingRow(
-                      icon: Icons.schedule_rounded,
-                      iconColor: const Color(0xFF9C27B0),
-                      title: 'Horário do Lembrete',
-                      subtitle: _reminderTime.format(context),
-                      trailing: IconButton(
-                        icon: Icon(Icons.edit_rounded, color: theme.primary),
-                        onPressed: () async {
-                          final time = await showTimePicker(
-                            context: context,
-                            initialTime: _reminderTime,
-                          );
-                          if (time != null) {
-                            setState(() => _reminderTime = time);
-                          }
-                        },
-                      ),
-                    ),
-                  ],
                 ],
               ),
             ),
+
+            if (_notificationsEnabled) ...[
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Meus Horários',
+                    style: theme.bodyMedium.override(
+                      color: theme.secondaryText,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => _openScheduleDialog(context),
+                    icon: Icon(Icons.add_circle_rounded, color: theme.primary),
+                    tooltip: 'Adicionar Horário',
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              if (schedules.isEmpty)
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: theme.secondaryBackground,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Nenhum lembrete configurado.',
+                      style: theme.labelMedium,
+                    ),
+                  ),
+                )
+              else
+                ListView.separated(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: schedules.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  itemBuilder: (context, index) {
+                    final schedule = schedules[index];
+                    return _SettingCard(
+                      child: _SettingRow(
+                        icon: Icons.alarm_rounded,
+                        iconColor: theme.primary,
+                        title: _formatTime(schedule.hour, schedule.minute),
+                        subtitle: _formatDays(schedule.activeDays),
+                        onTap: () => _openScheduleDialog(context, schedule),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Switch.adaptive(
+                              value: schedule.isEnabled,
+                              onChanged: (val) async {
+                                final updated = NotificationSchedule(
+                                  id: schedule.id,
+                                  title: schedule.title,
+                                  body: schedule.body,
+                                  hour: schedule.hour,
+                                  minute: schedule.minute,
+                                  activeDays: schedule.activeDays,
+                                  isEnabled: val,
+                                );
+                                await NotificationService().updateSchedule(
+                                  updated,
+                                );
+                                _refresh();
+                              },
+                              activeTrackColor: theme.primary,
+                              inactiveTrackColor: theme.alternate,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+            ],
 
             const SizedBox(height: 24),
 
@@ -358,6 +420,50 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                       }
                     },
                   ),
+                  Divider(color: theme.alternate, height: 1),
+                  _SettingRow(
+                    icon: Icons.developer_mode_rounded,
+                    iconColor: const Color(0xFF607D8B),
+                    title: 'Debugar Agendamentos',
+                    subtitle: 'Ver lista de próximos lembretes',
+                    onTap: () async {
+                      final pending = await NotificationService()
+                          .getPendingNotifications();
+                      if (context.mounted) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Agendamentos Ativos'),
+                            content: SizedBox(
+                              width: double.maxFinite,
+                              child: pending.isEmpty
+                                  ? const Text('Nenhum agendametno encontrado.')
+                                  : ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: pending.length,
+                                      itemBuilder: (context, index) {
+                                        final p = pending[index];
+                                        return ListTile(
+                                          title: Text(p.title ?? 'Sem título'),
+                                          subtitle: Text(
+                                            'ID: ${p.id} • ${p.body ?? ""}',
+                                          ),
+                                          dense: true,
+                                        );
+                                      },
+                                    ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('Fechar'),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                  ),
                 ],
               ),
             ),
@@ -367,6 +473,24 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
         ),
       ),
     );
+  }
+
+  String _formatTime(int hour, int minute) {
+    return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+  }
+
+  String _formatDays(List<int> days) {
+    if (days.length == 7) return 'Todos os dias';
+    if (days.isEmpty) return 'Nenhum dia';
+
+    // 1 = Mon
+    const weekDays = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+    if (days.length == 2 && days.contains(6) && days.contains(7))
+      return 'Fins de semana';
+    if (days.length == 5 && !days.contains(6) && !days.contains(7))
+      return 'Dias úteis';
+
+    return days.sorted().map((d) => weekDays[d - 1]).join(', ');
   }
 
   void _showChangePasswordDialog(BuildContext context) {
@@ -488,6 +612,200 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
       },
     );
   }
+
+  void _openScheduleDialog(
+    BuildContext context, [
+    NotificationSchedule? schedule,
+  ]) {
+    final theme = FlutterFlowTheme.of(context);
+
+    TimeOfDay selectedTime = schedule != null
+        ? TimeOfDay(hour: schedule.hour, minute: schedule.minute)
+        : const TimeOfDay(hour: 8, minute: 0);
+
+    List<int> selectedDays = schedule != null
+        ? List.from(schedule.activeDays)
+        : [1, 2, 3, 4, 5, 6, 7]; // Default all days
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              backgroundColor: theme.secondaryBackground,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              title: Text(
+                schedule == null ? 'Novo Lembrete' : 'Editar Lembrete',
+                style: theme.titleMedium,
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Time Picker Button
+                  GestureDetector(
+                    onTap: () async {
+                      final time = await showTimePicker(
+                        context: context,
+                        initialTime: selectedTime,
+                      );
+                      if (time != null) {
+                        setDialogState(() => selectedTime = time);
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                        horizontal: 24,
+                      ),
+                      decoration: BoxDecoration(
+                        color: theme.primaryBackground,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: theme.primary),
+                      ),
+                      child: Text(
+                        selectedTime.format(context),
+                        style: theme.displaySmall.override(
+                          color: theme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text('Dias da Semana:', style: theme.bodyMedium),
+                  ),
+                  const SizedBox(height: 8),
+
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: List.generate(7, (index) {
+                      final dayIndex = index + 1; // 1 = Mon
+                      final dayName = [
+                        'D',
+                        'S',
+                        'T',
+                        'Q',
+                        'Q',
+                        'S',
+                        'S',
+                      ][index == 6 ? 0 : index + 1];
+                      // Custom labels: Mon(1)=S, Tue(2)=T, Wed(3)=Q, Thu(4)=Q, Fri(5)=S, Sat(6)=S, Sun(7)=D
+                      // Let's use simpler index logic:
+                      // 1=Seg, 2=Ter, 3=Qua, 4=Qui, 5=Sex, 6=Sab, 7=Dom
+                      final displayLabel = [
+                        'S',
+                        'T',
+                        'Q',
+                        'Q',
+                        'S',
+                        'S',
+                        'D',
+                      ][index];
+                      final isSelected = selectedDays.contains(dayIndex);
+
+                      return FilterChip(
+                        label: Text(displayLabel),
+                        selected: isSelected,
+                        onSelected: (selected) {
+                          setDialogState(() {
+                            if (selected) {
+                              selectedDays.add(dayIndex);
+                            } else {
+                              selectedDays.remove(dayIndex);
+                            }
+                          });
+                        },
+                        selectedColor: theme.primary,
+                        labelStyle: TextStyle(
+                          color: isSelected
+                              ? Colors.white
+                              : theme.secondaryText,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        backgroundColor: theme.primaryBackground,
+                        side: BorderSide(
+                          color: isSelected ? theme.primary : theme.alternate,
+                        ),
+                        shape: const CircleBorder(),
+                        showCheckmark: false,
+                        padding: const EdgeInsets.all(4),
+                      );
+                    }),
+                  ),
+                ],
+              ),
+              actions: [
+                if (schedule != null)
+                  TextButton(
+                    onPressed: () async {
+                      await NotificationService().deleteSchedule(schedule.id);
+                      if (Navigator.canPop(context)) Navigator.pop(context);
+                      _refresh();
+                    },
+                    child: Text(
+                      'Excluir',
+                      style: TextStyle(color: theme.error),
+                    ),
+                  ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    'Cancelar',
+                    style: TextStyle(color: theme.secondaryText),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    if (selectedDays.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Selecione pelo menos um dia.',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: theme.error,
+                        ),
+                      );
+                      return;
+                    }
+
+                    final newSchedule = NotificationSchedule(
+                      id:
+                          schedule?.id ??
+                          DateTime.now().millisecondsSinceEpoch.toString(),
+                      hour: selectedTime.hour,
+                      minute: selectedTime.minute,
+                      title: 'Lembrete do Sentimento',
+                      body: 'Hora de registrar como você está se sentindo!',
+                      activeDays: selectedDays..sort(),
+                      isEnabled: true,
+                    );
+
+                    if (schedule == null) {
+                      await NotificationService().addSchedule(newSchedule);
+                    } else {
+                      await NotificationService().updateSchedule(newSchedule);
+                    }
+
+                    if (Navigator.canPop(context)) Navigator.pop(context);
+                    _refresh();
+                  },
+                  child: Text('Salvar', style: TextStyle(color: theme.primary)),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
 }
 
 class _SectionHeader extends StatelessWidget {
@@ -591,5 +909,13 @@ class _SettingRow extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+extension ListSorted<T> on List<T> {
+  List<T> sorted([int Function(T a, T b)? compare]) {
+    final list = List<T>.from(this);
+    list.sort(compare);
+    return list;
   }
 }

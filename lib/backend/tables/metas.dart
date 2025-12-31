@@ -65,6 +65,10 @@ class MetasRow extends SupabaseDataRow {
   DateTime get criadoEm => getField<DateTime>('criado_em')!;
   set criadoEm(final DateTime value) => setField<DateTime>('criado_em', value);
 
+  DateTime? get ultimoCheckin => getField<DateTime>('ultimo_checkin');
+  set ultimoCheckin(final DateTime? value) =>
+      setField<DateTime>('ultimo_checkin', value);
+
   // Helper para calcular progresso
   double get progresso =>
       metaValor > 0 ? (valorAtual / metaValor).clamp(0.0, 1.0) : 0.0;

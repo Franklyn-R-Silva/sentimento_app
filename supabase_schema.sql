@@ -118,6 +118,40 @@ create policy "Usuários podem deletar suas próprias metas"
   on public.metas for delete
   using (auth.uid() = user_id);
 
+-- Adicionar coluna para rastrear último check-in
+alter table public.metas add column if not exists ultimo_checkin timestamptz;
+
+-- Criação da tabela de histórico de check-ins de metas
+create table public.metas_checkins (
+  id uuid default gen_random_uuid() primary key,
+  meta_id uuid references public.metas(id) on delete cascade not null,
+  user_id uuid references auth.users not null default auth.uid(),
+  data_checkin date not null default current_date,
+  criado_em timestamptz default now() not null,
+  unique(meta_id, data_checkin) -- Um check-in por dia por meta
+);
+
+-- Habilitar Row Level Security (RLS) para metas_checkins
+alter table public.metas_checkins enable row level security;
+
+-- Políticas de Segurança para metas_checkins
+create policy "Usuários podem ver seus próprios check-ins"
+  on public.metas_checkins for select
+  using (auth.uid() = user_id);
+
+create policy "Usuários podem inserir seus próprios check-ins"
+  on public.metas_checkins for insert
+  with check (auth.uid() = user_id);
+
+create policy "Usuários podem deletar seus próprios check-ins"
+  on public.metas_checkins for delete
+  using (auth.uid() = user_id);
+
+-- Índices para performance
+create index if not exists idx_metas_checkins_meta_id on public.metas_checkins(meta_id);
+create index if not exists idx_metas_checkins_data on public.metas_checkins(data_checkin);
+create index if not exists idx_metas_ultimo_checkin on public.metas(ultimo_checkin);
+
 -- Criação da tabela de fotos anuais (Projeto 365 dias)
 create table public.fotos_anuais (
   id uuid default gen_random_uuid() primary key,

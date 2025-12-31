@@ -87,7 +87,7 @@ class DebugPage extends StatelessWidget {
                     title: 'Cores do Tema',
                     subtitle: 'Visualizar paleta de cores atual',
                     onTap: () {
-                      showModalBottomSheet(
+                      showModalBottomSheet<void>(
                         context: context,
                         backgroundColor: theme.secondaryBackground,
                         builder: (context) => Container(
@@ -128,7 +128,7 @@ class DebugPage extends StatelessWidget {
                     title: 'Tipografia',
                     subtitle: 'Visualizar estilos de texto',
                     onTap: () {
-                      showModalBottomSheet(
+                      showModalBottomSheet<void>(
                         context: context,
                         backgroundColor: theme.secondaryBackground,
                         isScrollControlled: true,
@@ -196,7 +196,7 @@ class _ColorBox extends StatelessWidget {
           decoration: BoxDecoration(
             color: color,
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey.withOpacity(0.3)),
+            border: Border.all(color: Colors.grey.withValues(alpha: 0.3)),
           ),
         ),
         const SizedBox(height: 4),

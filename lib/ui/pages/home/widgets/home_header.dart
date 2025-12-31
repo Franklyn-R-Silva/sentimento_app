@@ -2,14 +2,11 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Project imports:
-import 'package:sentimento_app/backend/tables/entradas_humor.dart';
 import 'package:sentimento_app/backend/supabase.dart';
 import 'package:sentimento_app/core/theme.dart';
 

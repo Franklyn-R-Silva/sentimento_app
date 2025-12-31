@@ -194,10 +194,6 @@ class MoodCard extends StatelessWidget {
                         size: 20,
                       ),
                       onPressed: () async {
-                        // Import needed at top of file: import 'package:sentimento_app/services/pdf_service.dart';
-                        // Since I can't easily add imports with replace_file_content without context,
-                        // I will assume I need to do a multi-step edit or just add the import in a separate block.
-                        // For now, I'll place the logic here assuming import is added.
                         await PdfService().generateAndShareEntryPdf(entry);
                       },
                     ),

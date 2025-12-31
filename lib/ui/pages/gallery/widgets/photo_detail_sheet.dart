@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:sentimento_app/backend/tables/fotos_anuais.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/ui/pages/gallery/gallery.model.dart';
+import 'package:sentimento_app/ui/pages/gallery/widgets/supabase_photo_widget.dart';
 
 class PhotoDetailSheet extends StatelessWidget {
   final FotosAnuaisRow photo;
@@ -58,18 +59,9 @@ class PhotoDetailSheet extends StatelessWidget {
               tag: 'photo_${photo.id}',
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: CachedNetworkImage(
+                child: SupabasePhotoWidget(
                   imageUrl: photo.imageUrl,
                   fit: BoxFit.contain,
-                  placeholder: (context, url) =>
-                      const Center(child: CircularProgressIndicator()),
-                  errorWidget: (context, url, error) => Center(
-                    child: Icon(
-                      Icons.broken_image_rounded,
-                      size: 64,
-                      color: theme.secondaryText,
-                    ),
-                  ),
                 ),
               ),
             ),

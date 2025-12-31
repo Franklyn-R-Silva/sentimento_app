@@ -8,6 +8,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:sentimento_app/backend/tables/fotos_anuais.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/ui/pages/gallery/gallery.model.dart';
+import 'package:sentimento_app/ui/pages/gallery/widgets/supabase_photo_widget.dart';
 import 'photo_detail_sheet.dart';
 
 class PhotoGridWidget extends StatelessWidget {
@@ -55,22 +56,9 @@ class PhotoGridWidget extends StatelessWidget {
             // Photo
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: CachedNetworkImage(
+              child: SupabasePhotoWidget(
                 imageUrl: photo.imageUrl,
                 fit: BoxFit.cover,
-                placeholder: (context, url) => Container(
-                  color: theme.alternate.withValues(alpha: 0.3),
-                  child: const Center(
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
-                ),
-                errorWidget: (context, url, error) => Container(
-                  color: theme.alternate.withValues(alpha: 0.3),
-                  child: Icon(
-                    Icons.broken_image_rounded,
-                    color: theme.secondaryText,
-                  ),
-                ),
               ),
             ),
 

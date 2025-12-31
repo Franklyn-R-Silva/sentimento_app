@@ -8,6 +8,7 @@ import 'package:app_settings/app_settings.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/main.dart';
 import 'package:sentimento_app/services/notification_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// SettingsPageWidget - Página de configurações dedicada
 class SettingsPageWidget extends StatefulWidget {
@@ -289,6 +290,26 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
 
             const SizedBox(height: 24),
 
+            // Conta
+            _SectionHeader(title: '👤 Conta', theme: theme),
+            const SizedBox(height: 12),
+
+            _SettingCard(
+              child: Column(
+                children: [
+                  _SettingRow(
+                    icon: Icons.lock_outline_rounded,
+                    iconColor: const Color(0xFF607D8B),
+                    title: 'Alterar Senha',
+                    subtitle: 'Definir nova senha de acesso',
+                    onTap: () => _showChangePasswordDialog(context),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
             // Permissões
             _SectionHeader(title: '⚙️ Permissões', theme: theme),
             const SizedBox(height: 12),
@@ -345,6 +366,126 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showChangePasswordDialog(BuildContext context) {
+    final TextEditingController passwordController = TextEditingController();
+    final TextEditingController confirmController = TextEditingController();
+    final theme = FlutterFlowTheme.of(context);
+
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: theme.secondaryBackground,
+          title: Text('Alterar Senha', style: theme.titleMedium),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: passwordController,
+                  decoration: InputDecoration(
+                    labelText: 'Nova Senha',
+                    hintText: 'Mínimo 6 caracteres',
+                    labelStyle: theme.bodyMedium,
+                    hintStyle: theme.labelMedium,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: theme.alternate),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: theme.primary),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  obscureText: true,
+                  style: theme.bodyMedium,
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: confirmController,
+                  decoration: InputDecoration(
+                    labelText: 'Confirmar Senha',
+                    hintText: 'Repita a nova senha',
+                    labelStyle: theme.bodyMedium,
+                    hintStyle: theme.labelMedium,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: theme.alternate),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: theme.primary),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  obscureText: true,
+                  style: theme.bodyMedium,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                'Cancelar',
+                style: TextStyle(color: theme.secondaryText),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                if (passwordController.text != confirmController.text) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('As senhas não conferem.'),
+                      backgroundColor: theme.error,
+                    ),
+                  );
+                  return;
+                }
+                if (passwordController.text.length < 6) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text(
+                        'A senha deve ter pelo menos 6 caracteres.',
+                      ),
+                      backgroundColor: theme.error,
+                    ),
+                  );
+                  return;
+                }
+
+                try {
+                  await Supabase.instance.client.auth.updateUser(
+                    UserAttributes(password: passwordController.text),
+                  );
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text('Senha alterada com sucesso!'),
+                        backgroundColor: theme.success,
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Erro ao alterar senha: $e'),
+                        backgroundColor: theme.error,
+                      ),
+                    );
+                  }
+                }
+              },
+              child: Text('Salvar', style: TextStyle(color: theme.primary)),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -8,11 +8,9 @@ import 'package:provider/provider.dart';
 import 'package:sentimento_app/core/model.dart';
 import 'package:sentimento_app/core/nav/nav.dart';
 import 'package:sentimento_app/core/theme.dart';
-import 'package:sentimento_app/main.dart';
 import 'profile.model.dart';
 import 'widgets/profile_header.dart';
 import 'widgets/profile_logout_button.dart';
-import 'widgets/profile_section_title.dart';
 import 'widgets/profile_settings_tile.dart';
 
 export 'profile.model.dart';
@@ -55,7 +53,6 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
       child: Consumer<ProfileModel>(
         builder: (context, model, child) {
           final theme = FlutterFlowTheme.of(context);
-          final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
           return Scaffold(
             backgroundColor: theme.primaryBackground,
@@ -67,6 +64,13 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                 style: theme.headlineMedium.override(color: theme.primaryText),
               ),
               centerTitle: false,
+              actions: [
+                IconButton(
+                  icon: Icon(Icons.settings_rounded, color: theme.primaryText),
+                  onPressed: () => context.pushNamed('Settings'),
+                  tooltip: 'Configurações',
+                ),
+              ],
             ),
             body: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
@@ -81,88 +85,34 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                     onAvatarTap: () => model.uploadAvatarImage(context),
                   ),
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 32),
 
-                  // Settings section
-                  const ProfileSectionTitle(title: 'Configurações'),
+                  // Shortcuts Section
+                  _SectionHeader(title: 'Minha Conta', theme: theme),
                   const SizedBox(height: 12),
 
-                  ProfileSettingsTile(
-                    icon: Icons.dark_mode_rounded,
-                    title: 'Modo Escuro',
-                    trailing: Switch.adaptive(
-                      value: isDarkMode,
-                      onChanged: (value) {
-                        MyApp.of(context).setThemeMode(
-                          value ? ThemeMode.dark : ThemeMode.light,
-                        );
-                      },
-                      activeTrackColor: theme.primary,
+                  Container(
+                    decoration: BoxDecoration(
+                      color: theme.secondaryBackground,
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                  ),
-
-                  ProfileSettingsTile(
-                    icon: Icons.notifications_rounded,
-                    title: 'Notificações',
-                    trailing: Switch.adaptive(
-                      value: model.notificationsEnabled,
-                      onChanged: (value) => model.notificationsEnabled = value,
-                      activeTrackColor: theme.primary,
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Data section
-                  const ProfileSectionTitle(title: 'Dados'),
-                  const SizedBox(height: 12),
-
-                  ProfileSettingsTile(
-                    icon: Icons.download_rounded,
-                    title: 'Exportar Dados',
-                    subtitle: 'Baixe seus registros de humor',
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: const Text('Exportação em breve!'),
-                          backgroundColor: theme.primary,
+                    child: Column(
+                      children: [
+                        ProfileSettingsTile(
+                          icon: Icons.bar_chart_rounded,
+                          title: 'Estatísticas',
+                          subtitle: 'Minha evolução',
+                          onTap: () => context.pushNamed('Stats'),
                         ),
-                      );
-                    },
-                  ),
-
-                  ProfileSettingsTile(
-                    icon: Icons.bar_chart_rounded,
-                    title: 'Estatísticas Avançadas',
-                    subtitle: 'Veja análises detalhadas',
-                    onTap: () {
-                      context.pushNamed('Stats');
-                    },
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // About section
-                  const ProfileSectionTitle(title: 'Sobre'),
-                  const SizedBox(height: 12),
-
-                  const ProfileSettingsTile(
-                    icon: Icons.info_outline_rounded,
-                    title: 'Versão do App',
-                    subtitle: '1.0.0',
-                  ),
-
-                  ProfileSettingsTile(
-                    icon: Icons.privacy_tip_outlined,
-                    title: 'Política de Privacidade',
-                    onTap: () {},
-                  ),
-
-                  ProfileSettingsTile(
-                    icon: Icons.lock_outline_rounded,
-                    title: 'Alterar Senha',
-                    subtitle: 'Redefina sua senha de acesso',
-                    onTap: () => _showChangePasswordDialog(context, model),
+                        Divider(height: 1, color: theme.alternate),
+                        ProfileSettingsTile(
+                          icon: Icons.photo_library_rounded,
+                          title: 'Galeria',
+                          subtitle: 'Minhas recordações',
+                          onTap: () => context.pushNamed('Gallery'),
+                        ),
+                      ],
+                    ),
                   ),
 
                   const SizedBox(height: 32),
@@ -177,7 +127,7 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
                     },
                   ),
 
-                  const SizedBox(height: 100),
+                  const SizedBox(height: 50),
                 ],
               ),
             ),
@@ -186,56 +136,25 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
       ),
     );
   }
+}
 
-  void _showChangePasswordDialog(BuildContext context, ProfileModel model) {
-    showDialog<void>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Alterar Senha'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: model.changePasswordController,
-                  focusNode: model.changePasswordFocusNode,
-                  decoration: const InputDecoration(
-                    labelText: 'Nova Senha',
-                    hintText: 'Mínimo 6 caracteres',
-                  ),
-                  obscureText: true,
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: model.confirmPasswordController,
-                  focusNode: model.confirmPasswordFocusNode,
-                  decoration: const InputDecoration(
-                    labelText: 'Confirmar Senha',
-                    hintText: 'Repita a nova senha',
-                  ),
-                  obscureText: true,
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () async {
-                await model.updatePassword(context);
-                if (context.mounted) {
-                  Navigator.pop(context);
-                }
-              },
-              child: const Text('Salvar'),
-            ),
-          ],
-        );
-      },
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  final FlutterFlowTheme theme;
+
+  const _SectionHeader({required this.title, required this.theme});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: Text(
+        title,
+        style: theme.labelLarge.override(
+          color: theme.secondaryText,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
     );
   }
 }

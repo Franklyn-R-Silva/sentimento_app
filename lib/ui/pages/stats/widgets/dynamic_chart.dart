@@ -18,11 +18,24 @@ class DynamicChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = FlutterFlowTheme.of(context);
     if (entries.isEmpty) {
       return _buildEmptyState(context);
     }
 
-    return GradientCard(
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.secondaryBackground,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: theme.alternate, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: theme.primaryText.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.only(right: 16, left: 8, top: 16, bottom: 8),
         child: SizedBox(height: 250, child: _buildChart(context)),
@@ -144,11 +157,11 @@ class DynamicChart extends StatelessWidget {
               show: true,
               gradient: LinearGradient(
                 colors: [
-                  theme.error.withValues(alpha: 0.1),
-                  theme.warning.withValues(alpha: 0.1),
-                  theme.secondary.withValues(alpha: 0.1),
-                  theme.success.withValues(alpha: 0.1),
-                  theme.primary.withValues(alpha: 0.2),
+                  theme.error.withValues(alpha: 0.01),
+                  theme.warning.withValues(alpha: 0.01),
+                  theme.secondary.withValues(alpha: 0.02),
+                  theme.success.withValues(alpha: 0.03),
+                  theme.primary.withValues(alpha: 0.05),
                 ],
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
@@ -225,11 +238,11 @@ class DynamicChart extends StatelessWidget {
               show: true,
               gradient: LinearGradient(
                 colors: [
-                  theme.error.withValues(alpha: 0.1),
-                  theme.warning.withValues(alpha: 0.1),
-                  theme.secondary.withValues(alpha: 0.1),
-                  theme.success.withValues(alpha: 0.1),
-                  theme.primary.withValues(alpha: 0.1),
+                  theme.error.withValues(alpha: 0.01),
+                  theme.warning.withValues(alpha: 0.01),
+                  theme.secondary.withValues(alpha: 0.02),
+                  theme.success.withValues(alpha: 0.03),
+                  theme.primary.withValues(alpha: 0.05),
                 ],
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
@@ -301,11 +314,11 @@ class DynamicChart extends StatelessWidget {
               show: true,
               gradient: LinearGradient(
                 colors: [
-                  theme.error.withValues(alpha: 0.1),
-                  theme.warning.withValues(alpha: 0.1),
-                  theme.secondary.withValues(alpha: 0.1),
-                  theme.success.withValues(alpha: 0.1),
-                  theme.primary.withValues(alpha: 0.1),
+                  theme.error.withValues(alpha: 0.01),
+                  theme.warning.withValues(alpha: 0.01),
+                  theme.secondary.withValues(alpha: 0.02),
+                  theme.success.withValues(alpha: 0.03),
+                  theme.primary.withValues(alpha: 0.05),
                 ],
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,

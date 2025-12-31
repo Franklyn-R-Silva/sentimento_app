@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:cached_network_image/cached_network_image.dart';
+
 // Project imports:
 import 'package:sentimento_app/backend/supabase.dart';
 import 'package:sentimento_app/core/theme.dart';
@@ -87,25 +90,45 @@ class _DrawerHeaderWidgetState extends State<DrawerHeaderWidget> {
                   offset: const Offset(0, 4),
                 ),
               ],
-              image: (_avatarUrl != null && _avatarUrl!.isNotEmpty)
-                  ? DecorationImage(
-                      image: NetworkImage(_avatarUrl!),
-                      fit: BoxFit.cover,
-                    )
-                  : null,
             ),
-            child: (_avatarUrl == null || _avatarUrl!.isEmpty)
-                ? Center(
-                    child: Text(
-                      widget.userName.isNotEmpty
-                          ? widget.userName[0].toUpperCase()
-                          : 'U',
-                      style: widget.theme.headlineSmall.override(
-                        color: Colors.white,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(18),
+              child: (_avatarUrl != null && _avatarUrl!.isNotEmpty)
+                  ? CachedNetworkImage(
+                      imageUrl: _avatarUrl!,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Center(
+                        child: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Center(
+                        child: Text(
+                          widget.userName.isNotEmpty
+                              ? widget.userName[0].toUpperCase()
+                              : 'U',
+                          style: widget.theme.headlineSmall.override(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    )
+                  : Center(
+                      child: Text(
+                        widget.userName.isNotEmpty
+                            ? widget.userName[0].toUpperCase()
+                            : 'U',
+                        style: widget.theme.headlineSmall.override(
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                  )
-                : null,
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(

@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -82,11 +83,17 @@ class _BreathingExerciseSheetState extends State<BreathingExerciseSheet>
             ),
           ),
           const SizedBox(height: 24),
-          Text('Exercício de Respiração', style: theme.headlineSmall),
+          AutoSizeText(
+            'Exercício de Respiração',
+            style: theme.headlineSmall,
+            minFontSize: 9,
+          ),
+
           const SizedBox(height: 8),
-          Text(
+          AutoSizeText(
             'Relaxe e siga o ritmo',
             style: theme.bodyMedium.override(color: theme.secondaryText),
+            minFontSize: 9,
           ),
           Expanded(
             child: Center(

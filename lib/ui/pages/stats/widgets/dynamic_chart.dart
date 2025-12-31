@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:fl_chart/fl_chart.dart';
-import 'package:intl/intl.dart';
 
 // Project imports:
 import 'package:sentimento_app/backend/tables/entradas_humor.dart';

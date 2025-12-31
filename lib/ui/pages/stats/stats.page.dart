@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -63,7 +64,7 @@ class _StatsPageWidgetState extends State<StatsPageWidget> {
             appBar: AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
-              title: Text(
+              title: AutoSizeText(
                 'Minha Evolução',
                 style: theme.headlineMedium.override(color: theme.primaryText),
               ),

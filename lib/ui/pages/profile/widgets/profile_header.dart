@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:cached_network_image/cached_network_image.dart';
+
 // Project imports:
 import 'package:sentimento_app/core/theme.dart';
 
@@ -65,28 +68,19 @@ class ProfileHeader extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(28),
                     child: (avatarUrl != null && avatarUrl!.isNotEmpty)
-                        ? Image.network(
-                            avatarUrl!,
+                        ? CachedNetworkImage(
+                            imageUrl: avatarUrl!,
                             width: 90,
                             height: 90,
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return _buildInitials(theme);
-                            },
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Center(
-                                child: CircularProgressIndicator(
-                                  value:
-                                      loadingProgress.expectedTotalBytes != null
-                                      ? loadingProgress.cumulativeBytesLoaded /
-                                            loadingProgress.expectedTotalBytes!
-                                      : null,
-                                  color: Colors.white,
-                                  strokeWidth: 2,
-                                ),
-                              );
-                            },
+                            placeholder: (context, url) => Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            ),
+                            errorWidget: (context, url, error) =>
+                                _buildInitials(theme),
                           )
                         : _buildInitials(theme),
                   ),

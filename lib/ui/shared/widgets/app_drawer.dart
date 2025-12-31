@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -227,9 +228,13 @@ class AppDrawer extends StatelessWidget {
                 child: Icon(icon, color: color, size: 20),
               ),
               const SizedBox(width: 12),
-              Text(
+              AutoSizeText(
                 label,
-                style: theme.bodyMedium.override(fontWeight: FontWeight.w600),
+                style: theme.bodyMedium.override(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                ),
+                minFontSize: 9,
               ),
             ],
           ),

@@ -25,7 +25,7 @@ class DynamicChart extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: theme.secondaryBackground,
+        color: theme.primary.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: theme.alternate, width: 1),
         boxShadow: [

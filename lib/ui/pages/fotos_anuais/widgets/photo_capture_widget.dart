@@ -24,23 +24,27 @@ class PhotoCaptureWidget extends StatelessWidget {
             if (model.selectedImageBytes != null)
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.memory(
-                  model.selectedImageBytes!,
-                  width: double.infinity,
-                  height: 300,
-                  fit: BoxFit.cover,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 400),
+                  child: Image.memory(
+                    model.selectedImageBytes!,
+                    width: double.infinity,
+                    fit:
+                        BoxFit.contain, // Changed to contain to show full image
+                  ),
                 ),
               )
             else
               Container(
                 width: double.infinity,
-                height: 200,
+                padding: const EdgeInsets.symmetric(vertical: 40),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
+                  color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: Colors.white.withValues(alpha: 0.3),
-                    width: 2,
+                    width: 1, // Thinner border
+                    style: BorderStyle.solid,
                   ),
                 ),
                 child: const Column(
@@ -54,7 +58,10 @@ class PhotoCaptureWidget extends StatelessWidget {
                     SizedBox(height: 12),
                     Text(
                       'Nenhuma foto selecionada',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),

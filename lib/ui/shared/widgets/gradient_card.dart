@@ -34,30 +34,30 @@ class GradientCard extends StatelessWidget {
     }
 
     switch (moodLevel) {
-      case 1: // Muito triste
+      case 1: // Muito triste - Error Color
         return [
-          const Color(0xFFE57373).withValues(alpha: 0.9),
-          const Color(0xFFEF5350).withValues(alpha: 0.8),
+          theme.error.withValues(alpha: 0.9),
+          theme.error.withValues(alpha: 0.7),
         ];
-      case 2: // Triste
+      case 2: // Triste - Warning/Alternate
         return [
-          const Color(0xFFFFB74D).withValues(alpha: 0.9),
-          const Color(0xFFFF9800).withValues(alpha: 0.8),
+          theme.warning.withValues(alpha: 0.9),
+          theme.warning.withValues(alpha: 0.7),
         ];
-      case 3: // Neutro
+      case 3: // Neutro - Secondary/Accent
         return [
-          const Color(0xFF90CAF9).withValues(alpha: 0.9),
-          const Color(0xFF64B5F6).withValues(alpha: 0.8),
+          theme.secondary.withValues(alpha: 0.9),
+          theme.secondary.withValues(alpha: 0.7),
         ];
-      case 4: // Feliz
-        return [
-          const Color(0xFF81C784).withValues(alpha: 0.9),
-          const Color(0xFF66BB6A).withValues(alpha: 0.8),
-        ];
-      case 5: // Muito feliz
+      case 4: // Feliz - Primary
         return [
           theme.primary.withValues(alpha: 0.9),
-          theme.secondary.withValues(alpha: 0.8),
+          theme.primary.withValues(alpha: 0.7),
+        ];
+      case 5: // Muito feliz - Success/Tertiary
+        return [
+          theme.success.withValues(alpha: 0.9),
+          theme.success.withValues(alpha: 0.7),
         ];
       default:
         return [

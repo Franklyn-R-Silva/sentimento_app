@@ -34,13 +34,20 @@ class PhraseInputWidget extends StatelessWidget {
               decoration: InputDecoration(
                 hintText: 'Como foi o seu dia? Escreva algo marcante...',
                 hintStyle: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.6),
+                  color: Colors.white.withValues(alpha: 0.7),
                 ),
                 filled: true,
-                fillColor: Colors.white.withValues(alpha: 0.2),
-                border: OutlineInputBorder(
+                fillColor: Colors.white.withValues(alpha: 0.15),
+                enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
+                  borderSide: BorderSide(
+                    color: Colors.white.withValues(alpha: 0.3),
+                    width: 1,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Colors.white, width: 1.5),
                 ),
                 contentPadding: const EdgeInsets.all(16),
               ),

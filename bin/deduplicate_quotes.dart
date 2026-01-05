@@ -35,12 +35,12 @@ void main() async {
   // I will write a script that parses the specific format of this file.
 
   final lines = await file.readAsLines();
-  List<String> outputLines = [];
-  Set<String> seenQuotes = {};
+  final List<String> outputLines = [];
+  final Set<String> seenQuotes = {};
 
   bool insideList = false;
   List<String> currentBlock = [];
-  String currentText = '';
+  const String currentText = '';
 
   for (int i = 0; i < lines.length; i++) {
     final line = lines[i];
@@ -96,7 +96,7 @@ void _processBlock(
   if (fullBlock.contains("'text':")) {
     final parts = fullBlock.split("'text':");
     if (parts.length > 1) {
-      String remaining = parts[1].trim();
+      final String remaining = parts[1].trim();
       // Check for multiline string
       if (remaining.startsWith("'''")) {
         // Handle multiline

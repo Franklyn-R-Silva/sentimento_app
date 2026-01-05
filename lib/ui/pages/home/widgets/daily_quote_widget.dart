@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_unilink/whatsapp_unilink.dart';
@@ -114,6 +115,7 @@ class _DailyQuoteWidgetState extends State<DailyQuoteWidget>
 
   @override
   Widget build(BuildContext context) {
+    Logger().v('DailyQuoteWidget: build called');
     final theme = FlutterFlowTheme.of(context);
 
     return Container(

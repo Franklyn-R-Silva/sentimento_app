@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 
 // Project imports:
 import 'package:sentimento_app/backend/supabase.dart';
@@ -58,6 +59,7 @@ class _HomeHeaderState extends State<HomeHeader> {
 
   @override
   Widget build(BuildContext context) {
+    Logger().v('HomeHeader: build called');
     final theme = FlutterFlowTheme.of(context);
 
     return Padding(

@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:logger/logger.dart';
+
 // Project imports:
 import 'package:sentimento_app/backend/supabase.dart';
 import 'package:sentimento_app/core/model.dart';
@@ -47,13 +50,19 @@ class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   /// Action blocks are added here.
 
   Future<void> loadData() async {
+    final logger = Logger();
+    final stopwatch = Stopwatch()..start();
+    logger.d('HomeModel: Starting loadData...');
     isLoading = true;
 
     try {
       final supabase = Supabase.instance.client;
       final userId = supabase.auth.currentUser?.id;
 
-      if (userId == null) return;
+      if (userId == null) {
+        logger.w('HomeModel: No user ID found');
+        return;
+      }
 
       // Fetch Recent (Last 10)
       final recentResponse = await EntradasHumorTable().queryRows(
@@ -63,6 +72,9 @@ class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
             .limit(10),
       );
       recentEntries = recentResponse;
+      logger.d(
+        'HomeModel: Fetched ${recentEntries.length} recent entries in ${stopwatch.elapsedMilliseconds}ms',
+      );
 
       // Fetch last 7 days for weekly chart
       final now = DateTime.now();
@@ -74,6 +86,7 @@ class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
             .order('criado_em', ascending: true),
       );
       weeklyEntries = weeklyResponse;
+      logger.d('HomeModel: Fetched ${weeklyEntries.length} weekly entries');
 
       // Fetch current year for annual chart
       final startOfYear = DateTime(now.year, 1, 1);
@@ -84,14 +97,18 @@ class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
             .order('criado_em', ascending: true),
       );
       annualEntries = annualResponse;
+      logger.d('HomeModel: Fetched ${annualEntries.length} annual entries');
 
       // Calculate streaks
       _longestStreak = calculateLongestStreak(annualEntries);
       _currentStreak = calculateCurrentStreak(recentEntries);
 
       notifyListeners();
+      logger.i(
+        'HomeModel: loadData completed in ${stopwatch.elapsedMilliseconds}ms',
+      );
     } catch (e) {
-      debugPrint('Error loading home data: $e');
+      logger.e('Error loading home data: $e');
     } finally {
       isLoading = false;
     }

@@ -39,14 +39,22 @@ void main() async {
 
   // Initialize Firebase and Notifications
   try {
+    final stopwatch = Stopwatch()..start();
     await Firebase.initializeApp();
+    logger.d('Firebase initialized in ${stopwatch.elapsedMilliseconds}ms');
+
+    stopwatch.reset();
     await NotificationService().initialize();
-    logger.i('NotificationService inicializado com sucesso!');
+    logger.i(
+      'NotificationService inicializado em ${stopwatch.elapsedMilliseconds}ms',
+    );
   } catch (e) {
     logger.e('Erro ao iniciar NotificationService: $e');
   }
 
+  final themeStopwatch = Stopwatch()..start();
   await FlutterFlowTheme.initialize();
+  logger.d('Theme initialized in ${themeStopwatch.elapsedMilliseconds}ms');
 
   final appState = AppStateNotifier.instance;
 
@@ -57,7 +65,9 @@ void main() async {
     appState.update(currentUser!);
   }
 
+  final stateStopwatch = Stopwatch()..start();
   await appState.initializePersistedState();
+  logger.d('AppState initialized in ${stateStopwatch.elapsedMilliseconds}ms');
 
   runApp(
     ChangeNotifierProvider(create: (context) => appState, child: const MyApp()),

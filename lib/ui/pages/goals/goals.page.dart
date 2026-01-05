@@ -29,10 +29,13 @@ class GoalsPageWidget extends StatefulWidget {
 }
 
 class _GoalsPageWidgetState extends State<GoalsPageWidget>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late GoalsModel _model;
   late AnimationController _fabController;
   late Animation<double> _fabAnimation;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -91,6 +94,7 @@ class _GoalsPageWidgetState extends State<GoalsPageWidget>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Ensure KeepAlive works
     return ChangeNotifierProvider<GoalsModel>.value(
       value: _model,
       child: Consumer<GoalsModel>(

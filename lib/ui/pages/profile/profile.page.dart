@@ -27,8 +27,12 @@ class ProfilePageWidget extends StatefulWidget {
   State<ProfilePageWidget> createState() => _ProfilePageWidgetState();
 }
 
-class _ProfilePageWidgetState extends State<ProfilePageWidget> {
+class _ProfilePageWidgetState extends State<ProfilePageWidget>
+    with AutomaticKeepAliveClientMixin {
   late ProfileModel _model;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -50,6 +54,7 @@ class _ProfilePageWidgetState extends State<ProfilePageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Ensure KeepAlive works
     return ChangeNotifierProvider<ProfileModel>.value(
       value: _model,
       child: Consumer<ProfileModel>(

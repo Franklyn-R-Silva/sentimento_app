@@ -34,6 +34,14 @@ class _MainPageWidgetState extends State<MainPageWidget> {
     ProfilePageWidget(),
   ];
 
+  final PageController _pageController = PageController();
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = FlutterFlowTheme.of(context);
@@ -42,10 +50,18 @@ class _MainPageWidgetState extends State<MainPageWidget> {
       key: _scaffoldKey,
       backgroundColor: theme.primaryBackground,
       drawer: const AppDrawer(),
-      body: IndexedStack(index: _currentIndex, children: _pages),
+      body: PageView(
+        controller: _pageController,
+        physics: const NeverScrollableScrollPhysics(),
+        children: _pages,
+        onPageChanged: (index) => setState(() => _currentIndex = index),
+      ),
       bottomNavigationBar: CustomBottomNav(
         currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
+        onTap: (index) {
+          _pageController.jumpToPage(index);
+          setState(() => _currentIndex = index);
+        },
         onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
       ),
     );

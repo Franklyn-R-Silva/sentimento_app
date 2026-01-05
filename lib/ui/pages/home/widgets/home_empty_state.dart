@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:logger/logger.dart';
 
 // Project imports:
 import 'package:sentimento_app/core/theme.dart';
@@ -12,6 +13,7 @@ class HomeEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Logger().v('HomeEmptyState: build called');
     final theme = FlutterFlowTheme.of(context);
 
     return Container(

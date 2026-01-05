@@ -29,8 +29,12 @@ class StatsPageWidget extends StatefulWidget {
   State<StatsPageWidget> createState() => _StatsPageWidgetState();
 }
 
-class _StatsPageWidgetState extends State<StatsPageWidget> {
+class _StatsPageWidgetState extends State<StatsPageWidget>
+    with AutomaticKeepAliveClientMixin {
   late StatsModel _model;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -55,6 +59,7 @@ class _StatsPageWidgetState extends State<StatsPageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Ensure KeepAlive works
     return ChangeNotifierProvider<StatsModel>.value(
       value: _model,
       child: Consumer<StatsModel>(

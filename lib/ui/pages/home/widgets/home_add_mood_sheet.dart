@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:logger/logger.dart';
+
 // Project imports:
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/ui/pages/home/widgets/mood_selector.dart';
@@ -34,6 +37,7 @@ class _HomeAddMoodSheetState extends State<HomeAddMoodSheet> {
 
   @override
   Widget build(BuildContext context) {
+    Logger().v('HomeAddMoodSheet: build called');
     final theme = FlutterFlowTheme.of(context);
 
     // Handle keyboard padding

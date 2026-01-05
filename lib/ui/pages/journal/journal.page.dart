@@ -30,9 +30,13 @@ class JournalPageWidget extends StatefulWidget {
   State<JournalPageWidget> createState() => _JournalPageWidgetState();
 }
 
-class _JournalPageWidgetState extends State<JournalPageWidget> {
+class _JournalPageWidgetState extends State<JournalPageWidget>
+    with AutomaticKeepAliveClientMixin {
   late JournalModel _model;
   final _searchController = TextEditingController();
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -93,6 +97,7 @@ class _JournalPageWidgetState extends State<JournalPageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ChangeNotifierProvider<JournalModel>.value(
       value: _model,
       child: Consumer<JournalModel>(

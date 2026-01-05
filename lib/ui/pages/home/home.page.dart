@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 // Project imports:
@@ -31,9 +32,13 @@ class HomePageWidget extends StatefulWidget {
   State<HomePageWidget> createState() => _HomePageWidgetState();
 }
 
-class _HomePageWidgetState extends State<HomePageWidget> {
+class _HomePageWidgetState extends State<HomePageWidget>
+    with AutomaticKeepAliveClientMixin {
   late HomeModel _model;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -62,6 +67,10 @@ class _HomePageWidgetState extends State<HomePageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Ensure KeepAlive works
+    final logger = Logger();
+    logger.v('HomePage: build called');
+
     return ChangeNotifierProvider<HomeModel>.value(
       value: _model,
       child: Consumer<HomeModel>(

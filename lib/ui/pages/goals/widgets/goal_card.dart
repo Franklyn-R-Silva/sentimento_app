@@ -130,6 +130,44 @@ class _GoalCardState extends State<GoalCard>
         onTapUp: (_) => setState(() => _isPressed = false),
         onTapCancel: () => setState(() => _isPressed = false),
         onTap: widget.onTap,
+        onLongPress: () async {
+          setState(() => _isPressed = false);
+          if (widget.onDelete == null) return;
+
+          final confirm = await showDialog<bool>(
+            context: context,
+            builder: (context) => AlertDialog(
+              backgroundColor: theme.secondaryBackground,
+              title: Text('Excluir Meta?', style: theme.titleLarge),
+              content: Text(
+                'Tem certeza que deseja excluir esta meta? Todo o progresso será perdido.',
+                style: theme.bodyMedium,
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: Text(
+                    'Cancelar',
+                    style: theme.bodyMedium.override(
+                      color: theme.secondaryText,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: Text(
+                    'Excluir',
+                    style: theme.bodyMedium.override(color: theme.error),
+                  ),
+                ),
+              ],
+            ),
+          );
+
+          if (confirm == true) {
+            widget.onDelete!();
+          }
+        },
         child: AnimatedScale(
           scale: _isPressed ? 0.98 : 1.0,
           duration: const Duration(milliseconds: 100),

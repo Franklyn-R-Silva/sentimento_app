@@ -7,6 +7,7 @@ import 'package:logger/logger.dart';
 // Project imports:
 import 'package:sentimento_app/backend/supabase.dart';
 import 'package:sentimento_app/core/model.dart';
+import 'package:sentimento_app/backend/services/data_refresh_service.dart';
 
 class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   /// State fields for stateful widgets in this page.
@@ -139,6 +140,7 @@ class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         'criado_em': DateTime.now().toIso8601String(),
       });
       await loadData(); // Refresh and notify listeners
+      DataRefreshService.instance.triggerRefresh();
     } catch (e) {
       debugPrint('Error adding entry: $e');
       if (context.mounted) {

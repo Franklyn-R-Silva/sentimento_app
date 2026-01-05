@@ -43,11 +43,19 @@ class _JournalPageWidgetState extends State<JournalPageWidget>
     super.initState();
     _model = createModel(context, () => JournalModel());
     _model.loadEntries();
+    DataRefreshService.instance.addListener(_onRefresh);
+  }
+
+  void _onRefresh() {
+    if (mounted) {
+      _model.loadEntries();
+    }
   }
 
   @override
   void dispose() {
     _searchController.dispose();
+    DataRefreshService.instance.removeListener(_onRefresh);
     _model.dispose();
     super.dispose();
   }

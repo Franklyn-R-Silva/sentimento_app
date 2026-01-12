@@ -68,8 +68,7 @@ class _HomePageWidgetState extends State<HomePageWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context); // Ensure KeepAlive works
-    final logger = Logger();
-    logger.v('HomePage: build called');
+    Logger().t('HomePage: build called');
 
     return ChangeNotifierProvider<HomeModel>.value(
       value: _model,

@@ -12,11 +12,13 @@ import 'package:sentimento_app/core/theme.dart';
 class MoodSelector extends StatelessWidget {
   final int selectedMood;
   final ValueChanged<int> onMoodSelected;
+  final bool showLabels;
 
   const MoodSelector({
     super.key,
     required this.selectedMood,
     required this.onMoodSelected,
+    this.showLabels = true,
   });
 
   static const List<String> _emojis = ['😢', '😟', '😐', '🙂', '😄'];
@@ -40,20 +42,25 @@ class MoodSelector extends StatelessWidget {
     Logger().t('MoodSelector: build called');
     final theme = FlutterFlowTheme.of(context);
 
+    // Validate mood range (1-5)
+    final safeMood = selectedMood.clamp(1, 5);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        AutoSizeText(
-          'Como você está se sentindo?',
-          style: theme.titleMedium,
-          minFontSize: 12,
-        ),
-        const SizedBox(height: 24),
+        if (showLabels) ...[
+          AutoSizeText(
+            'Como você está se sentindo?',
+            style: theme.titleMedium,
+            minFontSize: 12,
+          ),
+          const SizedBox(height: 24),
+        ],
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: List.generate(5, (index) {
             final moodLevel = index + 1;
-            final isSelected = selectedMood == moodLevel;
+            final isSelected = safeMood == moodLevel;
 
             return GestureDetector(
               onTap: () => onMoodSelected(moodLevel),
@@ -93,19 +100,21 @@ class MoodSelector extends StatelessWidget {
             );
           }),
         ),
-        const SizedBox(height: 16),
-        AnimatedSwitcher(
-          duration: const Duration(milliseconds: 200),
-          child: AutoSizeText(
-            _labels[selectedMood - 1],
-            key: ValueKey(selectedMood),
-            style: theme.labelLarge.override(
-              color: _colors[selectedMood - 1],
-              fontWeight: FontWeight.w600,
+        if (showLabels) ...[
+          const SizedBox(height: 16),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: AutoSizeText(
+              _labels[safeMood - 1],
+              key: ValueKey(safeMood),
+              style: theme.labelLarge.override(
+                color: _colors[safeMood - 1],
+                fontWeight: FontWeight.w600,
+              ),
+              minFontSize: 10,
             ),
-            minFontSize: 10,
           ),
-        ),
+        ],
       ],
     );
   }

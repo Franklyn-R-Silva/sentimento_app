@@ -115,7 +115,7 @@ class _DailyQuoteWidgetState extends State<DailyQuoteWidget>
 
   @override
   Widget build(BuildContext context) {
-    Logger().v('DailyQuoteWidget: build called');
+    Logger().t('DailyQuoteWidget: build called');
     final theme = FlutterFlowTheme.of(context);
 
     return Container(

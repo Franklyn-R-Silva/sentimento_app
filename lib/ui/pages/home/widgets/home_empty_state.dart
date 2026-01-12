@@ -13,7 +13,7 @@ class HomeEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Logger().v('HomeEmptyState: build called');
+    Logger().t('HomeEmptyState: build called');
     final theme = FlutterFlowTheme.of(context);
 
     return Container(

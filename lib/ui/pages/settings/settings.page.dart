@@ -275,6 +275,17 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
               ),
             ),
 
+            const SizedBox(height: 12),
+            AppCard(
+              child: AppListTile(
+                icon: Icons.delete_forever_rounded,
+                iconColor: theme.error,
+                title: 'Excluir Conta',
+                subtitle: 'Apagar todos os dados permanentemente',
+                onTap: () => _confirmDeleteAccount(context),
+              ),
+            ),
+
             const SizedBox(height: 24),
 
             // Outros
@@ -428,11 +439,8 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
 
         if (userId != null) {
           // Delete database data first (Soft delete for user perspective)
-          // Ideally we would delete the Auth User via Edge Function,
-          // but for V1 we clean up the DB.
           await supabase.from('entradas_humor').delete().eq('user_id', userId);
           await supabase.from('fotos_anuais').delete().eq('user_id', userId);
-          // Add other tables here if needed
         }
 
         await supabase.auth.signOut();

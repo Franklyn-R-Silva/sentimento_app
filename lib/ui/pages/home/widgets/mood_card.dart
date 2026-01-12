@@ -32,7 +32,7 @@ class MoodCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Logger().v('MoodCard: build called for entry ${entry.id}');
+    Logger().t('MoodCard: build called for entry ${entry.id}');
     final theme = FlutterFlowTheme.of(context);
 
     return Container(

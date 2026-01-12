@@ -33,7 +33,7 @@ class MoodStreak extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Logger().v('MoodStreak: build called with $streakDays days');
+    Logger().t('MoodStreak: build called with $streakDays days');
     final theme = FlutterFlowTheme.of(context);
 
     return Container(

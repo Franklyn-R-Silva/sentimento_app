@@ -51,7 +51,7 @@ class WeeklyChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Logger().v('WeeklyChart: build called with ${entries.length} entries');
+    Logger().t('WeeklyChart: build called with ${entries.length} entries');
     final theme = FlutterFlowTheme.of(context);
     final spots = _getSpots();
 

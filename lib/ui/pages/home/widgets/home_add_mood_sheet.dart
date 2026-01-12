@@ -6,7 +6,7 @@ import 'package:logger/logger.dart';
 
 // Project imports:
 import 'package:sentimento_app/core/theme.dart';
-import 'package:sentimento_app/ui/pages/home/widgets/mood_selector.dart';
+import 'package:sentimento_app/ui/shared/widgets/mood_selector.dart';
 import 'package:sentimento_app/ui/shared/widgets/tag_selector.dart';
 
 class HomeAddMoodSheet extends StatefulWidget {
@@ -37,7 +37,7 @@ class _HomeAddMoodSheetState extends State<HomeAddMoodSheet> {
 
   @override
   Widget build(BuildContext context) {
-    Logger().v('HomeAddMoodSheet: build called');
+    Logger().t('HomeAddMoodSheet: build called');
     final theme = FlutterFlowTheme.of(context);
 
     // Handle keyboard padding

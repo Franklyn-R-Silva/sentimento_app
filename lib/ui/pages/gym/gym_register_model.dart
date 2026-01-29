@@ -23,7 +23,10 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   final stretchingSeriesController = TextEditingController();
   final stretchingQtyController = TextEditingController();
   final stretchingTimeController = TextEditingController();
-  final timeController = TextEditingController(); // Added
+  final timeController =
+      TextEditingController(); // Raw string for special cases
+  final minutesController = TextEditingController(); // For minutes
+  final secondsController = TextEditingController(); // For seconds
 
   // New Exercise Controllers
   final setsController = TextEditingController(); // Replaces exerciseSeries
@@ -141,7 +144,9 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     repsController.dispose();
     weightController.dispose();
     restTimeController.dispose();
-    timeController.dispose(); // Added
+    timeController.dispose();
+    minutesController.dispose();
+    secondsController.dispose();
     descriptionController.dispose();
     super.dispose();
   }
@@ -261,7 +266,25 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     repsController.text = exercise.reps ?? '';
     weightController.text = exercise.weight?.toString() ?? '';
     restTimeController.text = exercise.restTime?.toString() ?? '';
-    timeController.text = exercise.exerciseTime ?? ''; // Added
+    timeController.text = exercise.exerciseTime ?? '';
+
+    // Attempt to parse "MM:SS" or "X min" or "X s"
+    final rawTime = exercise.exerciseTime;
+    if (rawTime != null && rawTime.isNotEmpty) {
+      if (rawTime.contains(':')) {
+        final parts = rawTime.split(':');
+        if (parts.length == 2) {
+          minutesController.text = parts[0];
+          secondsController.text = parts[1];
+        }
+      } else if (rawTime.contains('min')) {
+        minutesController.text = rawTime.replaceAll('min', '').trim();
+      } else if (rawTime.contains('s')) {
+        secondsController.text = rawTime.replaceAll('s', '').trim();
+      } else {
+        // Fallback: if it's just a number, we don't know, but let's keep it in the raw field
+      }
+    }
     selectedDay = exercise.dayOfWeek;
     selectedWorkoutId = exercise.workoutId;
 
@@ -411,9 +434,7 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         'reps': repsController.text,
         'weight': double.tryParse(weightController.text.replaceAll(',', '.')),
         'rest_time': int.tryParse(restTimeController.text),
-        'exercise_time': timeController.text.isNotEmpty
-            ? timeController.text
-            : null, // Added
+        'exercise_time': _buildDurationString(),
         'stretching_name': stretchingNameController.text.isNotEmpty
             ? stretchingNameController.text
             : null,
@@ -450,5 +471,25 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     } finally {
       isLoading = false;
     }
+  }
+
+  String? _buildDurationString() {
+    final m = minutesController.text.trim();
+    final s = secondsController.text.trim();
+
+    if (m.isEmpty && s.isEmpty) {
+      return timeController.text.isNotEmpty ? timeController.text : null;
+    }
+
+    if (m.isNotEmpty && s.isNotEmpty) {
+      // Pad seconds
+      final paddedS = s.length == 1 ? '0$s' : s;
+      return '$m:$paddedS';
+    }
+
+    if (m.isNotEmpty) return '${m}min';
+    if (s.isNotEmpty) return '${s}s';
+
+    return null;
   }
 }

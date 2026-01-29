@@ -255,15 +255,16 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                                     width: 1,
                                   ),
                                 ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
+                                child: Wrap(
+                                  spacing: 4,
+                                  runSpacing: 2,
+                                  crossAxisAlignment: WrapCrossAlignment.center,
                                   children: [
                                     Icon(
                                       Icons.fitness_center_rounded,
                                       size: 10,
                                       color: theme.tertiary,
                                     ),
-                                    const SizedBox(width: 4),
                                     Text(
                                       widget.workoutName!,
                                       style: theme.labelSmall.override(

@@ -3,6 +3,7 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/cupertino.dart';
 
 // Package imports:
 import 'package:logger/logger.dart';
@@ -255,7 +256,12 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                         children: [
                           Expanded(
                             child: DropdownButtonFormField<String>(
-                              value: model.selectedWorkoutId,
+                              value:
+                                  (model.workouts.any(
+                                    (w) => w.id == model.selectedWorkoutId,
+                                  ))
+                                  ? model.selectedWorkoutId
+                                  : null,
                               items: [
                                 const DropdownMenuItem(
                                   value: null,
@@ -356,19 +362,126 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                           ),
                           const SizedBox(width: 12),
                           Expanded(
-                            child: TextFormField(
-                              controller: model.timeController,
-                              decoration: InputDecoration(
-                                labelText: 'Tempo',
-                                hintText: 'Ex: 30s',
-                                filled: true,
-                                fillColor: theme.secondaryBackground,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: BorderSide.none,
+                            child: InkWell(
+                              onTap: () async {
+                                final currentMin =
+                                    int.tryParse(
+                                      model.minutesController.text,
+                                    ) ??
+                                    0;
+                                final currentSec =
+                                    int.tryParse(
+                                      model.secondsController.text,
+                                    ) ??
+                                    0;
+
+                                await showModalBottomSheet<void>(
+                                  context: context,
+                                  builder: (context) => Container(
+                                    height: 300,
+                                    color: theme.secondaryBackground,
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 8,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            border: Border(
+                                              bottom: BorderSide(
+                                                color: theme.alternate,
+                                              ),
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              TextButton(
+                                                onPressed: () =>
+                                                    Navigator.pop(context),
+                                                child: Text(
+                                                  'Cancelar',
+                                                  style: TextStyle(
+                                                    color: theme.secondaryText,
+                                                  ),
+                                                ),
+                                              ),
+                                              Text(
+                                                'Selecionar Tempo',
+                                                style: theme.bodyLarge.override(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              TextButton(
+                                                onPressed: () =>
+                                                    Navigator.pop(context),
+                                                child: Text(
+                                                  'OK',
+                                                  style: TextStyle(
+                                                    color: theme.primary,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: CupertinoTimerPicker(
+                                            mode: CupertinoTimerPickerMode.ms,
+                                            initialTimerDuration: Duration(
+                                              minutes: currentMin,
+                                              seconds: currentSec,
+                                            ),
+                                            onTimerDurationChanged:
+                                                (Duration newDuration) {
+                                                  model.minutesController.text =
+                                                      newDuration.inMinutes
+                                                          .toString();
+                                                  model.secondsController.text =
+                                                      (newDuration.inSeconds %
+                                                              60)
+                                                          .toString();
+                                                  setState(() {});
+                                                },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: IgnorePointer(
+                                child: TextFormField(
+                                  controller: TextEditingController(
+                                    text:
+                                        (model.minutesController.text.isEmpty &&
+                                            model
+                                                .secondsController
+                                                .text
+                                                .isEmpty)
+                                        ? ''
+                                        : '${model.minutesController.text.isEmpty ? '0' : model.minutesController.text}m ${model.secondsController.text.isEmpty ? '0' : model.secondsController.text}s',
+                                  ),
+                                  decoration: InputDecoration(
+                                    labelText: 'Tempo de Exercício',
+                                    hintText: 'Selecionar tempo',
+                                    prefixIcon: Icon(
+                                      Icons.timer_outlined,
+                                      color: theme.secondaryText,
+                                    ),
+                                    filled: true,
+                                    fillColor: theme.secondaryBackground,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                  ),
+                                  style: theme.bodyMedium,
                                 ),
                               ),
-                              style: theme.bodyMedium,
                             ),
                           ),
                         ],

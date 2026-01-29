@@ -211,7 +211,7 @@ extension NavigationExtensions on BuildContext {
           extra: extra,
         );
 
-  void pushNamedAuth(
+  Future<T?>? pushNamedAuth<T extends Object?>(
     final String name,
     // ignore: avoid_positional_boolean_parameters
     final bool mounted, {
@@ -221,7 +221,7 @@ extension NavigationExtensions on BuildContext {
     final bool ignoreRedirect = false,
   }) => !mounted || GoRouter.of(this).shouldRedirect(ignoreRedirect)
       ? null
-      : pushNamed(
+      : pushNamed<T>(
           name,
           pathParameters: pathParameters,
           queryParameters: queryParameters,

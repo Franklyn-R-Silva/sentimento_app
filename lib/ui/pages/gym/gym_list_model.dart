@@ -1,0 +1,91 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:logger/logger.dart';
+
+// Project imports:
+import 'package:sentimento_app/backend/supabase.dart';
+import 'package:sentimento_app/backend/tables/gym_exercises.dart';
+import 'package:sentimento_app/core/model.dart';
+import 'package:sentimento_app/core/util.dart';
+
+class GymListModel extends FlutterFlowModel<Widget> with ChangeNotifier {
+  final unfocusNode = FocusNode();
+
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+  set isLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
+
+  List<GymExercisesRow> todaysExercises = [];
+
+  @override
+  void initState(BuildContext context) {}
+
+  @override
+  void dispose() {
+    unfocusNode.dispose();
+    super.dispose();
+  }
+
+  Future<void> loadData() async {
+    final logger = Logger();
+    logger.d('GymListModel: Starting loadData...');
+    isLoading = true;
+
+    try {
+      final supabase = Supabase.instance.client;
+      final userId = supabase.auth.currentUser?.id;
+
+      if (userId == null) {
+        logger.w('GymListModel: No user ID found');
+        return;
+      }
+
+      final today = DateTime.now();
+      final dayOfWeek = _getDayOfWeek(today.weekday);
+
+      final response = await GymExercisesTable().queryRows(
+        queryFn: (q) => q
+            .eq('user_id', userId)
+            .eq('day_of_week', dayOfWeek)
+            .order('name', ascending: true),
+      );
+
+      todaysExercises = response;
+      logger.d(
+        'GymListModel: Fetched ${todaysExercises.length} exercises for $dayOfWeek',
+      );
+
+      notifyListeners();
+    } catch (e) {
+      logger.e('Error loading gym data: $e');
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  String _getDayOfWeek(int weekday) {
+    switch (weekday) {
+      case DateTime.monday:
+        return 'Segunda';
+      case DateTime.tuesday:
+        return 'Terça';
+      case DateTime.wednesday:
+        return 'Quarta';
+      case DateTime.thursday:
+        return 'Quinta';
+      case DateTime.friday:
+        return 'Sexta';
+      case DateTime.saturday:
+        return 'Sábado';
+      case DateTime.sunday:
+        return 'Domingo';
+      default:
+        return 'Segunda';
+    }
+  }
+}

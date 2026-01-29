@@ -24,6 +24,8 @@ class GymLogsRow extends SupabaseDataRow {
   int? get reps => getField<int>('reps');
   int? get series => getField<int>('series');
   String? get notes => getField<String>('notes');
+  double? get elevation => getField<double>('elevation');
+  double? get speed => getField<double>('speed');
   DateTime get createdAt => getField<DateTime>('created_at') ?? DateTime.now();
 
   // Computed field for display

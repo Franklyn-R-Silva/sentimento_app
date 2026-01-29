@@ -80,6 +80,8 @@ class GymFocusModel extends ChangeNotifier {
           weight: exercise.weight,
           reps: int.tryParse(exercise.reps ?? ''),
           series: exercise.sets ?? exercise.exerciseSeries,
+          elevation: exercise.elevation,
+          speed: exercise.speed,
         );
       }
     } catch (e) {

@@ -105,6 +105,8 @@ class GymRepository {
     int? reps,
     int? series,
     String? notes,
+    double? elevation,
+    double? speed,
   }) async {
     final userId = Supabase.instance.client.auth.currentUser?.id;
 
@@ -116,6 +118,8 @@ class GymRepository {
       'reps': reps,
       'series': series,
       'notes': notes,
+      'elevation': elevation,
+      'speed': speed,
       'created_at': DateTime.now().toIso8601String(),
     });
   }

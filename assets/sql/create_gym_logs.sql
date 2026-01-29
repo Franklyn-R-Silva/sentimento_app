@@ -51,3 +51,8 @@ CREATE POLICY "Users can update their own logs"
 CREATE POLICY "Users can delete their own logs"
     ON gym_logs FOR DELETE
     USING (auth.uid() = user_id);
+
+
+ALTER TABLE gym_logs
+ADD COLUMN elevation DOUBLE PRECISION,
+ADD COLUMN speed DOUBLE PRECISION;

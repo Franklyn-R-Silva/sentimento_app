@@ -104,10 +104,9 @@ class _GymListPageState extends State<GymListPage> {
                             tooltip: 'Modo Foco',
                             onPressed: model.todaysExercises.isNotEmpty
                                 ? () async {
-                                    await Navigator.pushNamed(
-                                      context,
+                                    await context.push(
                                       '/gym/focus',
-                                      arguments: model.todaysExercises,
+                                      extra: model.todaysExercises,
                                     );
                                     await model.loadData();
                                   }

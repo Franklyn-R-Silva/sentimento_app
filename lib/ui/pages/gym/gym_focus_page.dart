@@ -5,6 +5,7 @@ import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/ui/pages/gym/gym_focus_model.dart';
 import 'package:sentimento_app/ui/pages/gym/widgets/gym_rest_timer.dart';
 import 'package:sentimento_app/ui/pages/gym/widgets/gym_exercise_carousel.dart';
+import 'package:sentimento_app/ui/pages/gym/widgets/gym_stats.dart';
 
 class GymFocusPage extends StatefulWidget {
   const GymFocusPage({
@@ -318,6 +319,13 @@ class _GymFocusPageState extends State<GymFocusPage> {
                 textAlign: TextAlign.center,
               ),
             ),
+
+          // Weight History
+          const SizedBox(height: 16),
+          GymExerciseHistory(
+            exerciseId: exercise.id,
+            exerciseName: exercise.name,
+          ),
         ],
       ),
     );

@@ -84,12 +84,19 @@ class _GymExerciseHistoryState extends State<GymExerciseHistory> {
             Icon(Icons.trending_up, color: theme.tertiary, size: 20),
             const SizedBox(width: 8),
             Text(
-              'Histórico Recente',
+              'Histórico de Peso',
               style: theme.labelMedium.override(
                 fontFamily: 'Outfit',
                 fontWeight: FontWeight.bold,
               ),
             ),
+            const Spacer(),
+            if (_history.isNotEmpty && _history.any((h) => h.weight != null))
+              TextButton.icon(
+                onPressed: () => _showWeightChartDialog(context, theme),
+                icon: const Icon(Icons.show_chart, size: 16),
+                label: const Text('Ver Gráfico'),
+              ),
           ],
         ),
         const SizedBox(height: 8),
@@ -142,6 +149,51 @@ class _GymExerciseHistoryState extends State<GymExerciseHistory> {
           ),
         ),
       ],
+    );
+  }
+
+  void _showWeightChartDialog(BuildContext context, FlutterFlowTheme theme) {
+    final weights = _history
+        .where((h) => h.weight != null)
+        .toList()
+        .reversed
+        .toList(); // Oldest first for chart
+
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Row(
+          children: [
+            const Icon(Icons.show_chart, color: Colors.blue),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Evolução - ${widget.exerciseName}',
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+        content: SizedBox(
+          width: 300,
+          height: 200,
+          child: weights.length < 2
+              ? Center(
+                  child: Text(
+                    'Precisa de pelo menos 2 registros para mostrar o gráfico',
+                    style: theme.bodyMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              : GymWeightChart(logs: weights),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Fechar'),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -351,4 +403,163 @@ class GymStatsDialog extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Simple line chart for weight history
+class GymWeightChart extends StatelessWidget {
+  const GymWeightChart({super.key, required this.logs});
+
+  final List<GymLogsRow> logs;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FlutterFlowTheme.of(context);
+
+    if (logs.isEmpty) {
+      return const Center(child: Text('Sem dados'));
+    }
+
+    final weights = logs.map((l) => l.weight ?? 0.0).toList();
+    final minWeight = weights.reduce((a, b) => a < b ? a : b);
+    final maxWeight = weights.reduce((a, b) => a > b ? a : b);
+    final range = maxWeight - minWeight;
+
+    return Column(
+      children: [
+        // Y-axis labels
+        Expanded(
+          child: Row(
+            children: [
+              // Y-axis
+              SizedBox(
+                width: 40,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '${maxWeight.toStringAsFixed(0)}kg',
+                      style: theme.labelSmall,
+                    ),
+                    if (range > 0)
+                      Text(
+                        '${(minWeight + range / 2).toStringAsFixed(0)}kg',
+                        style: theme.labelSmall,
+                      ),
+                    Text(
+                      '${minWeight.toStringAsFixed(0)}kg',
+                      style: theme.labelSmall,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              // Chart area
+              Expanded(
+                child: CustomPaint(
+                  painter: _WeightChartPainter(
+                    weights: weights,
+                    minWeight: minWeight,
+                    maxWeight: maxWeight,
+                    lineColor: theme.primary,
+                    dotColor: theme.tertiary,
+                    gridColor: theme.alternate,
+                  ),
+                  size: Size.infinite,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        // X-axis labels (dates)
+        Padding(
+          padding: const EdgeInsets.only(left: 48),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              if (logs.isNotEmpty)
+                Text(logs.first.displayDate, style: theme.labelSmall),
+              if (logs.length > 1)
+                Text(logs.last.displayDate, style: theme.labelSmall),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _WeightChartPainter extends CustomPainter {
+  _WeightChartPainter({
+    required this.weights,
+    required this.minWeight,
+    required this.maxWeight,
+    required this.lineColor,
+    required this.dotColor,
+    required this.gridColor,
+  });
+
+  final List<double> weights;
+  final double minWeight;
+  final double maxWeight;
+  final Color lineColor;
+  final Color dotColor;
+  final Color gridColor;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (weights.isEmpty) return;
+
+    final range = maxWeight - minWeight;
+    final paddedRange = range == 0 ? 1.0 : range;
+
+    // Draw grid lines
+    final gridPaint = Paint()
+      ..color = gridColor
+      ..strokeWidth = 1;
+
+    for (int i = 0; i <= 2; i++) {
+      final y = size.height * i / 2;
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
+    }
+
+    // Draw line and points
+    final linePaint = Paint()
+      ..color = lineColor
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
+
+    final dotPaint = Paint()
+      ..color = dotColor
+      ..style = PaintingStyle.fill;
+
+    final path = Path();
+    final points = <Offset>[];
+
+    for (int i = 0; i < weights.length; i++) {
+      final x = weights.length == 1
+          ? size.width / 2
+          : size.width * i / (weights.length - 1);
+      final normalizedY = (weights[i] - minWeight) / paddedRange;
+      final y = size.height - (normalizedY * size.height);
+      points.add(Offset(x, y));
+
+      if (i == 0) {
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+    }
+
+    canvas.drawPath(path, linePaint);
+
+    // Draw dots
+    for (final point in points) {
+      canvas.drawCircle(point, 5, dotPaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

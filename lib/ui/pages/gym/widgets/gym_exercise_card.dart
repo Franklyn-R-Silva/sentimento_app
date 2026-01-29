@@ -139,8 +139,13 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: theme.secondaryBackground,
+          color: widget.exercise.isCompleted
+              ? Colors.green.withOpacity(0.1)
+              : theme.secondaryBackground,
           borderRadius: BorderRadius.circular(12),
+          border: widget.exercise.isCompleted
+              ? Border.all(color: Colors.green, width: 2)
+              : null,
           boxShadow: const [
             BoxShadow(
               blurRadius: 4,

@@ -19,6 +19,49 @@ class GymManagerModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     notifyListeners();
   }
 
+  // Selection mode
+  bool _isSelectionMode = false;
+  bool get isSelectionMode => _isSelectionMode;
+
+  final Set<String> _selectedExerciseIds = {};
+  Set<String> get selectedExerciseIds => _selectedExerciseIds;
+
+  int get selectedCount => _selectedExerciseIds.length;
+
+  void toggleSelectionMode() {
+    _isSelectionMode = !_isSelectionMode;
+    if (!_isSelectionMode) {
+      _selectedExerciseIds.clear();
+    }
+    notifyListeners();
+  }
+
+  void toggleExerciseSelection(String exerciseId) {
+    if (_selectedExerciseIds.contains(exerciseId)) {
+      _selectedExerciseIds.remove(exerciseId);
+    } else {
+      _selectedExerciseIds.add(exerciseId);
+    }
+    notifyListeners();
+  }
+
+  bool isExerciseSelected(String exerciseId) =>
+      _selectedExerciseIds.contains(exerciseId);
+
+  void clearSelection() {
+    _selectedExerciseIds.clear();
+    _isSelectionMode = false;
+    notifyListeners();
+  }
+
+  void selectAll(String day) {
+    final exercises = exercisesByDay[day] ?? [];
+    for (var e in exercises) {
+      _selectedExerciseIds.add(e.id);
+    }
+    notifyListeners();
+  }
+
   // Map to hold exercises grouped by day
   Map<String, List<GymExercisesRow>> exercisesByDay = {
     'Segunda': [],
@@ -89,12 +132,70 @@ class GymManagerModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         data: {'day_of_week': targetDay},
         matchingRows: (t) => t.eq('id', exercise.id),
       );
-      // Determine new index? Usually append to end, so order_index can be max+1 or null (default sorting).
-      // Ideally we fetch max order for target day, but for now let's just update day.
-      await loadData(); // Reload to reflect changes
+      await loadData();
     } catch (e) {
       Logger().e('Error moving exercise: $e');
       rethrow;
+    }
+  }
+
+  /// Move ALL exercises from sourceDay to targetDay
+  Future<void> moveAllExercises(String sourceDay, String targetDay) async {
+    if (sourceDay == targetDay) return;
+
+    final exercises = exercisesByDay[sourceDay] ?? [];
+    if (exercises.isEmpty) return;
+
+    isLoading = true;
+    notifyListeners();
+
+    try {
+      final updateFutures = <Future<void>>[];
+      for (var exercise in exercises) {
+        updateFutures.add(
+          GymExercisesTable().update(
+            data: {'day_of_week': targetDay},
+            matchingRows: (t) => t.eq('id', exercise.id),
+          ),
+        );
+      }
+      await Future.wait(updateFutures);
+      await loadData();
+    } catch (e) {
+      Logger().e('Error moving all exercises: $e');
+      rethrow;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Move only SELECTED exercises to targetDay
+  Future<void> moveSelectedExercises(String targetDay) async {
+    if (_selectedExerciseIds.isEmpty) return;
+
+    isLoading = true;
+    notifyListeners();
+
+    try {
+      final updateFutures = <Future<void>>[];
+      for (var exerciseId in _selectedExerciseIds) {
+        updateFutures.add(
+          GymExercisesTable().update(
+            data: {'day_of_week': targetDay},
+            matchingRows: (t) => t.eq('id', exerciseId),
+          ),
+        );
+      }
+      await Future.wait(updateFutures);
+      clearSelection();
+      await loadData();
+    } catch (e) {
+      Logger().e('Error moving selected exercises: $e');
+      rethrow;
+    } finally {
+      isLoading = false;
+      notifyListeners();
     }
   }
 

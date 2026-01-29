@@ -1,5 +1,4 @@
 // Dart imports:
-import 'dart:io';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
@@ -12,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/core/util.dart';
 import 'package:sentimento_app/ui/pages/gym/gym_register_model.dart';
+import 'package:sentimento_app/ui/pages/gym/widgets/gym_photo_picker.dart';
 
 class GymRegisterPage extends StatefulWidget {
   const GymRegisterPage({super.key});
@@ -50,7 +50,9 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
     }
     final theme = FlutterFlowTheme.of(context);
 
-    return Scaffold(
+    return ChangeNotifierProvider.value(
+      value: _model,
+      child: Scaffold(
       backgroundColor: theme.primaryBackground,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -269,68 +271,20 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                     ),
                     const SizedBox(height: 24),
 
-                    // Foto da Maquina
+                    // Fotos (Carousel)
                     Text(
-                      'Foto da Máquina (Opcional)',
+                      'Fotos da Máquina (Opcional)',
                       style: theme.titleMedium.override(
                         fontFamily: 'Outfit',
                         color: theme.secondaryText,
                       ),
                     ),
                     const SizedBox(height: 8),
-                    InkWell(
-                      onTap: () => model.pickImage(),
-                      child: Container(
-                        width: double.infinity,
-                        height: 200,
-                        decoration: BoxDecoration(
-                          color: theme.secondaryBackground,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: theme.alternate,
-                            width: 2,
-                            style: BorderStyle.solid,
-                          ),
-                        ),
-                        child: model.selectedImage != null
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.file(
-                                  File(model.selectedImage!.path),
-                                  fit: BoxFit.cover,
-                                ),
-                              )
-                            : Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.camera_alt_rounded,
-                                    color: theme.secondaryText,
-                                    size: 48,
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    'Toque para tirar foto',
-                                    style: theme.bodyMedium.override(
-                                      color: theme.secondaryText,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                      ),
+                    GymPhotoPicker(
+                      images: model.selectedImages,
+                      onPickImages: () => model.pickImages(),
+                      onRemoveImage: (index) => model.removeImage(index),
                     ),
-                    if (model.selectedImage != null)
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton.icon(
-                          onPressed: () => model.removeImage(),
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          label: const Text(
-                            'Remover foto',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ),
-                      ),
                     const SizedBox(height: 32),
 
                     SizedBox(

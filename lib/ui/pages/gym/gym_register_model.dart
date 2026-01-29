@@ -36,8 +36,8 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     'Domingo',
   ];
 
-  XFile? _selectedImage;
-  XFile? get selectedImage => _selectedImage;
+  List<XFile> _selectedImages = [];
+  List<XFile> get selectedImages => _selectedImages;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -61,54 +61,64 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     super.dispose();
   }
 
-  Future<void> pickImage() async {
+  Future<void> pickImages() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(
-      source: ImageSource.camera,
+    final List<XFile> images = await picker.pickMultiImage(
       maxWidth: 800,
       imageQuality: 80,
     );
-    if (image != null) {
-      _selectedImage = image;
+    if (images.isNotEmpty) {
+      _selectedImages.addAll(images);
       notifyListeners();
     }
   }
 
-  void removeImage() {
-    _selectedImage = null;
-    notifyListeners();
+  void removeImage(int index) {
+    if (index >= 0 && index < _selectedImages.length) {
+      _selectedImages.removeAt(index);
+      notifyListeners();
+    }
   }
 
-  Future<String?> _uploadImage(String userId) async {
-    if (_selectedImage == null) return null;
+  Future<List<String>> _uploadImages(String userId) async {
+    if (_selectedImages.isEmpty) return [];
 
-    try {
-      final fileBytes = await _selectedImage!.readAsBytes();
-      final fileExt = _selectedImage!.path.split('.').last;
-      final fileName = '${DateTime.now().millisecondsSinceEpoch}.$fileExt';
-      final path = '$userId/$fileName';
+    List<String> uploadedUrls = [];
+    final supabase = Supabase.instance.client;
 
-      final supabase = Supabase.instance.client;
-      await supabase.storage
-          .from('gym_photos')
-          .uploadBinary(
-            path,
-            fileBytes,
-            fileOptions: FileOptions(
-              contentType: 'image/$fileExt',
-              upsert: true,
-            ),
-          );
+    for (var image in _selectedImages) {
+      try {
+        final fileBytes = await image.readAsBytes();
+        final fileExt = image.path.split('.').last;
+        final fileName =
+            '${DateTime.now().millisecondsSinceEpoch}_${image.name}';
+        final path = '$userId/$fileName';
 
-      final publicUrl = await supabase.storage
-          .from('gym_photos')
-          .createSignedUrl(path, 315360000); // ~10 years
+        await supabase.storage
+            .from('gym_photos')
+            .uploadBinary(
+              path,
+              fileBytes,
+              fileOptions: FileOptions(
+                contentType: 'image/$fileExt',
+                upsert: true,
+              ),
+            );
 
-      return publicUrl;
-    } catch (e) {
-      Logger().e('Error uploading image: $e');
-      throw Exception('Falha ao upar imagem');
+        final publicUrl = await supabase.storage
+            .from('gym_photos')
+            .createSignedUrl(path, 315360000); // ~10 years
+
+        uploadedUrls.add(publicUrl);
+      } catch (e) {
+        Logger().e('Error uploading image ${image.name}: $e');
+        // Continue uploading others or throw?
+        // Let's rethrow to stop process if one fails, or just log.
+        // For robustness, maybe we should stop and tell user.
+        throw Exception('Falha ao upar imagem ${image.name}');
+      }
     }
+    return uploadedUrls;
   }
 
   Future<bool> saveExercise(BuildContext context) async {
@@ -133,20 +143,30 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         return false;
       }
 
-      String? imageUrl;
-      if (_selectedImage != null) {
+      List<String> imageUrls = [];
+      if (_selectedImages.isNotEmpty) {
         try {
-          imageUrl = await _uploadImage(userId);
+          imageUrls = await _uploadImages(userId);
         } catch (e) {
-          ToastService.showError(
-            'Erro ao salvar foto. Verifique se o bucket "gym_photos" existe.',
-          );
-          // Proceed without image? Or stop? Let's stop to be safe or maybe user wants to save anyway.
-          // For now, let's stop but log it.
-          // Actually, let's try to proceed without image if upload fails but warn user?
-          // No, simplicity: fail if upload fails.
+          ToastService.showError('Erro ao salvar fotos. Verifique conexão.');
           isLoading = false;
           return false;
+        }
+      }
+
+      // Convert list of URLs to JSON string [url1, url2] or keep as single string if only 1 (backward compatibility?)
+      // We decided to store as JSON list style string if multiple.
+      // But let's verify how `GymExercisesRow` reads it.
+      // In `GymExerciseCard` I implemented a check: if starts with `[` it parses list.
+      // So I should save as `['url1', 'url2']` formatted string.
+
+      String? machinePhotoUrl;
+      if (imageUrls.isNotEmpty) {
+        if (imageUrls.length == 1) {
+          machinePhotoUrl = imageUrls.first;
+        } else {
+          machinePhotoUrl = imageUrls
+              .toString(); // Dart's default list to string is [a, b]
         }
       }
 
@@ -160,7 +180,7 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         'stretching_qty': int.tryParse(stretchingQtyController.text),
         'exercise_series': int.tryParse(exerciseSeriesController.text),
         'exercise_qty': int.tryParse(exerciseQtyController.text),
-        'machine_photo_url': imageUrl,
+        'machine_photo_url': machinePhotoUrl,
         'day_of_week': selectedDay,
         'created_at': DateTime.now().toIso8601String(),
       });

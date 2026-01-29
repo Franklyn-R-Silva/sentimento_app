@@ -6,7 +6,6 @@ import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/ui/pages/goals/goals.page.dart';
 import 'package:sentimento_app/ui/pages/home/home.page.dart';
 import 'package:sentimento_app/ui/pages/journal/journal.page.dart';
-import 'package:sentimento_app/ui/pages/profile/profile.page.dart';
 
 import 'package:sentimento_app/ui/pages/stats/stats.page.dart';
 import 'package:sentimento_app/ui/pages/gym/gym_list_page.dart';
@@ -34,7 +33,6 @@ class _MainPageWidgetState extends State<MainPageWidget> {
     GymListPage(),
     GoalsPageWidget(),
     StatsPageWidget(),
-    ProfilePageWidget(),
   ];
 
   final PageController _pageController = PageController();

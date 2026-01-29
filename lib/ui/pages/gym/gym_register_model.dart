@@ -19,10 +19,13 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
 
   // Controllers
   final nameController = TextEditingController();
+  final stretchingNameController = TextEditingController(); // New
   final stretchingSeriesController = TextEditingController();
   final stretchingQtyController = TextEditingController();
+  final stretchingTimeController = TextEditingController(); // New
   final exerciseSeriesController = TextEditingController();
   final exerciseQtyController = TextEditingController();
+  final exerciseTimeController = TextEditingController(); // New
   final descriptionController = TextEditingController();
 
   String? selectedDay;
@@ -39,6 +42,9 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   List<XFile> _selectedImages = [];
   List<XFile> get selectedImages => _selectedImages;
 
+  List<XFile> _selectedStretchingImages = []; // New
+  List<XFile> get selectedStretchingImages => _selectedStretchingImages;
+
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   set isLoading(bool value) {
@@ -53,10 +59,13 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   void dispose() {
     unfocusNode.dispose();
     nameController.dispose();
+    stretchingNameController.dispose();
     stretchingSeriesController.dispose();
     stretchingQtyController.dispose();
+    stretchingTimeController.dispose();
     exerciseSeriesController.dispose();
     exerciseQtyController.dispose();
+    exerciseTimeController.dispose();
     descriptionController.dispose();
     super.dispose();
   }
@@ -80,13 +89,33 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     }
   }
 
-  Future<List<String>> _uploadImages(String userId) async {
-    if (_selectedImages.isEmpty) return [];
+  // New methods for stretching images
+  Future<void> pickStretchingImages() async {
+    final ImagePicker picker = ImagePicker();
+    final List<XFile> images = await picker.pickMultiImage(
+      maxWidth: 800,
+      imageQuality: 80,
+    );
+    if (images.isNotEmpty) {
+      _selectedStretchingImages.addAll(images);
+      notifyListeners();
+    }
+  }
+
+  void removeStretchingImage(int index) {
+    if (index >= 0 && index < _selectedStretchingImages.length) {
+      _selectedStretchingImages.removeAt(index);
+      notifyListeners();
+    }
+  }
+
+  Future<List<String>> _uploadImages(String userId, List<XFile> images) async {
+    if (images.isEmpty) return [];
 
     List<String> uploadedUrls = [];
     final supabase = Supabase.instance.client;
 
-    for (var image in _selectedImages) {
+    for (var image in images) {
       try {
         final fileBytes = await image.readAsBytes();
         final fileExt = image.path.split('.').last;
@@ -146,7 +175,10 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       List<String> imageUrls = [];
       if (_selectedImages.isNotEmpty) {
         try {
-          imageUrls = await _uploadImages(userId);
+          imageUrls = await _uploadImages(
+            userId,
+            _selectedImages,
+          ); // Updated call
         } catch (e) {
           ToastService.showError('Erro ao salvar fotos. Verifique conexão.');
           isLoading = false;
@@ -154,19 +186,36 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         }
       }
 
-      // Convert list of URLs to JSON string [url1, url2] or keep as single string if only 1 (backward compatibility?)
-      // We decided to store as JSON list style string if multiple.
-      // But let's verify how `GymExercisesRow` reads it.
-      // In `GymExerciseCard` I implemented a check: if starts with `[` it parses list.
-      // So I should save as `['url1', 'url2']` formatted string.
+      // Upload stretching images
+      List<String> stretchingImageUrls = [];
+      if (_selectedStretchingImages.isNotEmpty) {
+        try {
+          stretchingImageUrls = await _uploadImages(
+            userId,
+            _selectedStretchingImages,
+          );
+        } catch (e) {
+          ToastService.showError('Erro ao salvar fotos do alongamento.');
+          isLoading = false;
+          return false;
+        }
+      }
 
       String? machinePhotoUrl;
       if (imageUrls.isNotEmpty) {
         if (imageUrls.length == 1) {
           machinePhotoUrl = imageUrls.first;
         } else {
-          machinePhotoUrl = imageUrls
-              .toString(); // Dart's default list to string is [a, b]
+          machinePhotoUrl = imageUrls.toString();
+        }
+      }
+
+      String? stretchingPhotoUrl;
+      if (stretchingImageUrls.isNotEmpty) {
+        if (stretchingImageUrls.length == 1) {
+          stretchingPhotoUrl = stretchingImageUrls.first;
+        } else {
+          stretchingPhotoUrl = stretchingImageUrls.toString();
         }
       }
 
@@ -176,11 +225,21 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         'description': descriptionController.text.isNotEmpty
             ? descriptionController.text
             : null,
+        'stretching_name': stretchingNameController.text.isNotEmpty
+            ? stretchingNameController.text
+            : null,
         'stretching_series': int.tryParse(stretchingSeriesController.text),
         'stretching_qty': int.tryParse(stretchingQtyController.text),
+        'stretching_time': stretchingTimeController.text.isNotEmpty
+            ? stretchingTimeController.text
+            : null,
         'exercise_series': int.tryParse(exerciseSeriesController.text),
         'exercise_qty': int.tryParse(exerciseQtyController.text),
+        'exercise_time': exerciseTimeController.text.isNotEmpty
+            ? exerciseTimeController.text
+            : null,
         'machine_photo_url': machinePhotoUrl,
+        'stretching_photo_url': stretchingPhotoUrl,
         'day_of_week': selectedDay,
         'created_at': DateTime.now().toIso8601String(),
       });

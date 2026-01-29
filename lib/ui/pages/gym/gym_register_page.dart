@@ -223,6 +223,21 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: model.exerciseTimeController,
+                        decoration: InputDecoration(
+                          labelText: 'Tempo (Opcional)',
+                          hintText: 'Ex: 45s, 1min',
+                          filled: true,
+                          fillColor: theme.secondaryBackground,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                        style: theme.bodyMedium,
+                      ),
                       const SizedBox(height: 24),
 
                       // Alongamento (Opcional)

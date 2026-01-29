@@ -48,9 +48,25 @@ class GymExercisesRow extends SupabaseDataRow {
   int? get exerciseQty => getField<int>('exercise_qty');
   set exerciseQty(final int? value) => setField<int>('exercise_qty', value);
 
+  String? get exerciseTime => getField<String>('exercise_time');
+  set exerciseTime(final String? value) =>
+      setField<String>('exercise_time', value);
+
+  String? get stretchingName => getField<String>('stretching_name');
+  set stretchingName(final String? value) =>
+      setField<String>('stretching_name', value);
+
+  String? get stretchingTime => getField<String>('stretching_time');
+  set stretchingTime(final String? value) =>
+      setField<String>('stretching_time', value);
+
   String? get machinePhotoUrl => getField<String>('machine_photo_url');
   set machinePhotoUrl(final String? value) =>
       setField<String>('machine_photo_url', value);
+
+  String? get stretchingPhotoUrl => getField<String>('stretching_photo_url');
+  set stretchingPhotoUrl(final String? value) =>
+      setField<String>('stretching_photo_url', value);
 
   String? get dayOfWeek => getField<String>('day_of_week');
   set dayOfWeek(final String? value) => setField<String>('day_of_week', value);

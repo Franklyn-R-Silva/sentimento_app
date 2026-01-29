@@ -5,11 +5,14 @@ CREATE TABLE IF NOT EXISTS public.gym_exercises (
     user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
     name text NOT NULL,
     description text,
+    exercise_qty integer,
+    exercise_time text,
+    stretching_name text,
     stretching_series integer,
     stretching_qty integer,
-    exercise_series integer,
-    exercise_qty integer,
+    stretching_time text,
     machine_photo_url text,
+    stretching_photo_url text,
     day_of_week text, -- 'Segunda', 'Terça', etc.
     CONSTRAINT gym_exercises_pkey PRIMARY KEY (id)
 );

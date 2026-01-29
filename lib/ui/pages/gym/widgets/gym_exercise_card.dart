@@ -13,10 +13,20 @@ import 'package:sentimento_app/ui/pages/gym/widgets/gym_exercise_carousel.dart';
 import 'package:sentimento_app/ui/pages/gym/widgets/gym_exercise_info.dart';
 
 class GymExerciseCard extends StatefulWidget {
-  const GymExerciseCard({super.key, required this.exercise, this.onRefresh});
+  const GymExerciseCard({
+    super.key,
+    required this.exercise,
+    this.index,
+    this.onRefresh,
+    this.onMoveToTop,
+    this.isReorderable = true,
+  });
 
   final GymExercisesRow exercise;
+  final int? index;
   final VoidCallback? onRefresh;
+  final VoidCallback? onMoveToTop;
+  final bool isReorderable;
 
   @override
   State<GymExerciseCard> createState() => _GymExerciseCardState();
@@ -155,13 +165,27 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // Reorder Handle
+                  if (widget.isReorderable && widget.index != null)
+                    ReorderableDragStartListener(
+                      index: widget.index!,
+                      key: ValueKey('drag_${widget.exercise.id}'),
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: Icon(
+                          Icons.drag_indicator_rounded,
+                          color: theme.secondaryText,
+                          size: 24,
+                        ),
+                      ),
+                    ),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -227,6 +251,7 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                       ],
                     ),
                   ),
+
                   Checkbox(
                     value: widget.exercise.isCompleted,
                     onChanged: (val) async {
@@ -360,6 +385,8 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                             }
                           }
                         }
+                      } else if (value == 'move_top') {
+                        widget.onMoveToTop?.call();
                       } else if (value == 'delete') {
                         final confirmed = await showDialog<bool>(
                           context: context,
@@ -415,6 +442,16 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                       }
                     },
                     itemBuilder: (context) => [
+                      const PopupMenuItem(
+                        value: 'move_top',
+                        child: Row(
+                          children: [
+                            Icon(Icons.vertical_align_top_rounded, size: 20),
+                            SizedBox(width: 8),
+                            Text('Mover para o topo'),
+                          ],
+                        ),
+                      ),
                       const PopupMenuItem(
                         value: 'edit',
                         child: Row(

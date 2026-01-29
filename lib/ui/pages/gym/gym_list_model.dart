@@ -157,4 +157,31 @@ class GymListModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       await loadData();
     }
   }
+
+  Future<void> moveToTop(String exerciseId) async {
+    final index = todaysExercises.indexWhere((e) => e.id == exerciseId);
+    if (index <= 0) return;
+
+    final item = todaysExercises.removeAt(index);
+    todaysExercises.insert(0, item);
+    notifyListeners();
+
+    try {
+      final updateFutures = <Future<void>>[];
+      for (int i = 0; i < todaysExercises.length; i++) {
+        final exercise = todaysExercises[i];
+        exercise.orderIndex = i;
+        updateFutures.add(
+          GymExercisesTable().update(
+            data: {'order_index': i},
+            matchingRows: (t) => t.eq('id', exercise.id),
+          ),
+        );
+      }
+      await Future.wait(updateFutures);
+    } catch (e) {
+      Logger().e('Error moving to top: $e');
+      await loadData();
+    }
+  }
 }

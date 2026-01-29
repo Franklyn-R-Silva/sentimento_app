@@ -277,6 +277,7 @@ class _GymManagerPageState extends State<GymManagerPage> {
                             GymExerciseCard(
                               exercise: exercise,
                               onRefresh: () => model.loadData(),
+                              isReorderable: false,
                             ),
                             if (isSelected)
                               Positioned.fill(
@@ -317,7 +318,9 @@ class _GymManagerPageState extends State<GymManagerPage> {
                       padding: const EdgeInsets.only(bottom: 12),
                       child: GymExerciseCard(
                         exercise: exercise,
+                        index: index,
                         onRefresh: () => model.loadData(),
+                        onMoveToTop: () => model.moveToTop(day, exercise.id),
                       ),
                     );
                   },

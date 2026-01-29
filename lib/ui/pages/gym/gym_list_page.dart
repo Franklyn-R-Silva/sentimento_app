@@ -229,7 +229,10 @@ class _GymListPageState extends State<GymListPage> {
                                     padding: const EdgeInsets.only(bottom: 12),
                                     child: GymExerciseCard(
                                       exercise: exercise,
+                                      index: index,
                                       onRefresh: () => model.loadData(),
+                                      onMoveToTop: () =>
+                                          model.moveToTop(exercise.id),
                                     ),
                                   );
                                 },

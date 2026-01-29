@@ -91,13 +91,6 @@ class CustomBottomNav extends StatelessWidget {
                 onTap: () => onTap(4),
                 theme: theme,
               ),
-              _NavItem(
-                icon: Icons.person_rounded,
-                label: 'Perfil',
-                isSelected: currentIndex == 5,
-                onTap: () => onTap(5),
-                theme: theme,
-              ),
             ],
           ),
         ),

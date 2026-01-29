@@ -192,11 +192,13 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 4,
+                          crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
                             if (widget.exercise.category != null)
                               Container(
-                                margin: const EdgeInsets.only(right: 8),
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 8,
                                   vertical: 4,
@@ -241,7 +243,6 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                               ),
                             if (widget.workoutName != null)
                               Container(
-                                margin: const EdgeInsets.only(right: 8),
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 8,
                                   vertical: 4,

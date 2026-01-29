@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
 
 // Project imports:
 import 'package:sentimento_app/core/theme.dart';

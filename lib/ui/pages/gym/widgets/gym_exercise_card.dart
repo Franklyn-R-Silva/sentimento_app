@@ -5,10 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 // Project imports:
-import 'package:go_router/go_router.dart';
+// import 'package:go_router/go_router.dart'; // Removed as unused
 import 'package:sentimento_app/backend/tables/gym_exercises.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/ui/pages/gym/gym_register_page.dart';
+import 'package:sentimento_app/core/nav/nav.dart';
 
 class GymExerciseCard extends StatefulWidget {
   const GymExerciseCard({super.key, required this.exercise});
@@ -184,8 +185,9 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                   ),
                   onSelected: (value) async {
                     if (value == 'edit') {
-                      await context.pushNamed(
+                      await context.pushNamedAuth(
                         GymRegisterPage.routeName,
+                        mounted,
                         extra: widget.exercise,
                       );
                       // Ideally refresh list

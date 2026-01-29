@@ -260,7 +260,7 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
                 existing = clean
                     .split(',')
                     .map(
-                      (e) => e.trim().replaceAll('"', '').replaceAll("'", ""),
+                      (e) => e.trim().replaceAll('"', '').replaceAll("'", ''),
                     )
                     .toList();
               }
@@ -294,7 +294,7 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
                 existing = clean
                     .split(',')
                     .map(
-                      (e) => e.trim().replaceAll('"', '').replaceAll("'", ""),
+                      (e) => e.trim().replaceAll('"', '').replaceAll("'", ''),
                     )
                     .toList();
               }

@@ -26,6 +26,7 @@ import 'package:sentimento_app/ui/pages/stats/stats.page.dart';
 import 'package:sentimento_app/ui/pages/gym/gym_list_page.dart';
 import 'package:sentimento_app/ui/pages/gym/gym_register_page.dart';
 import 'package:sentimento_app/ui/pages/gym/gym_manager_page.dart';
+import 'package:sentimento_app/backend/tables/gym_exercises.dart';
 
 // Project imports:
 
@@ -264,7 +265,7 @@ extension GoRouterExtensions on GoRouter {
 
 extension _GoRouterStateExtensions on GoRouterState {
   Map<String, dynamic> get extraMap =>
-      extra != null ? extra as Map<String, dynamic> : {};
+      extra is Map<String, dynamic> ? extra as Map<String, dynamic> : {};
   Map<String, dynamic> get allParams => <String, dynamic>{}
     ..addAll(pathParameters)
     ..addAll(uri.queryParameters)

@@ -239,6 +239,8 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                           data: {'is_completed': newValue},
                           matchingRows: (t) => t.eq('id', widget.exercise.id),
                         );
+                        // Call onRefresh to update parent state (progress bar)
+                        widget.onRefresh?.call();
                       } catch (e) {
                         setState(() {
                           widget.exercise.isCompleted = !newValue;

@@ -124,4 +124,37 @@ class GymListModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       isLoading = false;
     }
   }
+
+  Future<void> reorderExercises(int oldIndex, int newIndex) async {
+    final logger = Logger();
+
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+
+    final item = todaysExercises.removeAt(oldIndex);
+    todaysExercises.insert(newIndex, item);
+    notifyListeners();
+
+    // Persist to DB using parallel updates for better performance
+    try {
+      final updateFutures = <Future<void>>[];
+      for (int i = 0; i < todaysExercises.length; i++) {
+        final exercise = todaysExercises[i];
+        exercise.orderIndex = i;
+        updateFutures.add(
+          GymExercisesTable().update(
+            data: {'order_index': i},
+            matchingRows: (t) => t.eq('id', exercise.id),
+          ),
+        );
+      }
+      await Future.wait(updateFutures);
+      logger.d('Exercise order updated successfully');
+    } catch (e) {
+      logger.e('Error updating order: $e');
+      // Reload data on error to restore correct state
+      await loadData();
+    }
+  }
 }

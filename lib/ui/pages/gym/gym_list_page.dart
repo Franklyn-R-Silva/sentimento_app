@@ -65,7 +65,12 @@ class _GymListPageState extends State<GymListPage> {
           },
           backgroundColor: theme.primary,
           elevation: 8,
-          child: Icon(Icons.add_rounded, color: theme.info, size: 24),
+          tooltip: 'Novo Exercício',
+          child: Icon(
+            Icons.add_rounded,
+            color: theme.primaryBackground,
+            size: 24,
+          ),
         ),
         body: SafeArea(
           top: true,

@@ -360,7 +360,11 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                               style: theme.bodyMedium,
                             ),
                           ),
-                          const SizedBox(width: 12),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
                           Expanded(
                             child: InkWell(
                               onTap: () async {

@@ -339,6 +339,12 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                                 ),
                               ),
                               style: theme.bodyMedium,
+                              validator: (val) {
+                                if (val == null || val.isEmpty) {
+                                  return 'Obrigatório';
+                                }
+                                return null;
+                              },
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -358,6 +364,18 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                                 ),
                               ),
                               style: theme.bodyMedium,
+                              validator: (val) {
+                                // Reps required unless valid time is set?
+                                // For simplicity, make it required or check time in Model.
+                                // But usually simple approach is better.
+                                if (val == null || val.isEmpty) {
+                                  final hasTime =
+                                      model.minutesController.text.isNotEmpty ||
+                                      model.secondsController.text.isNotEmpty;
+                                  if (!hasTime) return 'Obrigatório';
+                                }
+                                return null;
+                              },
                             ),
                           ),
                         ],

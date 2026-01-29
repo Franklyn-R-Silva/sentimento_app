@@ -60,7 +60,7 @@ class _GymExerciseHistoryState extends State<GymExerciseHistory> {
       return Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: theme.alternate.withOpacity(0.3),
+          color: theme.alternate.withValues(alpha: 0.3),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
@@ -280,14 +280,14 @@ class _GymWeeklyStatsState extends State<GymWeeklyStats> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            theme.primary.withOpacity(0.1),
-            theme.secondary.withOpacity(0.1),
+            theme.primary.withValues(alpha: 0.1),
+            theme.secondary.withValues(alpha: 0.1),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.primary.withOpacity(0.3)),
+        border: Border.all(color: theme.primary.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

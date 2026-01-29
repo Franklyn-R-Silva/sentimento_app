@@ -90,9 +90,7 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   @override
   void initState(BuildContext context) {
     // Auto-fill with today's day of week
-    if (selectedDay == null) {
-      selectedDay = _getCurrentDayOfWeek();
-    }
+    selectedDay ??= _getCurrentDayOfWeek();
     loadWorkouts();
   }
 

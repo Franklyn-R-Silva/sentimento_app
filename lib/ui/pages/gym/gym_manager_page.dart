@@ -311,7 +311,9 @@ class _GymManagerPageState extends State<GymManagerPage> {
                                   Positioned.fill(
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        color: theme.primary.withOpacity(0.3),
+                                        color: theme.primary.withValues(
+                                          alpha: 0.3,
+                                        ),
                                         borderRadius: BorderRadius.circular(12),
                                         border: Border.all(
                                           color: theme.primary,

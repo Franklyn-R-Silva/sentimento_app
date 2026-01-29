@@ -287,10 +287,10 @@ class _GymFocusPageState extends State<GymFocusPage> {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: theme.tertiary.withOpacity(0.1),
+                        color: Colors.black.withValues(alpha: 0.7),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: theme.tertiary.withOpacity(0.3),
+                          color: Colors.black.withValues(alpha: 0.6),
                           width: 1,
                         ),
                       ),

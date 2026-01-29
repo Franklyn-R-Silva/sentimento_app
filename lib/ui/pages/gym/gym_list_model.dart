@@ -51,7 +51,7 @@ class GymListModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       final response = await GymExercisesTable().queryRows(
         queryFn: (q) => q
             .eq('user_id', userId)
-            .eq('day_of_week', dayOfWeek)
+            // .eq('day_of_week', dayOfWeek)
             .order('order_index', ascending: true)
             .order('name', ascending: true),
       );

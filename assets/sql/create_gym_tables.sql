@@ -44,3 +44,12 @@ CREATE POLICY "Users can update their own exercises" ON public.gym_exercises
 CREATE POLICY "Users can delete their own exercises" ON public.gym_exercises
     FOR DELETE
     USING (auth.uid() = user_id);
+
+
+
+ALTER TABLE gym_exercises
+ADD COLUMN elevation DOUBLE PRECISION,
+ADD COLUMN speed DOUBLE PRECISION;
+-- Opcional: Adicionar um comentário para documentação
+COMMENT ON COLUMN gym_exercises.elevation IS 'Inclinação do exercício (ex: esteira)';
+COMMENT ON COLUMN gym_exercises.speed IS 'Velocidade do exercício';

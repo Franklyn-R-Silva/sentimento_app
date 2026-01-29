@@ -34,7 +34,7 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
         if (clean.isEmpty) return [];
         return clean
             .split(',')
-            .map((e) => e.trim().replaceAll('"', '').replaceAll("'", ""))
+            .map((e) => e.trim().replaceAll('"', '').replaceAll("'", ''))
             .toList();
       } catch (_) {
         return [url];
@@ -53,7 +53,7 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
         if (clean.isEmpty) return [];
         return clean
             .split(',')
-            .map((e) => e.trim().replaceAll('"', '').replaceAll("'", ""))
+            .map((e) => e.trim().replaceAll('"', '').replaceAll("'", ''))
             .toList();
       } catch (_) {
         return [url];
@@ -165,7 +165,7 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                         SnackBar(
                           content: Text(
                             'Erro ao atualizar status: $e',
-                            style: TextStyle(color: Colors.white),
+                            style: const TextStyle(color: Colors.white),
                           ),
                           backgroundColor: Colors.red,
                         ),

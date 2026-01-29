@@ -64,10 +64,10 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     'Outros',
   ];
 
-  List<XFile> _selectedImages = [];
+  final List<XFile> _selectedImages = [];
   List<XFile> get selectedImages => _selectedImages;
 
-  List<XFile> _selectedStretchingImages = []; // New
+  final List<XFile> _selectedStretchingImages = []; // New
   List<XFile> get selectedStretchingImages => _selectedStretchingImages;
 
   bool _isLoading = false;
@@ -138,7 +138,7 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   Future<List<String>> _uploadImages(String userId, List<XFile> images) async {
     if (images.isEmpty) return [];
 
-    List<String> uploadedUrls = [];
+    final List<String> uploadedUrls = [];
     final supabase = Supabase.instance.client;
 
     for (var image in images) {

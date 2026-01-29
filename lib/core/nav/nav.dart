@@ -184,9 +184,9 @@ GoRouter createRouter(final AppStateNotifier appStateNotifier) => GoRouter(
 
         if (extra is GymExercisesRow) {
           exercise = extra;
-        } else if (extra is Map<String, dynamic>) {
+        } else if (extra is Map) {
           exercise = extra['exercise'] as GymExercisesRow?;
-          isDuplication = extra['isDuplication'] as bool? ?? false;
+          isDuplication = (extra['isDuplication'] ?? false) as bool;
         }
 
         return GymRegisterPage(

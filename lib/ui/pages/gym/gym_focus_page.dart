@@ -89,11 +89,14 @@ class _GymFocusPageState extends State<GymFocusPage> {
         body: Consumer<GymFocusModel>(
           builder: (context, model, _) => Column(
             children: [
-              // Progress Bar
+              // Progress Bar (shows completed exercises)
               LinearProgressIndicator(
-                value: (model.currentIndex + 1) / model.exercises.length,
+                value:
+                    model.progress, // Use completed/total instead of position
                 backgroundColor: Colors.grey[800],
-                valueColor: AlwaysStoppedAnimation<Color>(theme.primary),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  model.progress >= 1.0 ? Colors.green : theme.primary,
+                ),
                 minHeight: 4,
               ),
 

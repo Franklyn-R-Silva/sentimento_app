@@ -323,7 +323,7 @@ class GymStatsDialog extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            const Expanded(child: GymWeeklyStats()),
+            const GymWeeklyStats(),
           ],
         ),
       ),

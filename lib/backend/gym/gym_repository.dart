@@ -68,15 +68,25 @@ class GymRepository {
     final startIndex = days.indexOf(startDay);
     if (startIndex == -1) return;
 
-    // Reverse iteration to prevent overwriting
+    // First, collect all exercises that need to be shifted
+    final exercisesToShift = <String, String>{}; // id -> new day
+
     for (int i = days.length - 1; i >= startIndex; i--) {
       final currentDay = days[i];
       final nextDayIndex = (i + 1) % days.length;
       final nextDay = days[nextDayIndex];
 
+      final exercises = await getExercisesByDay(currentDay);
+      for (final exercise in exercises) {
+        exercisesToShift[exercise.id] = nextDay;
+      }
+    }
+
+    // Then, apply all updates (prevents recursive overwrite)
+    for (final entry in exercisesToShift.entries) {
       await _table.update(
-        data: {'day_of_week': nextDay},
-        matchingRows: (t) => t.eq('day_of_week', currentDay),
+        data: {'day_of_week': entry.value},
+        matchingRows: (t) => t.eq('id', entry.key),
       );
     }
   }

@@ -17,6 +17,7 @@ class GymLogsRow extends SupabaseDataRow {
   SupabaseTable get table => GymLogsTable();
 
   int? get id => getField<int>('id');
+  String get userId => getField<String>('user_id') ?? '';
   String get exerciseId => getField<String>('exercise_id') ?? '';
   String? get exerciseName => getField<String>('exercise_name');
   double? get weight => getField<double>('weight');

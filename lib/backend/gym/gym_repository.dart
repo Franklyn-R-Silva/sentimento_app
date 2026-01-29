@@ -1,3 +1,4 @@
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sentimento_app/backend/tables/gym_exercises.dart';
 import 'package:sentimento_app/backend/tables/gym_logs.dart';
 
@@ -102,7 +103,10 @@ class GymRepository {
     int? series,
     String? notes,
   }) async {
+    final userId = Supabase.instance.client.auth.currentUser?.id;
+
     await _logsTable.insert({
+      'user_id': userId ?? '',
       'exercise_id': exerciseId,
       'exercise_name': exerciseName,
       'weight': weight,
@@ -118,8 +122,10 @@ class GymRepository {
     String exerciseId, {
     int limit = 10,
   }) async {
+    final userId = Supabase.instance.client.auth.currentUser?.id;
     return await _logsTable.queryRows(
       queryFn: (q) => q
+          .eq('user_id', userId ?? '')
           .eq('exercise_id', exerciseId)
           .order('created_at', ascending: false)
           .limit(limit),
@@ -131,8 +137,10 @@ class GymRepository {
     DateTime start,
     DateTime end,
   ) async {
+    final userId = Supabase.instance.client.auth.currentUser?.id;
     return await _logsTable.queryRows(
       queryFn: (q) => q
+          .eq('user_id', userId ?? '')
           .gte('created_at', start.toIso8601String())
           .lte('created_at', end.toIso8601String())
           .order('created_at', ascending: false),

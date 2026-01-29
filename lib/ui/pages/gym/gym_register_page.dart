@@ -280,6 +280,7 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                             child: TextFormField(
                               controller:
                                   model.repsController, // Text input for range
+                              keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                 labelText: 'Repetições',
                                 hintText: 'Ex: 12-15',

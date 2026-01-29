@@ -215,13 +215,17 @@ class _GymListPageState extends State<GymListPage> {
                             child: RefreshIndicator(
                               onRefresh: () => model.loadData(),
                               color: theme.primary,
-                              child: ListView.builder(
+                              child: ReorderableListView.builder(
                                 physics: const AlwaysScrollableScrollPhysics(),
                                 padding: const EdgeInsets.all(24),
                                 itemCount: model.todaysExercises.length,
+                                onReorder: (oldIndex, newIndex) {
+                                  model.reorderExercises(oldIndex, newIndex);
+                                },
                                 itemBuilder: (context, index) {
                                   final exercise = model.todaysExercises[index];
                                   return Padding(
+                                    key: ValueKey(exercise.id),
                                     padding: const EdgeInsets.only(bottom: 12),
                                     child: GymExerciseCard(
                                       exercise: exercise,

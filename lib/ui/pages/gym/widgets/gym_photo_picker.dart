@@ -14,13 +14,17 @@ class GymPhotoPicker extends StatefulWidget {
   const GymPhotoPicker({
     super.key,
     required this.images,
+    this.existingImages,
     required this.onPickImages,
     required this.onRemoveImage,
+    this.onRemoveExistingImage,
   });
 
   final List<XFile> images;
+  final List<String>? existingImages;
   final VoidCallback onPickImages;
   final void Function(int) onRemoveImage;
+  final void Function(int)? onRemoveExistingImage;
 
   @override
   State<GymPhotoPicker> createState() => _GymPhotoPickerState();
@@ -32,8 +36,10 @@ class _GymPhotoPickerState extends State<GymPhotoPicker> {
   @override
   Widget build(BuildContext context) {
     final theme = FlutterFlowTheme.of(context);
+    final existingCount = widget.existingImages?.length ?? 0;
+    final totalCount = existingCount + widget.images.length;
 
-    if (widget.images.isEmpty) {
+    if (totalCount == 0) {
       return InkWell(
         onTap: widget.onPickImages,
         child: Container(
@@ -74,32 +80,61 @@ class _GymPhotoPickerState extends State<GymPhotoPicker> {
           child: Stack(
             children: [
               PageView.builder(
-                itemCount: widget.images.length,
+                itemCount: totalCount,
                 onPageChanged: (index) {
                   setState(() {
                     _currentIndex = index;
                   });
                 },
                 itemBuilder: (context, index) {
+                  final bool isExisting = index < existingCount;
+                  Widget imageWidget;
+
+                  if (isExisting) {
+                    imageWidget = Image.network(
+                      widget.existingImages![index],
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: 250,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return const Center(child: CircularProgressIndicator());
+                      },
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        color: Colors.grey[300],
+                        child: const Icon(Icons.error),
+                      ),
+                    );
+                  } else {
+                    final newIndex = index - existingCount;
+                    imageWidget = Image.file(
+                      File(widget.images[newIndex].path),
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: 250,
+                    );
+                  }
+
                   return Stack(
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 4.0),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
-                          child: Image.file(
-                            File(widget.images[index].path),
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: 250,
-                          ),
+                          child: imageWidget,
                         ),
                       ),
                       Positioned(
                         top: 8,
                         right: 12,
                         child: InkWell(
-                          onTap: () => widget.onRemoveImage(index),
+                          onTap: () {
+                            if (isExisting) {
+                              widget.onRemoveExistingImage?.call(index);
+                            } else {
+                              widget.onRemoveImage(index - existingCount);
+                            }
+                          },
                           child: Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
@@ -118,31 +153,32 @@ class _GymPhotoPickerState extends State<GymPhotoPicker> {
                   );
                 },
               ),
-              Positioned(
-                bottom: 8,
-                left: 0,
-                right: 0,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: widget.images.asMap().entries.map((entry) {
-                    return Container(
-                      width: 8.0,
-                      height: 8.0,
-                      margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color:
-                            (Theme.of(context).brightness == Brightness.dark
-                                    ? Colors.white
-                                    : Colors.black)
-                                .withOpacity(
-                                  _currentIndex == entry.key ? 0.9 : 0.4,
-                                ),
-                      ),
-                    );
-                  }).toList(),
+              if (totalCount > 1)
+                Positioned(
+                  bottom: 8,
+                  left: 0,
+                  right: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(totalCount, (index) {
+                      return Container(
+                        width: 8.0,
+                        height: 8.0,
+                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color:
+                              (Theme.of(context).brightness == Brightness.dark
+                                      ? Colors.white
+                                      : Colors.black)
+                                  .withOpacity(
+                                    _currentIndex == index ? 0.9 : 0.4,
+                                  ),
+                        ),
+                      );
+                    }),
+                  ),
                 ),
-              ),
             ],
           ),
         ),

@@ -421,9 +421,12 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                       const SizedBox(height: 8),
                       GymPhotoPicker(
                         images: model.selectedStretchingImages,
+                        existingImages: model.existingStretchingImages,
                         onPickImages: () => model.pickStretchingImages(),
                         onRemoveImage: (index) =>
                             model.removeStretchingImage(index),
+                        onRemoveExistingImage: (index) =>
+                            model.removeExistingStretchingImage(index),
                       ),
                       const SizedBox(height: 24),
 
@@ -438,8 +441,11 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                       const SizedBox(height: 8),
                       GymPhotoPicker(
                         images: model.selectedImages,
+                        existingImages: model.existingMachineImages,
                         onPickImages: () => model.pickImages(),
                         onRemoveImage: (index) => model.removeImage(index),
+                        onRemoveExistingImage: (index) =>
+                            model.removeExistingMachineImage(index),
                       ),
                       const SizedBox(height: 32),
 

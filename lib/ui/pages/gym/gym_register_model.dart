@@ -60,8 +60,14 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   final List<XFile> _selectedImages = [];
   List<XFile> get selectedImages => _selectedImages;
 
+  final List<String> _existingMachineImages = [];
+  List<String> get existingMachineImages => _existingMachineImages;
+
   final List<XFile> _selectedStretchingImages = []; // New
   List<XFile> get selectedStretchingImages => _selectedStretchingImages;
+
+  final List<String> _existingStretchingImages = [];
+  List<String> get existingStretchingImages => _existingStretchingImages;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -108,6 +114,13 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     }
   }
 
+  void removeExistingMachineImage(int index) {
+    if (index >= 0 && index < _existingMachineImages.length) {
+      _existingMachineImages.removeAt(index);
+      notifyListeners();
+    }
+  }
+
   Future<void> pickStretchingImages() async {
     final ImagePicker picker = ImagePicker();
     final List<XFile> images = await picker.pickMultiImage(
@@ -123,6 +136,13 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   void removeStretchingImage(int index) {
     if (index >= 0 && index < _selectedStretchingImages.length) {
       _selectedStretchingImages.removeAt(index);
+      notifyListeners();
+    }
+  }
+
+  void removeExistingStretchingImage(int index) {
+    if (index >= 0 && index < _existingStretchingImages.length) {
+      _existingStretchingImages.removeAt(index);
       notifyListeners();
     }
   }
@@ -191,6 +211,54 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     stretchingQtyController.text = exercise.stretchingQty?.toString() ?? '';
     stretchingTimeController.text = exercise.stretchingTime ?? '';
 
+    // Parse images
+    final machineUrl = exercise.machinePhotoUrl;
+    if (machineUrl != null && machineUrl.isNotEmpty) {
+      _existingMachineImages.clear();
+      if (machineUrl.trim().startsWith('[')) {
+        try {
+          final clean = machineUrl.trim().substring(
+            1,
+            machineUrl.trim().length - 1,
+          );
+          if (clean.isNotEmpty) {
+            _existingMachineImages.addAll(
+              clean
+                  .split(',')
+                  .map((e) => e.trim().replaceAll('"', '').replaceAll("'", ''))
+                  .toList(),
+            );
+          }
+        } catch (_) {}
+      } else {
+        _existingMachineImages.add(machineUrl);
+      }
+    }
+
+    // Parse stretching images
+    final stretchingUrl = exercise.stretchingPhotoUrl;
+    if (stretchingUrl != null && stretchingUrl.isNotEmpty) {
+      _existingStretchingImages.clear();
+      if (stretchingUrl.trim().startsWith('[')) {
+        try {
+          final clean = stretchingUrl.trim().substring(
+            1,
+            stretchingUrl.trim().length - 1,
+          );
+          if (clean.isNotEmpty) {
+            _existingStretchingImages.addAll(
+              clean
+                  .split(',')
+                  .map((e) => e.trim().replaceAll('"', '').replaceAll("'", ''))
+                  .toList(),
+            );
+          }
+        } catch (_) {}
+      } else {
+        _existingStretchingImages.add(stretchingUrl);
+      }
+    }
+
     notifyListeners();
   }
 
@@ -243,73 +311,30 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       }
 
       // Logic for URLs:
-      // Merge existing with new
-      String? finalMachineUrl = editingExercise?.machinePhotoUrl;
-
-      if (imageUrls.isNotEmpty) {
-        if (finalMachineUrl != null && finalMachineUrl.isNotEmpty) {
-          // Check if JSON list
-          List<String> existing = [];
-          if (finalMachineUrl.trim().startsWith('[')) {
-            try {
-              final clean = finalMachineUrl.trim().substring(
-                1,
-                finalMachineUrl.trim().length - 1,
-              );
-              if (clean.isNotEmpty) {
-                existing = clean
-                    .split(',')
-                    .map(
-                      (e) => e.trim().replaceAll('"', '').replaceAll("'", ''),
-                    )
-                    .toList();
-              }
-            } catch (_) {}
-          } else {
-            existing = [finalMachineUrl];
-          }
-          existing.addAll(imageUrls);
-          finalMachineUrl = existing.toString();
+      // COMBINE existing + new
+      String? finalMachineUrl;
+      final List<String> allMachineUrls = [
+        ..._existingMachineImages,
+        ...imageUrls,
+      ];
+      if (allMachineUrls.isNotEmpty) {
+        if (allMachineUrls.length == 1) {
+          finalMachineUrl = allMachineUrls.first;
         } else {
-          if (imageUrls.length == 1) {
-            finalMachineUrl = imageUrls.first;
-          } else {
-            finalMachineUrl = imageUrls.toString();
-          }
+          finalMachineUrl = allMachineUrls.toString();
         }
       }
 
-      String? finalStretchingUrl = editingExercise?.stretchingPhotoUrl;
-      if (stretchingImageUrls.isNotEmpty) {
-        if (finalStretchingUrl != null && finalStretchingUrl.isNotEmpty) {
-          // Check if JSON list
-          List<String> existing = [];
-          if (finalStretchingUrl.trim().startsWith('[')) {
-            try {
-              final clean = finalStretchingUrl.trim().substring(
-                1,
-                finalStretchingUrl.trim().length - 1,
-              );
-              if (clean.isNotEmpty) {
-                existing = clean
-                    .split(',')
-                    .map(
-                      (e) => e.trim().replaceAll('"', '').replaceAll("'", ''),
-                    )
-                    .toList();
-              }
-            } catch (_) {}
-          } else {
-            existing = [finalStretchingUrl];
-          }
-          existing.addAll(stretchingImageUrls);
-          finalStretchingUrl = existing.toString();
+      String? finalStretchingUrl;
+      final List<String> allStretchingUrls = [
+        ..._existingStretchingImages,
+        ...stretchingImageUrls,
+      ];
+      if (allStretchingUrls.isNotEmpty) {
+        if (allStretchingUrls.length == 1) {
+          finalStretchingUrl = allStretchingUrls.first;
         } else {
-          if (stretchingImageUrls.length == 1) {
-            finalStretchingUrl = stretchingImageUrls.first;
-          } else {
-            finalStretchingUrl = stretchingImageUrls.toString();
-          }
+          finalStretchingUrl = allStretchingUrls.toString();
         }
       }
 

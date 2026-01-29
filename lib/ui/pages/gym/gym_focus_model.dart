@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:sentimento_app/backend/tables/gym_exercises.dart';
 import 'package:sentimento_app/backend/gym/gym_repository.dart';
 
@@ -37,6 +38,7 @@ class GymFocusModel extends ChangeNotifier {
   }
 
   Future<void> toggleComplete() async {
+    final logger = Logger();
     final exercise = currentExercise;
     final newValue = !exercise.isCompleted;
     exercise.isCompleted = newValue;
@@ -59,6 +61,8 @@ class GymFocusModel extends ChangeNotifier {
       // Revert on error
       exercise.isCompleted = !newValue;
       notifyListeners();
+      logger.e('Error toggling exercise status: $e');
+      rethrow;
     }
   }
 

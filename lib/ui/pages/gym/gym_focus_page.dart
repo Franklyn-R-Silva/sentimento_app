@@ -82,7 +82,20 @@ class _GymFocusPageState extends State<GymFocusPage> {
                       : Colors.white,
                   size: 28,
                 ),
-                onPressed: () => model.toggleComplete(),
+                onPressed: () async {
+                  try {
+                    await model.toggleComplete();
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Erro ao atualizar: $e'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  }
+                },
               ),
             ),
           ],
@@ -118,7 +131,26 @@ class _GymFocusPageState extends State<GymFocusPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: GymRestTimer(
+                  key: ValueKey('timer_${model.currentExercise.id}'),
                   defaultSeconds: model.currentExercise.restTime ?? 60,
+                  onComplete: () async {
+                    if (!model.currentExercise.isCompleted) {
+                      try {
+                        await model.toggleComplete();
+                      } catch (e) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Erro ao marcar como concluído: $e',
+                              ),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      }
+                    }
+                  },
                 ),
               ),
 

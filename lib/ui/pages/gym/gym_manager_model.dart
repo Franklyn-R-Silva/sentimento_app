@@ -81,5 +81,33 @@ class GymManagerModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     } finally {
       isLoading = false;
     }
+  } // loadData
+
+  Future<void> reorderExercises(String day, int oldIndex, int newIndex) async {
+    final exercises = exercisesByDay[day];
+    if (exercises == null) return;
+
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+    final item = exercises.removeAt(oldIndex);
+    exercises.insert(newIndex, item);
+    notifyListeners();
+
+    // Persist to DB
+    try {
+      // Update order_index for all items in this day
+      // Currently simple approach: update all. Can be optimized.
+      for (int i = 0; i < exercises.length; i++) {
+        final exercise = exercises[i];
+        exercise.orderIndex = i;
+        await GymExercisesTable().update(
+          data: {'order_index': i},
+          matchingRows: (t) => t.eq('id', exercise.id),
+        );
+      }
+    } catch (e) {
+      Logger().e('Error updating order: $e');
+    }
   }
 }

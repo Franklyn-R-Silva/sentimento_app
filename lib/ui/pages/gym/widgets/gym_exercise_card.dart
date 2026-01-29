@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 // Project imports:
-// import 'package:go_router/go_router.dart'; // Removed as unused
 import 'package:sentimento_app/backend/tables/gym_exercises.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/ui/pages/gym/gym_register_page.dart';
 import 'package:sentimento_app/core/nav/nav.dart';
+import 'package:sentimento_app/ui/pages/gym/widgets/gym_exercise_carousel.dart';
+import 'package:sentimento_app/ui/pages/gym/widgets/gym_exercise_info.dart';
 
 class GymExerciseCard extends StatefulWidget {
   const GymExerciseCard({super.key, required this.exercise});
@@ -21,18 +22,12 @@ class GymExerciseCard extends StatefulWidget {
 }
 
 class _GymExerciseCardState extends State<GymExerciseCard> {
-  int _currentImageIndex = 0;
-  int _currentStretchingImageIndex = 0;
-
   List<String> get _imageUrls {
     final url = widget.exercise.machinePhotoUrl;
     if (url == null || url.isEmpty) return [];
 
-    // Try to parse as a specific separator if needed, or JSON list
-    // For now, assuming if it starts with '[' it's a JSON list, otherwise single URL
     if (url.trim().startsWith('[')) {
       try {
-        // Simple manual parse to avoid importing dart:convert if not needed or just use strip
         final clean = url.trim().substring(1, url.trim().length - 1);
         if (clean.isEmpty) return [];
         return clean
@@ -164,15 +159,17 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                       setState(() {
                         widget.exercise.isCompleted = !newValue;
                       });
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'Erro ao atualizar status: $e',
-                            style: const TextStyle(color: Colors.white),
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Erro ao atualizar status: $e',
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor: Colors.red,
                           ),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
+                        );
+                      }
                     }
                   },
                   activeColor: theme.primary,
@@ -190,7 +187,7 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                         mounted,
                         extra: widget.exercise,
                       );
-                      // Ideally refresh list
+                      // Refresh handled by parent rebuild on return usually, but ideally we trigger a reload
                     } else if (value == 'delete') {
                       final confirmed = await showDialog<bool>(
                         context: context,
@@ -220,27 +217,25 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                           await GymExercisesTable().delete(
                             matchingRows: (t) => t.eq('id', widget.exercise.id),
                           );
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Exercício excluído com sucesso!'),
-                              backgroundColor: Colors.green,
-                            ),
-                          );
-                          // Trigger refresh somehow - or parent should handle.
-                          // Since we don't have a callback ref here easily without refactoring,
-                          // we depend on parent rebuilding or using a specialized notification.
-                          // But wait, GymListModel handles the list. Ideally we should call a method on it.
-                          // OR, we can just say to user "pull to refresh" or handle it via a callback param.
-                          // For simplicity now, let's rely on user returning or re-entering, OR add a callback.
-                          // But wait, this is inside `GymListPage` which listens to `GymListModel`.
-                          // If `reset` is called it might work? No.
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Exercício excluído com sucesso!',
+                                ),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                          }
                         } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Erro ao excluir: $e'),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Erro ao excluir: $e'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
                         }
                       }
                     }
@@ -272,171 +267,16 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
             ),
             const SizedBox(height: 8),
 
-            // Info Row
+            // Info Row (Refactored)
             Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
-              child: Wrap(
-                spacing: 12,
-                runSpacing: 8,
-                children: [
-                  // Sets x Reps
-                  if (widget.exercise.sets != null ||
-                      widget.exercise.reps != null)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.repeat_rounded,
-                          color: theme.secondaryText,
-                          size: 16,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${widget.exercise.sets ?? "-"}x ${widget.exercise.reps ?? "-"}',
-                          style: theme.bodyMedium,
-                        ),
-                      ],
-                    ),
-
-                  // Weight
-                  if (widget.exercise.weight != null)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.fitness_center_rounded,
-                          color: theme.secondaryText,
-                          size: 16,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${widget.exercise.weight!.toStringAsFixed(1).replaceAll('.0', '')} kg',
-                          style: theme.bodyMedium,
-                        ),
-                      ],
-                    ),
-
-                  // Rest Time
-                  if (widget.exercise.restTime != null)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.timer_outlined,
-                          color: theme.secondaryText,
-                          size: 16,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${widget.exercise.restTime}s',
-                          style: theme.bodyMedium,
-                        ),
-                      ],
-                    ),
-
-                  // Time text (if any still used)
-                  if (widget.exercise.exerciseTime != null &&
-                      widget.exercise.exerciseTime!.isNotEmpty)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.timer_rounded,
-                          color: theme.secondaryText,
-                          size: 16,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          widget.exercise.exerciseTime!,
-                          style: theme.bodyMedium,
-                        ),
-                      ],
-                    ),
-                ],
-              ),
+              child: GymExerciseInfo(exercise: widget.exercise),
             ),
 
-            // Carousel
+            // Carousel (Refactored)
             if (imageUrls.isNotEmpty) ...[
               const SizedBox(height: 12),
-              SizedBox(
-                height: 200,
-                child: Stack(
-                  children: [
-                    PageView.builder(
-                      itemCount: imageUrls.length,
-                      onPageChanged: (index) {
-                        setState(() {
-                          _currentImageIndex = index;
-                        });
-                      },
-                      itemBuilder: (context, index) {
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.network(
-                            imageUrls[index],
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                color: theme.alternate,
-                                child: Icon(
-                                  Icons.broken_image,
-                                  color: theme.secondaryText,
-                                ),
-                              );
-                            },
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Center(
-                                child: CircularProgressIndicator(
-                                  value:
-                                      loadingProgress.expectedTotalBytes != null
-                                      ? loadingProgress.cumulativeBytesLoaded /
-                                            loadingProgress.expectedTotalBytes!
-                                      : null,
-                                  color: theme.primary,
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                    if (imageUrls.length > 1)
-                      Positioned(
-                        bottom: 8,
-                        left: 0,
-                        right: 0,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: imageUrls.asMap().entries.map((entry) {
-                            return Container(
-                              width: 8.0,
-                              height: 8.0,
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 4.0,
-                              ),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color:
-                                    (Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? Colors.white
-                                            : Colors.black)
-                                        .withOpacity(
-                                          _currentImageIndex == entry.key
-                                              ? 0.9
-                                              : 0.4,
-                                        ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
+              GymExerciseCarousel(imageUrls: imageUrls),
             ],
 
             if (widget.exercise.description != null &&
@@ -498,92 +338,7 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
               ),
               if (stretchingImageUrls.isNotEmpty) ...[
                 const SizedBox(height: 12),
-                SizedBox(
-                  height: 200,
-                  child: Stack(
-                    children: [
-                      PageView.builder(
-                        itemCount: stretchingImageUrls.length,
-                        onPageChanged: (index) {
-                          setState(() {
-                            _currentStretchingImageIndex = index;
-                          });
-                        },
-                        itemBuilder: (context, index) {
-                          return ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              stretchingImageUrls[index],
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: theme.alternate,
-                                  child: Icon(
-                                    Icons.broken_image,
-                                    color: theme.secondaryText,
-                                  ),
-                                );
-                              },
-                              loadingBuilder:
-                                  (context, child, loadingProgress) {
-                                    if (loadingProgress == null) return child;
-                                    return Center(
-                                      child: CircularProgressIndicator(
-                                        value:
-                                            loadingProgress
-                                                    .expectedTotalBytes !=
-                                                null
-                                            ? loadingProgress
-                                                      .cumulativeBytesLoaded /
-                                                  loadingProgress
-                                                      .expectedTotalBytes!
-                                            : null,
-                                        color: theme.primary,
-                                      ),
-                                    );
-                                  },
-                            ),
-                          );
-                        },
-                      ),
-                      if (stretchingImageUrls.length > 1)
-                        Positioned(
-                          bottom: 8,
-                          left: 0,
-                          right: 0,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: stretchingImageUrls.asMap().entries.map((
-                              entry,
-                            ) {
-                              return Container(
-                                width: 8.0,
-                                height: 8.0,
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: 4.0,
-                                ),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color:
-                                      (Theme.of(context).brightness ==
-                                                  Brightness.dark
-                                              ? Colors.white
-                                              : Colors.black)
-                                          .withOpacity(
-                                            _currentStretchingImageIndex ==
-                                                    entry.key
-                                                ? 0.9
-                                                : 0.4,
-                                          ),
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
+                GymExerciseCarousel(imageUrls: stretchingImageUrls),
               ],
             ],
           ],

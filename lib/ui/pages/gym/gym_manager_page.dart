@@ -10,6 +10,7 @@ import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/core/util.dart';
 import 'package:sentimento_app/ui/pages/gym/gym_manager_model.dart';
 import 'package:sentimento_app/ui/pages/gym/widgets/gym_exercise_card.dart';
+import 'package:sentimento_app/ui/pages/gym/widgets/gym_empty_state.dart';
 import 'package:sentimento_app/ui/pages/gym/gym_register_page.dart'; // import for navigation logic if needed specifically or just usage of routeName
 
 class GymManagerPage extends StatefulWidget {
@@ -114,72 +115,33 @@ class _GymManagerPageState extends State<GymManagerPage> {
                   final exercises = model.exercisesByDay[day] ?? [];
 
                   if (exercises.isEmpty) {
-                    return Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.fitness_center_outlined,
-                            size: 60,
-                            color: theme.secondaryText,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Sem exercícios para $day',
-                            style: theme.bodyLarge.override(
-                              fontFamily: 'Outfit',
-                              color: theme.secondaryText,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          ElevatedButton.icon(
-                            onPressed: () async {
-                              await context.pushNamed(
-                                GymRegisterPage.routeName,
-                                // We could support passing a default day via extra or query params if needed
-                              );
-                              await model.loadData();
-                            },
-                            icon: const Icon(Icons.add),
-                            label: const Text('Adicionar'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: theme.primary,
-                              foregroundColor: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
+                    return GymEmptyState(
+                      message: 'Sem exercícios para $day',
+                      icon: Icons.fitness_center_outlined,
+                      actionLabel: 'Adicionar',
+                      onAction: () async {
+                        await context.pushNamed(
+                          GymRegisterPage.routeName,
+                          // We could support passing a default day via extra or query params if needed
+                        );
+                        await model.loadData();
+                      },
                     );
                   }
 
-                  return ListView.separated(
+                  return ReorderableListView.builder(
                     padding: const EdgeInsets.all(16),
                     itemCount: exercises.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
+                    onReorder: (oldIndex, newIndex) {
+                      model.reorderExercises(day, oldIndex, newIndex);
+                    },
                     itemBuilder: (context, index) {
                       final exercise = exercises[index];
-                      // We reuse GymExerciseCard which has Edit/Delete logic built-in
-                      // However, GymExerciseCard completion logic refreshes LOCAL state or calls parent?
-                      // The current GymExerciseCard updates DB but might not refresh this list if we don't pass a callback or rely on something else.
-                      // Ideally, after edit/delete from card, we might need to refresh.
-                      // GymExerciseCard doesn't seem to have a callback for 'onDelete' success to refresh parent.
-                      // We might need to handle delete here if we want list reference update, OR rely on Card self-managing.
-                      // But Card popups Edit page, and when that pops, we need refresh.
-                      // The Card implementation:
-                      /*
-                         onSelected: (value) async {
-                            if (value == 'edit') {
-                              await context.pushNamed(...);
-                              // It doesn't trigger refresh on parent currently unless we pass a callback or use provider correctly.
-                            }
-                         }
-                      */
-                      // To fix this cleanly without changing Card signature too much:
-                      // Since Card is dumb-ish (it does logic internally), maybe we just rely on 'Refresh' button in AppBar for now,
-                      // OR we assume the user will pull-to-refresh (if we add it).
-                      // Better: Let's wrap ListView in RefreshIndicator.
-
-                      return GymExerciseCard(exercise: exercise);
+                      return Padding(
+                        key: ValueKey(exercise.id),
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: GymExerciseCard(exercise: exercise),
+                      );
                     },
                   );
                 }).toList(),

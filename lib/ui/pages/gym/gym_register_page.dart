@@ -533,6 +533,60 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: model.elevationController,
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                    decimal: true,
+                                  ),
+                              decoration: InputDecoration(
+                                labelText: 'Elevação (%)',
+                                hintText: 'Ex: 5.0',
+                                prefixIcon: Icon(
+                                  Icons.trending_up_rounded,
+                                  color: theme.secondaryText,
+                                ),
+                                filled: true,
+                                fillColor: theme.secondaryBackground,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                              style: theme.bodyMedium,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: TextFormField(
+                              controller: model.speedController,
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                    decimal: true,
+                                  ),
+                              decoration: InputDecoration(
+                                labelText: 'Velocidade',
+                                hintText: 'Ex: 10.0',
+                                prefixIcon: Icon(
+                                  Icons.speed_rounded,
+                                  color: theme.secondaryText,
+                                ),
+                                filled: true,
+                                fillColor: theme.secondaryBackground,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                              style: theme.bodyMedium,
+                            ),
+                          ),
+                        ],
+                      ),
                       const SizedBox(height: 24),
 
                       // Alongamento (Opcional)

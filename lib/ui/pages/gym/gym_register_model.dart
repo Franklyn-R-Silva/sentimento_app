@@ -33,6 +33,8 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   final repsController = TextEditingController(); // Replaces exerciseQty
   final weightController = TextEditingController();
   final restTimeController = TextEditingController();
+  final elevationController = TextEditingController();
+  final speedController = TextEditingController();
 
   final descriptionController = TextEditingController();
 
@@ -144,6 +146,8 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     repsController.dispose();
     weightController.dispose();
     restTimeController.dispose();
+    elevationController.dispose();
+    speedController.dispose();
     timeController.dispose();
     minutesController.dispose();
     secondsController.dispose();
@@ -266,6 +270,8 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     repsController.text = exercise.reps ?? '';
     weightController.text = exercise.weight?.toString() ?? '';
     restTimeController.text = exercise.restTime?.toString() ?? '';
+    elevationController.text = exercise.elevation?.toString() ?? '';
+    speedController.text = exercise.speed?.toString() ?? '';
     timeController.text = exercise.exerciseTime ?? '';
 
     // Attempt to parse "MM:SS" or "X min" or "X s"
@@ -434,6 +440,10 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         'reps': repsController.text,
         'weight': double.tryParse(weightController.text.replaceAll(',', '.')),
         'rest_time': int.tryParse(restTimeController.text),
+        'elevation': double.tryParse(
+          elevationController.text.replaceAll(',', '.'),
+        ),
+        'speed': double.tryParse(speedController.text.replaceAll(',', '.')),
         'exercise_time': _buildDurationString(),
         'stretching_name': stretchingNameController.text.isNotEmpty
             ? stretchingNameController.text

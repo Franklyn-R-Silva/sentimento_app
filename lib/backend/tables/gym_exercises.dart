@@ -99,4 +99,10 @@ class GymExercisesRow extends SupabaseDataRow {
 
   String? get workoutId => getField<String>('workout_id');
   set workoutId(final String? value) => setField<String>('workout_id', value);
+
+  double? get elevation => getField<double>('elevation');
+  set elevation(final double? value) => setField<double>('elevation', value);
+
+  double? get speed => getField<double>('speed');
+  set speed(final double? value) => setField<double>('speed', value);
 }

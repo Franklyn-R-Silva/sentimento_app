@@ -379,6 +379,18 @@ class _GymFocusPageState extends State<GymFocusPage> {
                   '${exercise.weight ?? "-"} kg',
                   theme,
                 ),
+                if (exercise.elevation != null && exercise.elevation! > 0) ...[
+                  _buildDivider(),
+                  _buildDetailColumn(
+                    'Elevação',
+                    '${exercise.elevation!}%',
+                    theme,
+                  ),
+                ],
+                if (exercise.speed != null && exercise.speed! > 0) ...[
+                  _buildDivider(),
+                  _buildDetailColumn('Velocidade', '${exercise.speed!}', theme),
+                ],
               ],
             ),
           ),

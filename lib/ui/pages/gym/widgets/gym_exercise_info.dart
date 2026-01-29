@@ -43,6 +43,22 @@ class GymExerciseInfo extends StatelessWidget {
         // Rest Time
         if (exercise.restTime != null)
           _buildInfoItem(theme, Icons.timer_outlined, '${exercise.restTime}s'),
+
+        // Elevation
+        if (exercise.elevation != null && exercise.elevation! > 0)
+          _buildInfoItem(
+            theme,
+            Icons.trending_up_rounded,
+            '${exercise.elevation!.toStringAsFixed(1).replaceAll('.0', '')}%',
+          ),
+
+        // Speed
+        if (exercise.speed != null && exercise.speed! > 0)
+          _buildInfoItem(
+            theme,
+            Icons.speed_rounded,
+            '${exercise.speed!.toStringAsFixed(1).replaceAll('.0', '')}',
+          ),
       ],
     );
   }

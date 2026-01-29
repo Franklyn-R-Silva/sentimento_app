@@ -6,8 +6,6 @@ import 'package:logger/logger.dart';
 
 // Project imports:
 import 'package:sentimento_app/backend/supabase.dart';
-import 'package:sentimento_app/backend/tables/gym_exercises.dart';
-import 'package:sentimento_app/backend/tables/gym_workouts.dart';
 import 'package:sentimento_app/core/model.dart';
 
 class GymManagerModel extends FlutterFlowModel<Widget> with ChangeNotifier {

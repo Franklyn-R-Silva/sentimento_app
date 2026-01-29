@@ -7,7 +7,6 @@ import 'package:logger/logger.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Project imports:
-import 'package:sentimento_app/backend/supabase.dart';
 import 'package:sentimento_app/backend/tables/gym_exercises.dart';
 import 'package:sentimento_app/core/model.dart';
 import 'package:sentimento_app/core/util.dart';
@@ -29,12 +28,6 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   final repsController = TextEditingController(); // Replaces exerciseQty
   final weightController = TextEditingController();
   final restTimeController = TextEditingController();
-
-  // Legacy controllers kept if needed for migration, otherwise we can remove them or alias them
-  // keeping purely for not breaking existing references immediately if any, but plan replaces them
-  // actually I will remove them and use sets/reps instead as per requirement 'Implementar'
-  // but existing UI uses them so I should be careful. I will deprecate them in UI next step.
-  // For now let's add the new ones.
 
   final descriptionController = TextEditingController();
 
@@ -115,7 +108,6 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     }
   }
 
-  // New methods for stretching images
   Future<void> pickStretchingImages() async {
     final ImagePicker picker = ImagePicker();
     final List<XFile> images = await picker.pickMultiImage(
@@ -135,6 +127,7 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     }
   }
 
+  // Restore _uploadImages method locally
   Future<List<String>> _uploadImages(String userId, List<XFile> images) async {
     if (images.isEmpty) return [];
 
@@ -162,14 +155,12 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
 
         final publicUrl = await supabase.storage
             .from('gym_photos')
-            .createSignedUrl(path, 315360000); // ~10 years
+            .createSignedUrl(path, 315360000); // 10 years
 
         uploadedUrls.add(publicUrl);
       } catch (e) {
         Logger().e('Error uploading image ${image.name}: $e');
-        // Continue uploading others or throw?
-        // Let's rethrow to stop process if one fails, or just log.
-        // For robustness, maybe we should stop and tell user.
+        // We throw so the caller knows something failed
         throw Exception('Falha ao upar imagem ${image.name}');
       }
     }
@@ -200,13 +191,6 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     stretchingQtyController.text = exercise.stretchingQty?.toString() ?? '';
     stretchingTimeController.text = exercise.stretchingTime ?? '';
 
-    // Handle existing images slightly differently - for now we don't pre-fill File objects
-    // because XFile is for local files pending upload.
-    // Ideally we would show existing URLs and allow adding new ones.
-    // This requires UI changes to show 'existing images' + 'newly picked images'.
-    // For MVP Edit: We just keep existing unless changed?
-    // Simplified: If new images selected, we upload and APPEND or REPLACE?
-    // Let's assume APPEND for now or just simple list management.
     notifyListeners();
   }
 
@@ -259,13 +243,9 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       }
 
       // Logic for URLs:
-      // If editing, we want to KEEP existing validation/URLs unless explicitly removed (not implemented yet for existing)
-      // For now, if editing, we might overwrite if new ones are added, or we need to merge.
-      // Let's implement a Merge logic:
-
+      // Merge existing with new
       String? finalMachineUrl = editingExercise?.machinePhotoUrl;
-      // If we uploaded new ones, append or replace?
-      // Let's say we append if existing is a list, or make it a list.
+
       if (imageUrls.isNotEmpty) {
         if (finalMachineUrl != null && finalMachineUrl.isNotEmpty) {
           // Check if JSON list

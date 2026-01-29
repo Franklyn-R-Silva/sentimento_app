@@ -25,6 +25,7 @@ import 'package:sentimento_app/ui/pages/settings/settings.page.dart';
 import 'package:sentimento_app/ui/pages/stats/stats.page.dart';
 import 'package:sentimento_app/ui/pages/gym/gym_list_page.dart';
 import 'package:sentimento_app/ui/pages/gym/gym_register_page.dart';
+import 'package:sentimento_app/ui/pages/gym/gym_manager_page.dart';
 
 // Project imports:
 
@@ -175,7 +176,14 @@ GoRouter createRouter(final AppStateNotifier appStateNotifier) => GoRouter(
       name: GymRegisterPage.routeName,
       path: GymRegisterPage.routePath,
       requireAuth: true,
-      builder: (final context, final params) => const GymRegisterPage(),
+      builder: (final context, final params) =>
+          GymRegisterPage(exercise: params.state.extra as GymExercisesRow?),
+    ),
+    FFRoute(
+      name: GymManagerPage.routeName,
+      path: GymManagerPage.routePath,
+      requireAuth: true,
+      builder: (final context, final params) => const GymManagerPage(),
     ),
     FFRoute(
       name: 'Login',

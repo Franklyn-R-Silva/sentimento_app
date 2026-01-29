@@ -83,10 +83,26 @@ class _GymListPageState extends State<GymListPage> {
                         color: theme.primaryText,
                       ),
                     ),
-                    Icon(
-                      FontAwesomeIcons.dumbbell,
-                      color: theme.primary,
-                      size: 24,
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            Icons.calendar_today_rounded,
+                            color: theme.primary,
+                            size: 24,
+                          ),
+                          onPressed: () async {
+                            await context.pushNamedAuth('GymManager', mounted);
+                            await _model.loadData();
+                          },
+                        ),
+                        const SizedBox(width: 8),
+                        Icon(
+                          FontAwesomeIcons.dumbbell,
+                          color: theme.primary,
+                          size: 24,
+                        ),
+                      ],
                     ),
                   ],
                 ),

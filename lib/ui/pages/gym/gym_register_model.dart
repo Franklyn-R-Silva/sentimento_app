@@ -77,7 +77,34 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   }
 
   @override
-  void initState(BuildContext context) {}
+  void initState(BuildContext context) {
+    // Auto-fill with today's day of week
+    if (selectedDay == null) {
+      selectedDay = _getCurrentDayOfWeek();
+    }
+  }
+
+  String _getCurrentDayOfWeek() {
+    final weekday = DateTime.now().weekday;
+    switch (weekday) {
+      case DateTime.monday:
+        return 'Segunda';
+      case DateTime.tuesday:
+        return 'Terça';
+      case DateTime.wednesday:
+        return 'Quarta';
+      case DateTime.thursday:
+        return 'Quinta';
+      case DateTime.friday:
+        return 'Sexta';
+      case DateTime.saturday:
+        return 'Sábado';
+      case DateTime.sunday:
+        return 'Domingo';
+      default:
+        return 'Segunda';
+    }
+  }
 
   @override
   void dispose() {

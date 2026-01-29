@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sentimento_app/core/theme.dart';
 
-/// A progress bar that shows workout completion
+/// A progress bar that shows workout completion with smooth animation
 class GymProgressBar extends StatelessWidget {
   const GymProgressBar({
     super.key,
@@ -26,20 +26,30 @@ class GymProgressBar extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                isComplete ? '🎉 Treino Completo!' : 'Progresso',
-                style: theme.labelMedium.override(
-                  fontFamily: 'Outfit',
-                  color: isComplete ? Colors.green : theme.secondaryText,
-                  fontWeight: isComplete ? FontWeight.bold : FontWeight.normal,
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: Text(
+                  isComplete ? '🎉 Treino Completo!' : 'Progresso',
+                  key: ValueKey(isComplete),
+                  style: theme.labelMedium.override(
+                    fontFamily: 'Outfit',
+                    color: isComplete ? Colors.green : theme.secondaryText,
+                    fontWeight: isComplete
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                  ),
                 ),
               ),
-              Text(
-                '$completed / $total',
-                style: theme.labelMedium.override(
-                  fontFamily: 'Outfit',
-                  fontWeight: FontWeight.bold,
-                  color: isComplete ? Colors.green : theme.primary,
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: Text(
+                  '$completed / $total',
+                  key: ValueKey('$completed/$total'),
+                  style: theme.labelMedium.override(
+                    fontFamily: 'Outfit',
+                    fontWeight: FontWeight.bold,
+                    color: isComplete ? Colors.green : theme.primary,
+                  ),
                 ),
               ),
             ],
@@ -47,13 +57,20 @@ class GymProgressBar extends StatelessWidget {
           const SizedBox(height: 4),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: progress,
-              minHeight: 8,
-              backgroundColor: theme.alternate,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                isComplete ? Colors.green : theme.primary,
-              ),
+            child: TweenAnimationBuilder<double>(
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeOutCubic,
+              tween: Tween<double>(begin: 0, end: progress),
+              builder: (context, value, child) {
+                return LinearProgressIndicator(
+                  value: value,
+                  minHeight: 8,
+                  backgroundColor: theme.alternate,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    isComplete ? Colors.green : theme.primary,
+                  ),
+                );
+              },
             ),
           ),
         ],

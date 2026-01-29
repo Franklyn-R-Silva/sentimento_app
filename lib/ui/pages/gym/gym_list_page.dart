@@ -210,21 +210,26 @@ class _GymListPageState extends State<GymListPage> {
                             completed: model.completedCount,
                             total: model.todaysExercises.length,
                           ),
-                          // Exercise list
+                          // Exercise list with pull to refresh
                           Expanded(
-                            child: ListView.builder(
-                              padding: const EdgeInsets.all(24),
-                              itemCount: model.todaysExercises.length,
-                              itemBuilder: (context, index) {
-                                final exercise = model.todaysExercises[index];
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 12),
-                                  child: GymExerciseCard(
-                                    exercise: exercise,
-                                    onRefresh: () => model.loadData(),
-                                  ),
-                                );
-                              },
+                            child: RefreshIndicator(
+                              onRefresh: () => model.loadData(),
+                              color: theme.primary,
+                              child: ListView.builder(
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                padding: const EdgeInsets.all(24),
+                                itemCount: model.todaysExercises.length,
+                                itemBuilder: (context, index) {
+                                  final exercise = model.todaysExercises[index];
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 12),
+                                    child: GymExerciseCard(
+                                      exercise: exercise,
+                                      onRefresh: () => model.loadData(),
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         ],

@@ -161,18 +161,20 @@ class GymManagerModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     exercises.insert(newIndex, item);
     notifyListeners();
 
-    // Persist to DB
+    // Persist to DB using parallel updates for better performance
     try {
-      // Update order_index for all items in this day
-      // Currently simple approach: update all. Can be optimized.
+      final updateFutures = <Future<void>>[];
       for (int i = 0; i < exercises.length; i++) {
         final exercise = exercises[i];
         exercise.orderIndex = i;
-        await GymExercisesTable().update(
-          data: {'order_index': i},
-          matchingRows: (t) => t.eq('id', exercise.id),
+        updateFutures.add(
+          GymExercisesTable().update(
+            data: {'order_index': i},
+            matchingRows: (t) => t.eq('id', exercise.id),
+          ),
         );
       }
+      await Future.wait(updateFutures);
     } catch (e) {
       Logger().e('Error updating order: $e');
     }

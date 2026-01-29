@@ -159,6 +159,11 @@ class _GymWeeklyStatsState extends State<GymWeeklyStats> {
   Map<String, dynamic> _stats = {};
   bool _isLoading = true;
 
+  // Cache for weekly stats (5 minute expiration)
+  static Map<String, dynamic>? _cachedStats;
+  static DateTime? _cacheTime;
+  static const _cacheDuration = Duration(minutes: 5);
+
   @override
   void initState() {
     super.initState();
@@ -166,8 +171,25 @@ class _GymWeeklyStatsState extends State<GymWeeklyStats> {
   }
 
   Future<void> _loadStats() async {
+    // Check cache first
+    if (_cachedStats != null &&
+        _cacheTime != null &&
+        DateTime.now().difference(_cacheTime!) < _cacheDuration) {
+      if (mounted) {
+        setState(() {
+          _stats = _cachedStats!;
+          _isLoading = false;
+        });
+      }
+      return;
+    }
+
     try {
       final stats = await _repository.getWeeklyStats();
+      // Update cache
+      _cachedStats = stats;
+      _cacheTime = DateTime.now();
+
       if (mounted) {
         setState(() {
           _stats = stats;

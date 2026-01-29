@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sentimento_app/core/theme.dart';
 
 /// A floating rest timer widget for gym workouts
@@ -28,6 +29,19 @@ class _GymRestTimerState extends State<GymRestTimer>
     super.initState();
     _selectedDuration = widget.defaultSeconds;
     _secondsRemaining = _selectedDuration;
+  }
+
+  @override
+  void didUpdateWidget(GymRestTimer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Reset timer when defaultSeconds changes (e.g., when switching exercises)
+    if (oldWidget.defaultSeconds != widget.defaultSeconds) {
+      _stopTimer();
+      setState(() {
+        _selectedDuration = widget.defaultSeconds;
+        _secondsRemaining = _selectedDuration;
+      });
+    }
   }
 
   @override
@@ -67,6 +81,8 @@ class _GymRestTimerState extends State<GymRestTimer>
 
   void _showCompletionFeedback() {
     if (!mounted) return;
+    // Haptic feedback
+    HapticFeedback.heavyImpact();
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Row(

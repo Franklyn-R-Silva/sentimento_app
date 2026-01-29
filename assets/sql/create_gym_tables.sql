@@ -13,6 +13,14 @@ CREATE TABLE IF NOT EXISTS public.gym_exercises (
     stretching_time text,
     machine_photo_url text,
     stretching_photo_url text,
+    category text, -- 'Musculação', 'Cardio', 'Mobilidade'
+    muscle_group text, -- 'Peito', 'Costas', etc.
+    sets integer,
+    reps text,
+    weight numeric,
+    rest_time integer,
+    is_completed boolean default false,
+    order_index integer,
     day_of_week text, -- 'Segunda', 'Terça', etc.
     CONSTRAINT gym_exercises_pkey PRIMARY KEY (id)
 );

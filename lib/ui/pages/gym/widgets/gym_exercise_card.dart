@@ -66,6 +66,7 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
   Widget build(BuildContext context) {
     final theme = FlutterFlowTheme.of(context);
     final imageUrls = _imageUrls;
+    final stretchingImageUrls = _stretchingImageUrls;
 
     return Container(
       decoration: BoxDecoration(
@@ -105,7 +106,8 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
             Row(
               children: [
                 if (widget.exercise.exerciseSeries != null ||
-                    widget.exercise.exerciseQty != null)
+                    widget.exercise.exerciseQty != null ||
+                    widget.exercise.exerciseTime != null)
                   Expanded(
                     child: Row(
                       children: [
@@ -119,24 +121,20 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                           '${widget.exercise.exerciseSeries ?? "-"}x ${widget.exercise.exerciseQty ?? "-"}',
                           style: theme.bodyMedium,
                         ),
-                      ],
-                    ),
-                  ),
-                if (widget.exercise.stretchingSeries != null ||
-                    widget.exercise.stretchingQty != null)
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.accessibility_new_rounded,
-                          color: theme.secondaryText,
-                          size: 16,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${widget.exercise.stretchingSeries ?? "-"}x ${widget.exercise.stretchingQty ?? "-"}',
-                          style: theme.bodyMedium,
-                        ),
+                        if (widget.exercise.exerciseTime != null &&
+                            widget.exercise.exerciseTime!.isNotEmpty) ...[
+                          const SizedBox(width: 8),
+                          Icon(
+                            Icons.timer_rounded,
+                            color: theme.secondaryText,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            widget.exercise.exerciseTime!,
+                            style: theme.bodyMedium,
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -236,6 +234,142 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                   color: theme.secondaryText,
                 ),
               ),
+            ],
+
+            if (widget.exercise.stretchingName != null ||
+                widget.exercise.stretchingSeries != null ||
+                widget.exercise.stretchingQty != null ||
+                stretchingImageUrls.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Divider(color: theme.alternate, thickness: 1),
+              const SizedBox(height: 8),
+              if (widget.exercise.stretchingName != null) ...[
+                Text(
+                  'Alongamento: ${widget.exercise.stretchingName}',
+                  style: theme.bodyMedium.override(
+                    fontFamily: 'Outfit',
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+              ],
+              Row(
+                children: [
+                  Icon(
+                    Icons.accessibility_new_rounded,
+                    color: theme.secondaryText,
+                    size: 16,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${widget.exercise.stretchingSeries ?? "-"}x ${widget.exercise.stretchingQty ?? "-"}',
+                    style: theme.bodyMedium,
+                  ),
+                  if (widget.exercise.stretchingTime != null &&
+                      widget.exercise.stretchingTime!.isNotEmpty) ...[
+                    const SizedBox(width: 8),
+                    Icon(
+                      Icons.timer_rounded,
+                      color: theme.secondaryText,
+                      size: 16,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      widget.exercise.stretchingTime!,
+                      style: theme.bodyMedium,
+                    ),
+                  ],
+                ],
+              ),
+              if (stretchingImageUrls.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                SizedBox(
+                  height: 200,
+                  child: Stack(
+                    children: [
+                      PageView.builder(
+                        itemCount: stretchingImageUrls.length,
+                        onPageChanged: (index) {
+                          setState(() {
+                            _currentStretchingImageIndex = index;
+                          });
+                        },
+                        itemBuilder: (context, index) {
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.network(
+                              stretchingImageUrls[index],
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  color: theme.alternate,
+                                  child: Icon(
+                                    Icons.broken_image,
+                                    color: theme.secondaryText,
+                                  ),
+                                );
+                              },
+                              loadingBuilder:
+                                  (context, child, loadingProgress) {
+                                    if (loadingProgress == null) return child;
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        value:
+                                            loadingProgress
+                                                    .expectedTotalBytes !=
+                                                null
+                                            ? loadingProgress
+                                                      .cumulativeBytesLoaded /
+                                                  loadingProgress
+                                                      .expectedTotalBytes!
+                                            : null,
+                                        color: theme.primary,
+                                      ),
+                                    );
+                                  },
+                            ),
+                          );
+                        },
+                      ),
+                      if (stretchingImageUrls.length > 1)
+                        Positioned(
+                          bottom: 8,
+                          left: 0,
+                          right: 0,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: stretchingImageUrls.asMap().entries.map((
+                              entry,
+                            ) {
+                              return Container(
+                                width: 8.0,
+                                height: 8.0,
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 4.0,
+                                ),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color:
+                                      (Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? Colors.white
+                                              : Colors.black)
+                                          .withOpacity(
+                                            _currentStretchingImageIndex ==
+                                                    entry.key
+                                                ? 0.9
+                                                : 0.4,
+                                          ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
             ],
           ],
         ),

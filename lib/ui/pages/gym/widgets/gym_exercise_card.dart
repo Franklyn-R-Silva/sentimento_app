@@ -188,7 +188,7 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                         mounted,
                         extra: widget.exercise,
                       );
-                      // Refresh handled by parent rebuild on return usually, but ideally we trigger a reload
+                      widget.onRefresh?.call();
                     } else if (value == 'duplicate') {
                       await context.pushNamedAuth(
                         GymRegisterPage.routeName,
@@ -311,6 +311,7 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                                 backgroundColor: Colors.green,
                               ),
                             );
+                            widget.onRefresh?.call();
                           }
                         } catch (e) {
                           if (context.mounted) {

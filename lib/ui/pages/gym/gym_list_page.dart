@@ -14,6 +14,7 @@ import 'package:sentimento_app/ui/pages/gym/gym_list_model.dart';
 import 'package:sentimento_app/ui/pages/gym/widgets/gym_exercise_card.dart';
 import 'package:sentimento_app/ui/pages/gym/widgets/gym_empty_state.dart';
 import 'package:sentimento_app/ui/pages/gym/widgets/gym_celebration.dart';
+import 'package:sentimento_app/ui/pages/gym/widgets/gym_stats.dart';
 
 class GymListPage extends StatefulWidget {
   const GymListPage({super.key});
@@ -161,10 +162,19 @@ class _GymListPageState extends State<GymListPage> {
                           },
                         ),
                         const SizedBox(width: 8),
-                        Icon(
-                          FontAwesomeIcons.dumbbell,
-                          color: theme.primary,
-                          size: 24,
+                        IconButton(
+                          icon: Icon(
+                            FontAwesomeIcons.dumbbell,
+                            color: theme.primary,
+                            size: 20,
+                          ),
+                          tooltip: 'Estatísticas',
+                          onPressed: () {
+                            showDialog<void>(
+                              context: context,
+                              builder: (context) => const GymStatsDialog(),
+                            );
+                          },
                         ),
                       ],
                     ),

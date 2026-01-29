@@ -15,9 +15,10 @@ import 'package:sentimento_app/ui/pages/gym/gym_register_model.dart';
 import 'package:sentimento_app/ui/pages/gym/widgets/gym_photo_picker.dart';
 
 class GymRegisterPage extends StatefulWidget {
-  const GymRegisterPage({super.key, this.exercise});
+  const GymRegisterPage({super.key, this.exercise, this.isDuplication = false});
 
   final GymExercisesRow? exercise;
+  final bool isDuplication;
 
   static String routeName = 'GymRegister';
   static String routePath = '/gym/register';
@@ -34,7 +35,10 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
     super.initState();
     _model = createModel(context, () => GymRegisterModel());
     if (widget.exercise != null) {
-      _model.initFromExercise(widget.exercise!);
+      _model.initFromExercise(
+        widget.exercise!,
+        isDuplication: widget.isDuplication,
+      );
     }
   }
 

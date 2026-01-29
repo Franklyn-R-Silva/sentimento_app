@@ -188,6 +188,15 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                         extra: widget.exercise,
                       );
                       // Refresh handled by parent rebuild on return usually, but ideally we trigger a reload
+                    } else if (value == 'duplicate') {
+                      await context.pushNamedAuth(
+                        GymRegisterPage.routeName,
+                        mounted,
+                        extra: {
+                          'exercise': widget.exercise,
+                          'isDuplication': true,
+                        },
+                      );
                     } else if (value == 'delete') {
                       final confirmed = await showDialog<bool>(
                         context: context,
@@ -248,6 +257,16 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                           Icon(Icons.edit, size: 20),
                           SizedBox(width: 8),
                           Text('Editar'),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuItem(
+                      value: 'duplicate',
+                      child: Row(
+                        children: [
+                          Icon(Icons.copy, size: 20),
+                          SizedBox(width: 8),
+                          Text('Duplicar'),
                         ],
                       ),
                     ),

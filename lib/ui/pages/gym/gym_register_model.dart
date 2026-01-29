@@ -191,9 +191,17 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   String? exerciseId;
   GymExercisesRow? editingExercise;
 
-  void initFromExercise(GymExercisesRow exercise) {
-    exerciseId = exercise.id;
-    editingExercise = exercise;
+  void initFromExercise(
+    GymExercisesRow exercise, {
+    bool isDuplication = false,
+  }) {
+    exerciseId = isDuplication ? null : exercise.id;
+    // If duplication, we don't set editingExercise (or set to null) to avoid updates?
+    // Actually editingExercise is used maybe for reference?
+    // If exerciseId is null, saveExercise treats as INSERT.
+    // So just clearing exerciseId is enough.
+    editingExercise = isDuplication ? null : exercise;
+
     nameController.text = exercise.name;
     descriptionController.text = exercise.description ?? '';
     selectedCategory = exercise.category;

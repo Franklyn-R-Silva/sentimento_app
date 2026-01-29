@@ -177,8 +177,23 @@ GoRouter createRouter(final AppStateNotifier appStateNotifier) => GoRouter(
       name: GymRegisterPage.routeName,
       path: GymRegisterPage.routePath,
       requireAuth: true,
-      builder: (final context, final params) =>
-          GymRegisterPage(exercise: params.state.extra as GymExercisesRow?),
+      builder: (final context, final params) {
+        final extra = params.state.extra;
+        GymExercisesRow? exercise;
+        bool isDuplication = false;
+
+        if (extra is GymExercisesRow) {
+          exercise = extra;
+        } else if (extra is Map<String, dynamic>) {
+          exercise = extra['exercise'] as GymExercisesRow?;
+          isDuplication = extra['isDuplication'] as bool? ?? false;
+        }
+
+        return GymRegisterPage(
+          exercise: exercise,
+          isDuplication: isDuplication,
+        );
+      },
     ),
     FFRoute(
       name: GymManagerPage.routeName,

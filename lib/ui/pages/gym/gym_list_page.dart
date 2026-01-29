@@ -78,14 +78,18 @@ class _GymListPageState extends State<GymListPage> {
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    AutoSizeText(
-                      'Treino do Dia',
-                      style: theme.displaySmall.override(
-                        fontFamily: 'Outfit',
-                        color: theme.primaryText,
+                    Expanded(
+                      child: AutoSizeText(
+                        'Treino do Dia',
+                        maxLines: 1,
+                        style: theme.displaySmall.override(
+                          fontFamily: 'Outfit',
+                          color: theme.primaryText,
+                        ),
                       ),
                     ),
                     Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         // Focus Mode Play Button
                         Consumer<GymListModel>(

@@ -248,7 +248,21 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                           color: theme.secondaryText,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: model.stretchingNameController,
+                        decoration: InputDecoration(
+                          labelText: 'Nome do Alongamento',
+                          filled: true,
+                          fillColor: theme.secondaryBackground,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                        style: theme.bodyMedium,
+                      ),
+                      const SizedBox(height: 12),
                       Row(
                         children: [
                           Expanded(
@@ -273,7 +287,7 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                               controller: model.stretchingQtyController,
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
-                                labelText: 'Segundos/Rep',
+                                labelText: 'Repetições',
                                 filled: true,
                                 fillColor: theme.secondaryBackground,
                                 border: OutlineInputBorder(
@@ -285,6 +299,36 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                             ),
                           ),
                         ],
+                      ),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: model.stretchingTimeController,
+                        decoration: InputDecoration(
+                          labelText: 'Tempo (Opcional)',
+                          hintText: 'Ex: 30s',
+                          filled: true,
+                          fillColor: theme.secondaryBackground,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                        style: theme.bodyMedium,
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Fotos do Alongamento (Opcional)',
+                        style: theme.bodyMedium.override(
+                          fontFamily: 'Outfit',
+                          color: theme.secondaryText,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      GymPhotoPicker(
+                        images: model.selectedStretchingImages,
+                        onPickImages: () => model.pickStretchingImages(),
+                        onRemoveImage: (index) =>
+                            model.removeStretchingImage(index),
                       ),
                       const SizedBox(height: 24),
 

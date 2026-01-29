@@ -19,6 +19,7 @@ class GymExerciseCard extends StatefulWidget {
 
 class _GymExerciseCardState extends State<GymExerciseCard> {
   int _currentImageIndex = 0;
+  int _currentStretchingImageIndex = 0;
 
   List<String> get _imageUrls {
     final url = widget.exercise.machinePhotoUrl;
@@ -29,6 +30,25 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
     if (url.trim().startsWith('[')) {
       try {
         // Simple manual parse to avoid importing dart:convert if not needed or just use strip
+        final clean = url.trim().substring(1, url.trim().length - 1);
+        if (clean.isEmpty) return [];
+        return clean
+            .split(',')
+            .map((e) => e.trim().replaceAll('"', '').replaceAll("'", ""))
+            .toList();
+      } catch (_) {
+        return [url];
+      }
+    }
+    return [url];
+  }
+
+  List<String> get _stretchingImageUrls {
+    final url = widget.exercise.stretchingPhotoUrl;
+    if (url == null || url.isEmpty) return [];
+
+    if (url.trim().startsWith('[')) {
+      try {
         final clean = url.trim().substring(1, url.trim().length - 1);
         if (clean.isEmpty) return [];
         return clean

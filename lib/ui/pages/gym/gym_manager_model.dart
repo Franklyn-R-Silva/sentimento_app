@@ -101,6 +101,7 @@ class GymManagerModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       final response = await GymExercisesTable().queryRows(
         queryFn: (q) => q
             .eq('user_id', userId)
+            .order('workout_id', ascending: true)
             .order('is_completed', ascending: true)
             .order('order_index', ascending: true)
             .order('name', ascending: true),

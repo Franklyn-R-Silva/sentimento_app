@@ -303,6 +303,7 @@ class _GymManagerPageState extends State<GymManagerPage> {
                               children: [
                                 GymExerciseCard(
                                   exercise: exercise,
+                                  workoutName: workout?.name,
                                   onRefresh: () => model.loadData(),
                                   isReorderable: false,
                                 ),
@@ -372,6 +373,7 @@ class _GymManagerPageState extends State<GymManagerPage> {
                           padding: const EdgeInsets.only(bottom: 12),
                           child: GymExerciseCard(
                             exercise: exercise,
+                            workoutName: workout?.name,
                             index: index,
                             onRefresh: () => model.loadData(),
                             onMoveToTop: () =>

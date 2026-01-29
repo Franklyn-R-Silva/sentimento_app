@@ -280,8 +280,20 @@ class _GymFocusPageState extends State<GymFocusPage> {
               return Column(
                 children: [
                   if (workoutName != null)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 4),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: theme.tertiary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: theme.tertiary.withOpacity(0.3),
+                          width: 1,
+                        ),
+                      ),
                       child: Text(
                         workoutName.toUpperCase(),
                         style: theme.labelMedium.override(

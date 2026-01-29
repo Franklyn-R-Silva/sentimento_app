@@ -16,6 +16,7 @@ class GymExerciseCard extends StatefulWidget {
   const GymExerciseCard({
     super.key,
     required this.exercise,
+    this.workoutName,
     this.index,
     this.onRefresh,
     this.onMoveToTop,
@@ -23,6 +24,7 @@ class GymExerciseCard extends StatefulWidget {
   });
 
   final GymExercisesRow exercise;
+  final String? workoutName;
   final int? index;
   final VoidCallback? onRefresh;
   final VoidCallback? onMoveToTop;
@@ -235,6 +237,41 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                                     ),
                                     fontWeight: FontWeight.bold,
                                   ),
+                                ),
+                              ),
+                            if (widget.workoutName != null)
+                              Container(
+                                margin: const EdgeInsets.only(right: 8),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: theme.tertiary.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: Border.all(
+                                    color: theme.tertiary.withOpacity(0.3),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.fitness_center_rounded,
+                                      size: 10,
+                                      color: theme.tertiary,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      widget.workoutName!,
+                                      style: theme.labelSmall.override(
+                                        fontFamily: 'Outfit',
+                                        color: theme.tertiary,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                           ],

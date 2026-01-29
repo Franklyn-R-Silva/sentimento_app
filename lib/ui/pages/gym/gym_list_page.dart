@@ -268,6 +268,7 @@ class _GymListPageState extends State<GymListPage> {
                                         ),
                                         child: GymExerciseCard(
                                           exercise: exercise,
+                                          workoutName: workout?.name,
                                           index: index,
                                           onRefresh: () => model.loadData(),
                                           onMoveToTop: () =>

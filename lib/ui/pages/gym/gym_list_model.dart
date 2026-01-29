@@ -89,4 +89,34 @@ class GymListModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         return 'Segunda';
     }
   }
+
+  Future<void> resetDailyWorkout() async {
+    final logger = Logger();
+    try {
+      isLoading = true;
+      final supabase = Supabase.instance.client;
+      final userId = supabase.auth.currentUser?.id;
+
+      if (userId == null) return;
+
+      final today = DateTime.now();
+      final dayOfWeek = _getDayOfWeek(today.weekday);
+
+      // Update all exercises for today to not completed
+      await GymExercisesTable().update(
+        data: {'is_completed': false},
+        matchingRows: (t) =>
+            t.eq('user_id', userId).eq('day_of_week', dayOfWeek),
+      );
+
+      // Refresh local data
+      await loadData();
+
+      logger.i('Daily workout reset successfully');
+    } catch (e) {
+      logger.e('Error resetting workout: $e');
+    } finally {
+      isLoading = false;
+    }
+  }
 }

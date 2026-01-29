@@ -12,6 +12,7 @@ import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/core/util.dart';
 import 'package:sentimento_app/ui/pages/gym/gym_list_model.dart';
 import 'package:sentimento_app/ui/pages/gym/widgets/gym_exercise_card.dart';
+import 'package:sentimento_app/ui/pages/gym/widgets/gym_empty_state.dart';
 
 class GymListPage extends StatefulWidget {
   const GymListPage({super.key});
@@ -87,6 +88,42 @@ class _GymListPageState extends State<GymListPage> {
                       children: [
                         IconButton(
                           icon: Icon(
+                            Icons.refresh_rounded,
+                            color: theme.secondaryText, // Less prominent
+                            size: 24,
+                          ),
+                          tooltip: 'Reiniciar Treino',
+                          onPressed: () async {
+                            final confirmed = await showDialog<bool>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Reiniciar Treino?'),
+                                content: const Text(
+                                  'Deseja marcar todos os exercícios de hoje como não concluídos?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, false),
+                                    child: const Text('Cancelar'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, true),
+                                    child: const Text('Sim'),
+                                  ),
+                                ],
+                              ),
+                            );
+
+                            if (confirmed == true) {
+                              await _model.resetDailyWorkout();
+                            }
+                          },
+                        ),
+                        const SizedBox(width: 8),
+                        IconButton(
+                          icon: Icon(
                             Icons.calendar_today_rounded,
                             color: theme.primary,
                             size: 24,
@@ -117,26 +154,13 @@ class _GymListPageState extends State<GymListPage> {
                     }
 
                     if (model.todaysExercises.isEmpty) {
-                      return Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.fitness_center_rounded,
-                              color: theme.secondaryText,
-                              size: 64,
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              'Nenhum treino cadastrado\npara hoje',
-                              textAlign: TextAlign.center,
-                              style: theme.headlineSmall.override(
-                                fontFamily: 'Outfit',
-                                color: theme.secondaryText,
-                              ),
-                            ),
-                          ],
-                        ),
+                      return GymEmptyState(
+                        message: 'Nenhum treino cadastrado\npara hoje',
+                        onAction: () async {
+                          await context.pushNamedAuth('GymManager', mounted);
+                          await model.loadData();
+                        },
+                        actionLabel: 'Gerenciar Treinos',
                       );
                     }
 

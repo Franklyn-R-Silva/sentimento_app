@@ -13,9 +13,10 @@ import 'package:sentimento_app/ui/pages/gym/widgets/gym_exercise_carousel.dart';
 import 'package:sentimento_app/ui/pages/gym/widgets/gym_exercise_info.dart';
 
 class GymExerciseCard extends StatefulWidget {
-  const GymExerciseCard({super.key, required this.exercise});
+  const GymExerciseCard({super.key, required this.exercise, this.onRefresh});
 
   final GymExercisesRow exercise;
+  final VoidCallback? onRefresh;
 
   @override
   State<GymExerciseCard> createState() => _GymExerciseCardState();
@@ -197,6 +198,81 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                           'isDuplication': true,
                         },
                       );
+                    } else if (value == 'move') {
+                      final days = [
+                        'Segunda',
+                        'Terça',
+                        'Quarta',
+                        'Quinta',
+                        'Sexta',
+                        'Sábado',
+                        'Domingo',
+                      ];
+
+                      // Show simple dialog to pick day
+                      final String? targetDay = await showDialog<String>(
+                        context: context,
+                        builder: (context) => SimpleDialog(
+                          title: const Text('Mover para...'),
+                          children: days
+                              .map(
+                                (d) => SimpleDialogOption(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 24,
+                                    vertical: 12,
+                                  ),
+                                  onPressed: () => Navigator.pop(context, d),
+                                  child: Text(
+                                    d,
+                                    style: theme.bodyMedium.override(
+                                      fontFamily: 'Outfit',
+                                      fontWeight: d == widget.exercise.dayOfWeek
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      color: d == widget.exercise.dayOfWeek
+                                          ? theme.primary
+                                          : theme.primaryText,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      );
+
+                      if (targetDay != null &&
+                          targetDay != widget.exercise.dayOfWeek) {
+                        try {
+                          await GymExercisesTable().update(
+                            data: {'day_of_week': targetDay},
+                            matchingRows: (t) => t.eq('id', widget.exercise.id),
+                          );
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Movido para $targetDay'),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                            // Ideally parent should refresh.
+                            // If we are in GymManagerPage, reorder mechanism might handle state if models are shared?
+                            // Actually GymExerciseCard keeps local state for isCompleted.
+                            // This change affects list presence.
+                            // We really should trigger a callback or reload.
+                            // But for now, user might need to pull refresh.
+                            widget.onRefresh?.call();
+                          }
+                        } catch (e) {
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Erro ao mover exercício'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        }
+                      }
                     } else if (value == 'delete') {
                       final confirmed = await showDialog<bool>(
                         context: context,
@@ -267,6 +343,16 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                           Icon(Icons.copy, size: 20),
                           SizedBox(width: 8),
                           Text('Duplicar'),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuItem(
+                      value: 'move',
+                      child: Row(
+                        children: [
+                          Icon(Icons.drive_file_move_rounded, size: 20),
+                          SizedBox(width: 8),
+                          Text('Mover para...'),
                         ],
                       ),
                     ),

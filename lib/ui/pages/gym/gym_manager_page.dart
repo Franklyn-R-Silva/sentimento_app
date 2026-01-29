@@ -129,20 +129,92 @@ class _GymManagerPageState extends State<GymManagerPage> {
                     );
                   }
 
-                  return ReorderableListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: exercises.length,
-                    onReorder: (oldIndex, newIndex) {
-                      model.reorderExercises(day, oldIndex, newIndex);
-                    },
-                    itemBuilder: (context, index) {
-                      final exercise = exercises[index];
-                      return Padding(
-                        key: ValueKey(exercise.id),
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: GymExerciseCard(exercise: exercise),
-                      );
-                    },
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                        child: ElevatedButton.icon(
+                          onPressed: () async {
+                            final confirmed = await showDialog<bool>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Adiar Treino'),
+                                content: Text(
+                                  'Isso moverá todos os treinos de $day para o dia seguinte, e assim por diante.\n\nTem certeza?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, false),
+                                    child: const Text('Cancelar'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, true),
+                                    child: const Text(
+                                      'Sim, Adiar',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+
+                            if (confirmed == true) {
+                              await model.shiftDay(day);
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Agenda deslocada com sucesso!',
+                                    ),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                          icon: const Icon(
+                            Icons.more_time_rounded,
+                            color: Colors.white,
+                          ),
+                          label: Text(
+                            'Adiar Treino (Pular $day)',
+                            style: theme.titleSmall.override(
+                              fontFamily: 'Outfit',
+                              color: Colors.white,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: theme.secondary,
+                            minimumSize: const Size(double.infinity, 45),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: ReorderableListView.builder(
+                          padding: const EdgeInsets.all(16),
+                          itemCount: exercises.length,
+                          onReorder: (oldIndex, newIndex) {
+                            model.reorderExercises(day, oldIndex, newIndex);
+                          },
+                          itemBuilder: (context, index) {
+                            final exercise = exercises[index];
+                            return Padding(
+                              key: ValueKey(exercise.id),
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: GymExerciseCard(
+                                exercise: exercise,
+                                onRefresh: () => model.loadData(),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   );
                 }).toList(),
               );

@@ -70,4 +70,30 @@ class GymExercisesRow extends SupabaseDataRow {
 
   String? get dayOfWeek => getField<String>('day_of_week');
   set dayOfWeek(final String? value) => setField<String>('day_of_week', value);
+
+  // New Fields
+  String? get category => getField<String>('category');
+  set category(final String? value) => setField<String>('category', value);
+
+  String? get muscleGroup => getField<String>('muscle_group');
+  set muscleGroup(final String? value) =>
+      setField<String>('muscle_group', value);
+
+  int? get sets => getField<int>('sets');
+  set sets(final int? value) => setField<int>('sets', value);
+
+  String? get reps => getField<String>('reps');
+  set reps(final String? value) => setField<String>('reps', value);
+
+  double? get weight => getField<double>('weight');
+  set weight(final double? value) => setField<double>('weight', value);
+
+  int? get restTime => getField<int>('rest_time');
+  set restTime(final int? value) => setField<int>('rest_time', value);
+
+  bool get isCompleted => getField<bool>('is_completed') ?? false;
+  set isCompleted(final bool value) => setField<bool>('is_completed', value);
+
+  int? get orderIndex => getField<int>('order_index');
+  set orderIndex(final int? value) => setField<int>('order_index', value);
 }

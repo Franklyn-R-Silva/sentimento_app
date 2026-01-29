@@ -19,13 +19,23 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
 
   // Controllers
   final nameController = TextEditingController();
-  final stretchingNameController = TextEditingController(); // New
+  final stretchingNameController = TextEditingController();
   final stretchingSeriesController = TextEditingController();
   final stretchingQtyController = TextEditingController();
-  final stretchingTimeController = TextEditingController(); // New
-  final exerciseSeriesController = TextEditingController();
-  final exerciseQtyController = TextEditingController();
-  final exerciseTimeController = TextEditingController(); // New
+  final stretchingTimeController = TextEditingController();
+
+  // New Exercise Controllers
+  final setsController = TextEditingController(); // Replaces exerciseSeries
+  final repsController = TextEditingController(); // Replaces exerciseQty
+  final weightController = TextEditingController();
+  final restTimeController = TextEditingController();
+
+  // Legacy controllers kept if needed for migration, otherwise we can remove them or alias them
+  // keeping purely for not breaking existing references immediately if any, but plan replaces them
+  // actually I will remove them and use sets/reps instead as per requirement 'Implementar'
+  // but existing UI uses them so I should be careful. I will deprecate them in UI next step.
+  // For now let's add the new ones.
+
   final descriptionController = TextEditingController();
 
   String? selectedDay;
@@ -37,6 +47,21 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     'Sexta',
     'Sábado',
     'Domingo',
+  ];
+
+  String? selectedCategory;
+  final List<String> categories = ['Musculação', 'Cardio', 'Mobilidade'];
+
+  String? selectedMuscleGroup;
+  final List<String> muscleGroups = [
+    'Peito',
+    'Costas',
+    'Pernas',
+    'Ombros',
+    'Bíceps',
+    'Tríceps',
+    'Abdômen',
+    'Outros',
   ];
 
   List<XFile> _selectedImages = [];
@@ -63,9 +88,10 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     stretchingSeriesController.dispose();
     stretchingQtyController.dispose();
     stretchingTimeController.dispose();
-    exerciseSeriesController.dispose();
-    exerciseQtyController.dispose();
-    exerciseTimeController.dispose();
+    setsController.dispose();
+    repsController.dispose();
+    weightController.dispose();
+    restTimeController.dispose();
     descriptionController.dispose();
     super.dispose();
   }
@@ -175,10 +201,7 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       List<String> imageUrls = [];
       if (_selectedImages.isNotEmpty) {
         try {
-          imageUrls = await _uploadImages(
-            userId,
-            _selectedImages,
-          ); // Updated call
+          imageUrls = await _uploadImages(userId, _selectedImages);
         } catch (e) {
           ToastService.showError('Erro ao salvar fotos. Verifique conexão.');
           isLoading = false;
@@ -225,6 +248,12 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         'description': descriptionController.text.isNotEmpty
             ? descriptionController.text
             : null,
+        'category': selectedCategory,
+        'muscle_group': selectedMuscleGroup,
+        'sets': int.tryParse(setsController.text),
+        'reps': repsController.text,
+        'weight': double.tryParse(weightController.text.replaceAll(',', '.')),
+        'rest_time': int.tryParse(restTimeController.text),
         'stretching_name': stretchingNameController.text.isNotEmpty
             ? stretchingNameController.text
             : null,
@@ -232,11 +261,6 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         'stretching_qty': int.tryParse(stretchingQtyController.text),
         'stretching_time': stretchingTimeController.text.isNotEmpty
             ? stretchingTimeController.text
-            : null,
-        'exercise_series': int.tryParse(exerciseSeriesController.text),
-        'exercise_qty': int.tryParse(exerciseQtyController.text),
-        'exercise_time': exerciseTimeController.text.isNotEmpty
-            ? exerciseTimeController.text
             : null,
         'machine_photo_url': machinePhotoUrl,
         'stretching_photo_url': stretchingPhotoUrl,

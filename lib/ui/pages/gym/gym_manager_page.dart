@@ -82,7 +82,7 @@ class _GymManagerPageState extends State<GymManagerPage> {
                         icon: const Icon(Icons.close, color: Colors.white),
                         onPressed: () => model.clearSelection(),
                       )
-                    : null,
+                    : const BackButton(color: Colors.white),
                 title: Text(
                   model.isSelectionMode
                       ? '${model.selectedCount} selecionado(s)'

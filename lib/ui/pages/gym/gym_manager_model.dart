@@ -116,26 +116,27 @@ class GymManagerModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     notifyListeners();
 
     try {
-      // Iterate backwards from the last day down to the start day
-      // to avoid overwriting data we just moved.
-      // Example: Shift 'Quarta' (Index 2).
-      // 1. Move 'Domingo' (6) -> 'Segunda' (0) (Wrap)
-      // 2. Move 'Sábado' (5) -> 'Domingo' (6)
-      // ...
-      // 3. Move 'Quarta' (2) -> 'Quinta' (3)
+      // First, collect ALL exercises from startDay to Sunday with their target days
+      // We need to collect by ID to avoid the recursive overwrite problem
+      final Map<String, String> exerciseUpdates = {}; // exerciseId -> targetDay
 
       for (int i = days.length - 1; i >= startIndex; i--) {
         final currentDay = days[i];
-        final nextDayIndex = (i + 1) % days.length; // Wrap around to Monday
+        final nextDayIndex = (i + 1) % days.length;
         final nextDay = days[nextDayIndex];
 
-        // We need to verify if there are exercises to move to avoid unnecessary queries,
-        // but a blind update is also fine if efficient.
-        // However, Supabase update is precise.
+        // Get exercises for current day from our local state
+        final exercisesForDay = exercisesByDay[currentDay] ?? [];
+        for (var exercise in exercisesForDay) {
+          exerciseUpdates[exercise.id] = nextDay;
+        }
+      }
 
+      // Now apply all updates at once (by individual ID)
+      for (var entry in exerciseUpdates.entries) {
         await GymExercisesTable().update(
-          data: {'day_of_week': nextDay},
-          matchingRows: (t) => t.eq('day_of_week', currentDay),
+          data: {'day_of_week': entry.value},
+          matchingRows: (t) => t.eq('id', entry.key),
         );
       }
 

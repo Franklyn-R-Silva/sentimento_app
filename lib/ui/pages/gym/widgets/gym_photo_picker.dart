@@ -129,10 +129,21 @@ class _GymPhotoPickerState extends State<GymPhotoPicker> {
                         right: 12,
                         child: InkWell(
                           onTap: () {
+                            final newTotal = totalCount - 1;
                             if (isExisting) {
                               widget.onRemoveExistingImage?.call(index);
                             } else {
                               widget.onRemoveImage(index - existingCount);
+                            }
+                            // Reset current index if it would be out of bounds
+                            if (_currentIndex >= newTotal && newTotal > 0) {
+                              setState(() {
+                                _currentIndex = newTotal - 1;
+                              });
+                            } else if (newTotal == 0) {
+                              setState(() {
+                                _currentIndex = 0;
+                              });
                             }
                           },
                           child: Container(

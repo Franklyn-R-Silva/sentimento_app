@@ -13,6 +13,7 @@ import 'package:sentimento_app/core/util.dart';
 import 'package:sentimento_app/ui/pages/gym/gym_list_model.dart';
 import 'package:sentimento_app/ui/pages/gym/widgets/gym_exercise_card.dart';
 import 'package:sentimento_app/ui/pages/gym/widgets/gym_empty_state.dart';
+import 'package:sentimento_app/ui/pages/gym/widgets/gym_celebration.dart';
 
 class GymListPage extends StatefulWidget {
   const GymListPage({super.key});
@@ -86,6 +87,29 @@ class _GymListPageState extends State<GymListPage> {
                     ),
                     Row(
                       children: [
+                        // Focus Mode Play Button
+                        Consumer<GymListModel>(
+                          builder: (context, model, _) => IconButton(
+                            icon: Icon(
+                              Icons.play_circle_filled_rounded,
+                              color: model.todaysExercises.isNotEmpty
+                                  ? theme.tertiary
+                                  : theme.alternate,
+                              size: 28,
+                            ),
+                            tooltip: 'Modo Foco',
+                            onPressed: model.todaysExercises.isNotEmpty
+                                ? () async {
+                                    await Navigator.pushNamed(
+                                      context,
+                                      '/gym/focus',
+                                      arguments: model.todaysExercises,
+                                    );
+                                    await model.loadData();
+                                  }
+                                : null,
+                          ),
+                        ),
                         IconButton(
                           icon: Icon(
                             Icons.refresh_rounded,
@@ -164,16 +188,34 @@ class _GymListPageState extends State<GymListPage> {
                       );
                     }
 
-                    return ListView.builder(
-                      padding: const EdgeInsets.all(24),
-                      itemCount: model.todaysExercises.length,
-                      itemBuilder: (context, index) {
-                        final exercise = model.todaysExercises[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: GymExerciseCard(exercise: exercise),
-                        );
-                      },
+                    return GymCelebration(
+                      isComplete: model.isAllComplete,
+                      child: Column(
+                        children: [
+                          // Progress bar
+                          GymProgressBar(
+                            completed: model.completedCount,
+                            total: model.todaysExercises.length,
+                          ),
+                          // Exercise list
+                          Expanded(
+                            child: ListView.builder(
+                              padding: const EdgeInsets.all(24),
+                              itemCount: model.todaysExercises.length,
+                              itemBuilder: (context, index) {
+                                final exercise = model.todaysExercises[index];
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: GymExerciseCard(
+                                    exercise: exercise,
+                                    onRefresh: () => model.loadData(),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     );
                   },
                 ),

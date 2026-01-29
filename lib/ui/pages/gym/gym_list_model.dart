@@ -22,6 +22,11 @@ class GymListModel extends FlutterFlowModel<Widget> with ChangeNotifier {
 
   List<GymExercisesRow> todaysExercises = [];
 
+  // Progress tracking
+  int get completedCount => todaysExercises.where((e) => e.isCompleted).length;
+  bool get isAllComplete =>
+      todaysExercises.isNotEmpty && completedCount == todaysExercises.length;
+
   @override
   void initState(BuildContext context) {}
 

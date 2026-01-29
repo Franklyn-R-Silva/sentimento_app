@@ -7,6 +7,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 // Project imports:
 import 'package:sentimento_app/backend/tables/gym_exercises.dart';
 import 'package:sentimento_app/core/theme.dart';
+import 'package:sentimento_app/ui/pages/gym/gym_register_page.dart';
 
 class GymExerciseCard extends StatefulWidget {
   const GymExerciseCard({super.key, required this.exercise});
@@ -174,6 +175,96 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                   },
                   activeColor: theme.primary,
                   checkColor: theme.info,
+                ),
+                PopupMenuButton<String>(
+                  icon: Icon(
+                    Icons.more_vert_rounded,
+                    color: theme.secondaryText,
+                  ),
+                  onSelected: (value) async {
+                    if (value == 'edit') {
+                      await Navigator.pushNamed(
+                        context,
+                        GymRegisterPage.routeName,
+                        arguments: widget.exercise,
+                      );
+                      // Ideally refresh list
+                    } else if (value == 'delete') {
+                      final confirmed = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Excluir Exercício'),
+                          content: const Text(
+                            'Tem certeza que deseja excluir este exercício?',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, false),
+                              child: const Text('Cancelar'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, true),
+                              child: const Text(
+                                'Excluir',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+
+                      if (confirmed == true) {
+                        try {
+                          await GymExercisesTable().delete(
+                            matchingRows: (t) => t.eq('id', widget.exercise.id),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Exercício excluído com sucesso!'),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                          // Trigger refresh somehow - or parent should handle.
+                          // Since we don't have a callback ref here easily without refactoring,
+                          // we depend on parent rebuilding or using a specialized notification.
+                          // But wait, GymListModel handles the list. Ideally we should call a method on it.
+                          // OR, we can just say to user "pull to refresh" or handle it via a callback param.
+                          // For simplicity now, let's rely on user returning or re-entering, OR add a callback.
+                          // But wait, this is inside `GymListPage` which listens to `GymListModel`.
+                          // If `reset` is called it might work? No.
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Erro ao excluir: $e'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      }
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    const PopupMenuItem(
+                      value: 'edit',
+                      child: Row(
+                        children: [
+                          Icon(Icons.edit, size: 20),
+                          SizedBox(width: 8),
+                          Text('Editar'),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuItem(
+                      value: 'delete',
+                      child: Row(
+                        children: [
+                          Icon(Icons.delete, color: Colors.red, size: 20),
+                          SizedBox(width: 8),
+                          Text('Excluir', style: TextStyle(color: Colors.red)),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

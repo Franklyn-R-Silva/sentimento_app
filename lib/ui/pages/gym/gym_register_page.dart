@@ -8,13 +8,16 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 // Project imports:
+import 'package:sentimento_app/backend/tables/gym_exercises.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/core/util.dart';
 import 'package:sentimento_app/ui/pages/gym/gym_register_model.dart';
 import 'package:sentimento_app/ui/pages/gym/widgets/gym_photo_picker.dart';
 
 class GymRegisterPage extends StatefulWidget {
-  const GymRegisterPage({super.key});
+  const GymRegisterPage({super.key, this.exercise});
+
+  final GymExercisesRow? exercise;
 
   static String routeName = 'GymRegister';
   static String routePath = '/gym/register';
@@ -30,6 +33,9 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
   void initState() {
     super.initState();
     _model = createModel(context, () => GymRegisterModel());
+    if (widget.exercise != null) {
+      _model.initFromExercise(widget.exercise!);
+    }
   }
 
   @override
@@ -49,6 +55,7 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
       );
     }
     final theme = FlutterFlowTheme.of(context);
+    final isEditing = widget.exercise != null;
 
     return ChangeNotifierProvider.value(
       value: _model,
@@ -66,7 +73,7 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
             onPressed: () => context.safePop(),
           ),
           title: Text(
-            'Novo Exercício',
+            isEditing ? 'Editar Exercício' : 'Novo Exercício',
             style: theme.headlineMedium.override(
               fontFamily: 'Outfit',
               color: theme.primaryText,
@@ -447,7 +454,7 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                                     context,
                                   );
                                   if (success && context.mounted) {
-                                    context.safePop();
+                                    Navigator.pop(context, success);
                                   }
                                 },
                           style: ElevatedButton.styleFrom(
@@ -461,7 +468,9 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                                   color: Colors.white,
                                 )
                               : Text(
-                                  'Salvar Exercício',
+                                  isEditing
+                                      ? 'Salvar Alterações'
+                                      : 'Salvar Exercício',
                                   style: theme.titleSmall.override(
                                     fontFamily: 'Outfit',
                                     color: Colors.white,

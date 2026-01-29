@@ -176,6 +176,40 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     return uploadedUrls;
   }
 
+  // Edit Mode
+  String? exerciseId;
+  GymExercisesRow? editingExercise;
+
+  void initFromExercise(GymExercisesRow exercise) {
+    exerciseId = exercise.id;
+    editingExercise = exercise;
+    nameController.text = exercise.name;
+    descriptionController.text = exercise.description ?? '';
+    selectedCategory = exercise.category;
+    selectedMuscleGroup = exercise.muscleGroup;
+    setsController.text = exercise.sets?.toString() ?? '';
+    repsController.text = exercise.reps ?? '';
+    weightController.text = exercise.weight?.toString() ?? '';
+    restTimeController.text = exercise.restTime?.toString() ?? '';
+    selectedDay = exercise.dayOfWeek;
+
+    // Stretching fields
+    stretchingNameController.text = exercise.stretchingName ?? '';
+    stretchingSeriesController.text =
+        exercise.stretchingSeries?.toString() ?? '';
+    stretchingQtyController.text = exercise.stretchingQty?.toString() ?? '';
+    stretchingTimeController.text = exercise.stretchingTime ?? '';
+
+    // Handle existing images slightly differently - for now we don't pre-fill File objects
+    // because XFile is for local files pending upload.
+    // Ideally we would show existing URLs and allow adding new ones.
+    // This requires UI changes to show 'existing images' + 'newly picked images'.
+    // For MVP Edit: We just keep existing unless changed?
+    // Simplified: If new images selected, we upload and APPEND or REPLACE?
+    // Let's assume APPEND for now or just simple list management.
+    notifyListeners();
+  }
+
   Future<bool> saveExercise(BuildContext context) async {
     if (!formKey.currentState!.validate()) {
       return false;
@@ -224,25 +258,82 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         }
       }
 
-      String? machinePhotoUrl;
+      // Logic for URLs:
+      // If editing, we want to KEEP existing validation/URLs unless explicitly removed (not implemented yet for existing)
+      // For now, if editing, we might overwrite if new ones are added, or we need to merge.
+      // Let's implement a Merge logic:
+
+      String? finalMachineUrl = editingExercise?.machinePhotoUrl;
+      // If we uploaded new ones, append or replace?
+      // Let's say we append if existing is a list, or make it a list.
       if (imageUrls.isNotEmpty) {
-        if (imageUrls.length == 1) {
-          machinePhotoUrl = imageUrls.first;
+        if (finalMachineUrl != null && finalMachineUrl.isNotEmpty) {
+          // Check if JSON list
+          List<String> existing = [];
+          if (finalMachineUrl.trim().startsWith('[')) {
+            try {
+              final clean = finalMachineUrl.trim().substring(
+                1,
+                finalMachineUrl.trim().length - 1,
+              );
+              if (clean.isNotEmpty) {
+                existing = clean
+                    .split(',')
+                    .map(
+                      (e) => e.trim().replaceAll('"', '').replaceAll("'", ""),
+                    )
+                    .toList();
+              }
+            } catch (_) {}
+          } else {
+            existing = [finalMachineUrl];
+          }
+          existing.addAll(imageUrls);
+          finalMachineUrl = existing.toString();
         } else {
-          machinePhotoUrl = imageUrls.toString();
+          if (imageUrls.length == 1) {
+            finalMachineUrl = imageUrls.first;
+          } else {
+            finalMachineUrl = imageUrls.toString();
+          }
         }
       }
 
-      String? stretchingPhotoUrl;
+      String? finalStretchingUrl = editingExercise?.stretchingPhotoUrl;
       if (stretchingImageUrls.isNotEmpty) {
-        if (stretchingImageUrls.length == 1) {
-          stretchingPhotoUrl = stretchingImageUrls.first;
+        if (finalStretchingUrl != null && finalStretchingUrl.isNotEmpty) {
+          // Check if JSON list
+          List<String> existing = [];
+          if (finalStretchingUrl.trim().startsWith('[')) {
+            try {
+              final clean = finalStretchingUrl.trim().substring(
+                1,
+                finalStretchingUrl.trim().length - 1,
+              );
+              if (clean.isNotEmpty) {
+                existing = clean
+                    .split(',')
+                    .map(
+                      (e) => e.trim().replaceAll('"', '').replaceAll("'", ""),
+                    )
+                    .toList();
+              }
+            } catch (_) {}
+          } else {
+            existing = [finalStretchingUrl];
+          }
+          existing.addAll(stretchingImageUrls);
+          finalStretchingUrl = existing.toString();
         } else {
-          stretchingPhotoUrl = stretchingImageUrls.toString();
+          if (stretchingImageUrls.length == 1) {
+            finalStretchingUrl = stretchingImageUrls.first;
+          } else {
+            finalStretchingUrl = stretchingImageUrls.toString();
+          }
         }
       }
 
-      await GymExercisesTable().insert({
+      final data = {
         'user_id': userId,
         'name': nameController.text,
         'description': descriptionController.text.isNotEmpty
@@ -262,13 +353,25 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         'stretching_time': stretchingTimeController.text.isNotEmpty
             ? stretchingTimeController.text
             : null,
-        'machine_photo_url': machinePhotoUrl,
-        'stretching_photo_url': stretchingPhotoUrl,
+        'machine_photo_url': finalMachineUrl,
+        'stretching_photo_url': finalStretchingUrl,
         'day_of_week': selectedDay,
-        'created_at': DateTime.now().toIso8601String(),
-      });
+      };
 
-      ToastService.showSuccess('Exercício salvo com sucesso!');
+      if (exerciseId != null) {
+        // UPDATE
+        await GymExercisesTable().update(
+          data: data,
+          matchingRows: (t) => t.eq('id', exerciseId!),
+        );
+        ToastService.showSuccess('Exercício atualizado com sucesso!');
+      } else {
+        // INSERT
+        data['created_at'] = DateTime.now().toIso8601String();
+        await GymExercisesTable().insert(data);
+        ToastService.showSuccess('Exercício salvo com sucesso!');
+      }
+
       return true;
     } catch (e) {
       logger.e('Error saving exercise: $e');

@@ -8,12 +8,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 // Project imports:
+import 'package:sentimento_app/backend/tables/gym_workouts.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/core/util.dart';
 import 'package:sentimento_app/ui/pages/gym/gym_list_model.dart';
-import 'package:sentimento_app/ui/pages/gym/widgets/gym_exercise_card.dart';
-import 'package:sentimento_app/ui/pages/gym/widgets/gym_empty_state.dart';
 import 'package:sentimento_app/ui/pages/gym/widgets/gym_celebration.dart';
+import 'package:sentimento_app/ui/pages/gym/widgets/gym_empty_state.dart';
+import 'package:sentimento_app/ui/pages/gym/widgets/gym_exercise_card.dart';
 import 'package:sentimento_app/ui/pages/gym/widgets/gym_stats.dart';
 
 class GymListPage extends StatefulWidget {
@@ -229,16 +230,51 @@ class _GymListPageState extends State<GymListPage> {
                                 },
                                 itemBuilder: (context, index) {
                                   final exercise = model.todaysExercises[index];
-                                  return Padding(
+                                  final previousExercise = index > 0
+                                      ? model.todaysExercises[index - 1]
+                                      : null;
+
+                                  GymWorkoutsRow? workout;
+                                  bool showHeader = false;
+
+                                  if (exercise.workoutId != null) {
+                                    final found = model.userWorkouts.where(
+                                      (w) => w.id == exercise.workoutId,
+                                    );
+                                    if (found.isNotEmpty) {
+                                      workout = found.first;
+                                      if (previousExercise == null ||
+                                          previousExercise.workoutId !=
+                                              exercise.workoutId) {
+                                        showHeader = true;
+                                      }
+                                    }
+                                  }
+
+                                  return Column(
                                     key: ValueKey(exercise.id),
-                                    padding: const EdgeInsets.only(bottom: 12),
-                                    child: GymExerciseCard(
-                                      exercise: exercise,
-                                      index: index,
-                                      onRefresh: () => model.loadData(),
-                                      onMoveToTop: () =>
-                                          model.moveToTop(exercise.id),
-                                    ),
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      if (showHeader && workout != null)
+                                        _buildWorkoutHeader(
+                                          context,
+                                          workout,
+                                          theme,
+                                        ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          bottom: 12,
+                                        ),
+                                        child: GymExerciseCard(
+                                          exercise: exercise,
+                                          index: index,
+                                          onRefresh: () => model.loadData(),
+                                          onMoveToTop: () =>
+                                              model.moveToTop(exercise.id),
+                                        ),
+                                      ),
+                                    ],
                                   );
                                 },
                               ),
@@ -253,6 +289,69 @@ class _GymListPageState extends State<GymListPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildWorkoutHeader(
+    BuildContext context,
+    GymWorkoutsRow workout,
+    FlutterFlowTheme theme,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16, top: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 4,
+                height: 24,
+                decoration: BoxDecoration(
+                  color: theme.tertiary,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    workout.name,
+                    style: theme.titleLarge.override(
+                      fontFamily: 'Outfit',
+                      color: theme.primaryText,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  if (workout.muscleGroups != null &&
+                      workout.muscleGroups!.isNotEmpty)
+                    Text(
+                      workout.muscleGroups!,
+                      style: theme.labelMedium.override(
+                        fontFamily: 'Outfit',
+                        color: theme.tertiary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                ],
+              ),
+            ],
+          ),
+          if (workout.description != null && workout.description!.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(left: 16, top: 4),
+              child: Text(
+                workout.description!,
+                style: theme.bodySmall.override(
+                  fontFamily: 'Outfit',
+                  color: theme.secondaryText,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

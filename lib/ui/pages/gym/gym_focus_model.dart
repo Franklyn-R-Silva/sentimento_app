@@ -1,15 +1,25 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:logger/logger.dart';
-import 'package:sentimento_app/backend/tables/gym_exercises.dart';
+
+// Project imports:
 import 'package:sentimento_app/backend/gym/gym_repository.dart';
+import 'package:sentimento_app/backend/supabase.dart';
+import 'package:sentimento_app/backend/tables/gym_exercises.dart';
+import 'package:sentimento_app/backend/tables/gym_workouts.dart';
 
 class GymFocusModel extends ChangeNotifier {
   GymFocusModel({required this.exercises, this.initialIndex = 0})
-    : _currentIndex = initialIndex;
+    : _currentIndex = initialIndex {
+    loadWorkouts();
+  }
 
   final List<GymExercisesRow> exercises;
   final int initialIndex;
   final _repository = GymRepository();
+  List<GymWorkoutsRow> workouts = [];
 
   int _currentIndex;
   int get currentIndex => _currentIndex;
@@ -34,6 +44,21 @@ class GymFocusModel extends ChangeNotifier {
     if (_currentIndex > 0) {
       _currentIndex--;
       notifyListeners();
+    }
+  }
+
+  Future<void> loadWorkouts() async {
+    try {
+      final supabase = Supabase.instance.client;
+      final userId = supabase.auth.currentUser?.id;
+      if (userId == null) return;
+
+      workouts = await GymWorkoutsTable().queryRows(
+        queryFn: (q) => q.eq('user_id', userId),
+      );
+      notifyListeners();
+    } catch (e) {
+      Logger().e('Error loading workouts in focus mode: $e');
     }
   }
 

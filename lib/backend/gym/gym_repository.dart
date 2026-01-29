@@ -1,4 +1,7 @@
+// Package imports:
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+// Project imports:
 import 'package:sentimento_app/backend/tables/gym_exercises.dart';
 import 'package:sentimento_app/backend/tables/gym_logs.dart';
 

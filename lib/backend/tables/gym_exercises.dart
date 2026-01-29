@@ -96,4 +96,7 @@ class GymExercisesRow extends SupabaseDataRow {
 
   int? get orderIndex => getField<int>('order_index');
   set orderIndex(final int? value) => setField<int>('order_index', value);
+
+  String? get workoutId => getField<String>('workout_id');
+  set workoutId(final String? value) => setField<String>('workout_id', value);
 }

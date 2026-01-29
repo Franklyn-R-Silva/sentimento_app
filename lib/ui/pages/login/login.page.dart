@@ -9,9 +9,8 @@ import 'package:provider/provider.dart';
 import 'package:sentimento_app/core/model.dart';
 import 'package:sentimento_app/core/nav/nav.dart';
 import 'package:sentimento_app/core/theme.dart';
-import 'login.model.dart';
-
 import 'package:sentimento_app/services/toast_service.dart';
+import 'login.model.dart';
 
 export 'login.model.dart';
 

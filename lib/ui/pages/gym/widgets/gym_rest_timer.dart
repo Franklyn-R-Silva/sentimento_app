@@ -1,6 +1,11 @@
+// Dart imports:
 import 'dart:async';
+
+// Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+// Project imports:
 import 'package:sentimento_app/core/theme.dart';
 
 /// A floating rest timer widget for gym workouts

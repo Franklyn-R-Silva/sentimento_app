@@ -1,10 +1,15 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:provider/provider.dart';
+
+// Project imports:
 import 'package:sentimento_app/backend/tables/gym_exercises.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/ui/pages/gym/gym_focus_model.dart';
-import 'package:sentimento_app/ui/pages/gym/widgets/gym_rest_timer.dart';
 import 'package:sentimento_app/ui/pages/gym/widgets/gym_exercise_carousel.dart';
+import 'package:sentimento_app/ui/pages/gym/widgets/gym_rest_timer.dart';
 import 'package:sentimento_app/ui/pages/gym/widgets/gym_stats.dart';
 
 class GymFocusPage extends StatefulWidget {
@@ -261,14 +266,44 @@ class _GymFocusPageState extends State<GymFocusPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Exercise Name
-          Text(
-            exercise.name,
-            style: theme.headlineLarge.override(
-              fontFamily: 'Outfit',
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
+          Consumer<GymFocusModel>(
+            builder: (context, model, _) {
+              final workoutId = exercise.workoutId;
+              String? workoutName;
+              if (workoutId != null) {
+                final found = model.workouts.where((w) => w.id == workoutId);
+                if (found.isNotEmpty) {
+                  workoutName = found.first.name;
+                }
+              }
+
+              return Column(
+                children: [
+                  if (workoutName != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Text(
+                        workoutName.toUpperCase(),
+                        style: theme.labelMedium.override(
+                          fontFamily: 'Outfit',
+                          color: theme.tertiary,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                    ),
+                  Text(
+                    exercise.name,
+                    style: theme.headlineLarge.override(
+                      fontFamily: 'Outfit',
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              );
+            },
           ),
           const SizedBox(height: 8),
 
@@ -317,11 +352,15 @@ class _GymFocusPageState extends State<GymFocusPage> {
                   theme,
                 ),
                 _buildDivider(),
-                _buildDetailColumn(
-                  'Reps',
-                  exercise.reps ?? '${exercise.exerciseQty ?? "-"}',
-                  theme,
-                ),
+                if (exercise.exerciseTime != null &&
+                    exercise.exerciseTime!.isNotEmpty)
+                  _buildDetailColumn('Tempo', exercise.exerciseTime!, theme)
+                else
+                  _buildDetailColumn(
+                    'Reps',
+                    exercise.reps ?? '${exercise.exerciseQty ?? "-"}',
+                    theme,
+                  ),
                 _buildDivider(),
                 _buildDetailColumn(
                   'Peso',

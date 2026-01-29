@@ -1,10 +1,11 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-
 // Project imports:
 import 'package:sentimento_app/core/theme.dart';
+
+// Package imports:
+
 
 class GoalsEmptyState extends StatelessWidget {
   const GoalsEmptyState({super.key});

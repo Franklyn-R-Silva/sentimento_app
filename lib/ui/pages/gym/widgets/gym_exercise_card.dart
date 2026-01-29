@@ -6,9 +6,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 
 // Project imports:
 import 'package:sentimento_app/backend/tables/gym_exercises.dart';
+import 'package:sentimento_app/core/nav/nav.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/ui/pages/gym/gym_register_page.dart';
-import 'package:sentimento_app/core/nav/nav.dart';
 import 'package:sentimento_app/ui/pages/gym/widgets/gym_exercise_carousel.dart';
 import 'package:sentimento_app/ui/pages/gym/widgets/gym_exercise_info.dart';
 

@@ -1,4 +1,7 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:sentimento_app/backend/gym/gym_repository.dart';
 import 'package:sentimento_app/backend/tables/gym_logs.dart';
 import 'package:sentimento_app/core/theme.dart';

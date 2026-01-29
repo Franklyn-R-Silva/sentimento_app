@@ -7,6 +7,7 @@ import 'package:logger/logger.dart';
 // Project imports:
 import 'package:sentimento_app/backend/supabase.dart';
 import 'package:sentimento_app/backend/tables/gym_exercises.dart';
+import 'package:sentimento_app/backend/tables/gym_workouts.dart';
 import 'package:sentimento_app/core/model.dart';
 import 'package:sentimento_app/core/util.dart';
 
@@ -21,6 +22,7 @@ class GymListModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   }
 
   List<GymExercisesRow> todaysExercises = [];
+  List<GymWorkoutsRow> userWorkouts = [];
 
   // Progress tracking
   int get completedCount => todaysExercises.where((e) => e.isCompleted).length;
@@ -63,8 +65,14 @@ class GymListModel extends FlutterFlowModel<Widget> with ChangeNotifier {
       );
 
       todaysExercises = response;
+
+      // Fetch workouts to group them
+      userWorkouts = await GymWorkoutsTable().queryRows(
+        queryFn: (q) => q.eq('user_id', userId),
+      );
+
       logger.d(
-        'GymListModel: Fetched ${todaysExercises.length} exercises for $dayOfWeek',
+        'GymListModel: Fetched ${todaysExercises.length} exercises and ${userWorkouts.length} workouts',
       );
 
       notifyListeners();

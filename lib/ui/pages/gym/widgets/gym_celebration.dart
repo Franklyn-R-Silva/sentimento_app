@@ -1,4 +1,7 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:sentimento_app/core/theme.dart';
 
 /// A progress bar that shows workout completion with smooth animation

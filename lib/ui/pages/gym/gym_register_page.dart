@@ -5,10 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Project imports:
 import 'package:sentimento_app/backend/tables/gym_exercises.dart';
+import 'package:sentimento_app/backend/tables/gym_workouts.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/core/util.dart';
 import 'package:sentimento_app/ui/pages/gym/gym_register_model.dart';
@@ -245,6 +248,63 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                           size: 20,
                         ),
                       ),
+                      const SizedBox(height: 16),
+
+                      // Workout Group
+                      Row(
+                        children: [
+                          Expanded(
+                            child: DropdownButtonFormField<String>(
+                              value: model.selectedWorkoutId,
+                              items: [
+                                const DropdownMenuItem(
+                                  value: null,
+                                  child: Text('Nenhum Grupo'),
+                                ),
+                                ...model.workouts.map((w) {
+                                  return DropdownMenuItem(
+                                    value: w.id,
+                                    child: Text(w.name),
+                                  );
+                                }),
+                              ],
+                              onChanged: (val) => model.selectedWorkoutId = val,
+                              decoration: InputDecoration(
+                                labelText: 'Grupo de Treino',
+                                labelStyle: theme.labelMedium,
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: theme.alternate,
+                                    width: 2,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: theme.primary,
+                                    width: 2,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                filled: true,
+                                fillColor: theme.secondaryBackground,
+                              ),
+                              style: theme.bodyMedium.override(
+                                color: theme.primaryText,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          IconButton(
+                            icon: Icon(
+                              Icons.add_box_rounded,
+                              color: theme.primary,
+                            ),
+                            onPressed: () =>
+                                _showAddWorkoutDialog(context, model),
+                          ),
+                        ],
+                      ),
                       const SizedBox(height: 24),
 
                       // Execução
@@ -284,6 +344,23 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                               decoration: InputDecoration(
                                 labelText: 'Repetições',
                                 hintText: 'Ex: 12-15',
+                                filled: true,
+                                fillColor: theme.secondaryBackground,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                              style: theme.bodyMedium,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: TextFormField(
+                              controller: model.timeController,
+                              decoration: InputDecoration(
+                                labelText: 'Tempo',
+                                hintText: 'Ex: 30s',
                                 filled: true,
                                 fillColor: theme.secondaryBackground,
                                 border: OutlineInputBorder(
@@ -499,6 +576,87 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
             },
           ),
         ),
+      ),
+    );
+  }
+
+  Future<void> _showAddWorkoutDialog(
+    BuildContext context,
+    GymRegisterModel model,
+  ) async {
+    final theme = FlutterFlowTheme.of(context);
+    final nameController = TextEditingController();
+    final groupController = TextEditingController();
+    final descController = TextEditingController();
+
+    await showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Novo Grupo de Treino'),
+        backgroundColor: theme.secondaryBackground,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              controller: nameController,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: const InputDecoration(
+                labelText: 'Nome (Ex: Treino A)',
+              ),
+              style: theme.bodyMedium,
+            ),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: groupController,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: const InputDecoration(
+                labelText: 'Foco (Ex: Costas e Bíceps)',
+              ),
+              style: theme.bodyMedium,
+            ),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: descController,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: const InputDecoration(
+                labelText: 'Info extra (Ex: 3x15 Mobilidade)',
+              ),
+              style: theme.bodyMedium,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (nameController.text.isEmpty) return;
+              try {
+                final supabase = Supabase.instance.client;
+                final userId = supabase.auth.currentUser?.id;
+                if (userId == null) return;
+
+                final data = {
+                  'user_id': userId,
+                  'name': nameController.text,
+                  'muscle_group': groupController.text,
+                  'description': descController.text,
+                  'created_at': DateTime.now().toIso8601String(),
+                };
+
+                await GymWorkoutsTable().insert(data);
+                await model.loadWorkouts();
+                if (context.mounted) Navigator.pop(context);
+              } catch (e) {
+                Logger().e('Error creating workout: $e');
+              }
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: theme.primary),
+            child: const Text('Criar', style: TextStyle(color: Colors.white)),
+          ),
+        ],
       ),
     );
   }

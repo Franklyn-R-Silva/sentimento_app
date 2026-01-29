@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/ui/pages/goals/goals.page.dart';
+import 'package:sentimento_app/ui/pages/gym/gym_list_page.dart';
 import 'package:sentimento_app/ui/pages/home/home.page.dart';
 import 'package:sentimento_app/ui/pages/journal/journal.page.dart';
-
 import 'package:sentimento_app/ui/pages/stats/stats.page.dart';
-import 'package:sentimento_app/ui/pages/gym/gym_list_page.dart';
 import 'package:sentimento_app/ui/shared/widgets/app_drawer.dart';
 import 'package:sentimento_app/ui/shared/widgets/custom_bottom_nav.dart';
 

@@ -1,4 +1,7 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/services/notification_service.dart';
 import 'package:sentimento_app/services/toast_service.dart';

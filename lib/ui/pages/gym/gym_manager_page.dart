@@ -6,13 +6,14 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 // Project imports:
+import 'package:sentimento_app/backend/tables/gym_exercises.dart';
+import 'package:sentimento_app/backend/tables/gym_workouts.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/core/util.dart';
-import 'package:sentimento_app/backend/tables/gym_exercises.dart';
 import 'package:sentimento_app/ui/pages/gym/gym_manager_model.dart';
-import 'package:sentimento_app/ui/pages/gym/widgets/gym_exercise_card.dart';
-import 'package:sentimento_app/ui/pages/gym/widgets/gym_empty_state.dart';
 import 'package:sentimento_app/ui/pages/gym/gym_register_page.dart';
+import 'package:sentimento_app/ui/pages/gym/widgets/gym_empty_state.dart';
+import 'package:sentimento_app/ui/pages/gym/widgets/gym_exercise_card.dart';
 
 class GymManagerPage extends StatefulWidget {
   const GymManagerPage({super.key});
@@ -267,41 +268,69 @@ class _GymManagerPageState extends State<GymManagerPage> {
                   itemCount: exercises.length,
                   itemBuilder: (context, index) {
                     final exercise = exercises[index];
+                    final previousExercise = index > 0
+                        ? exercises[index - 1]
+                        : null;
+
+                    GymWorkoutsRow? workout;
+                    bool showHeader = false;
+
+                    if (exercise.workoutId != null) {
+                      final found = model.workouts.where(
+                        (w) => w.id == exercise.workoutId,
+                      );
+                      if (found.isNotEmpty) {
+                        workout = found.first;
+                        if (previousExercise == null ||
+                            previousExercise.workoutId != exercise.workoutId) {
+                          showHeader = true;
+                        }
+                      }
+                    }
+
                     final isSelected = model.isExerciseSelected(exercise.id);
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: GestureDetector(
-                        onTap: () => model.toggleExerciseSelection(exercise.id),
-                        child: Stack(
-                          children: [
-                            GymExerciseCard(
-                              exercise: exercise,
-                              onRefresh: () => model.loadData(),
-                              isReorderable: false,
-                            ),
-                            if (isSelected)
-                              Positioned.fill(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: theme.primary.withOpacity(0.3),
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(
-                                      color: theme.primary,
-                                      width: 3,
-                                    ),
-                                  ),
-                                  child: const Center(
-                                    child: Icon(
-                                      Icons.check_circle,
-                                      color: Colors.white,
-                                      size: 48,
-                                    ),
-                                  ),
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (showHeader && workout != null)
+                          _buildWorkoutHeader(context, workout, theme),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: GestureDetector(
+                            onTap: () =>
+                                model.toggleExerciseSelection(exercise.id),
+                            child: Stack(
+                              children: [
+                                GymExerciseCard(
+                                  exercise: exercise,
+                                  onRefresh: () => model.loadData(),
+                                  isReorderable: false,
                                 ),
-                              ),
-                          ],
+                                if (isSelected)
+                                  Positioned.fill(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: theme.primary.withOpacity(0.3),
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                          color: theme.primary,
+                                          width: 3,
+                                        ),
+                                      ),
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.check_circle,
+                                          color: Colors.white,
+                                          size: 48,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     );
                   },
                 )
@@ -313,20 +342,96 @@ class _GymManagerPageState extends State<GymManagerPage> {
                   },
                   itemBuilder: (context, index) {
                     final exercise = exercises[index];
-                    return Padding(
+                    final previousExercise = index > 0
+                        ? exercises[index - 1]
+                        : null;
+
+                    GymWorkoutsRow? workout;
+                    bool showHeader = false;
+
+                    if (exercise.workoutId != null) {
+                      final found = model.workouts.where(
+                        (w) => w.id == exercise.workoutId,
+                      );
+                      if (found.isNotEmpty) {
+                        workout = found.first;
+                        if (previousExercise == null ||
+                            previousExercise.workoutId != exercise.workoutId) {
+                          showHeader = true;
+                        }
+                      }
+                    }
+
+                    return Column(
                       key: ValueKey(exercise.id),
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: GymExerciseCard(
-                        exercise: exercise,
-                        index: index,
-                        onRefresh: () => model.loadData(),
-                        onMoveToTop: () => model.moveToTop(day, exercise.id),
-                      ),
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (showHeader && workout != null)
+                          _buildWorkoutHeader(context, workout, theme),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: GymExerciseCard(
+                            exercise: exercise,
+                            index: index,
+                            onRefresh: () => model.loadData(),
+                            onMoveToTop: () =>
+                                model.moveToTop(day, exercise.id),
+                          ),
+                        ),
+                      ],
                     );
                   },
                 ),
         ),
       ],
+    );
+  }
+
+  Widget _buildWorkoutHeader(
+    BuildContext context,
+    GymWorkoutsRow workout,
+    FlutterFlowTheme theme,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16, top: 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 4,
+                height: 20,
+                decoration: BoxDecoration(
+                  color: theme.tertiary,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                workout.name,
+                style: theme.titleMedium.override(
+                  fontFamily: 'Outfit',
+                  color: theme.primaryText,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          if (workout.description != null && workout.description!.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(left: 12, top: 4),
+              child: Text(
+                workout.description!,
+                style: theme.bodySmall.override(
+                  fontFamily: 'Outfit',
+                  color: theme.secondaryText,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 

@@ -7,6 +7,7 @@ import 'package:logger/logger.dart';
 // Project imports:
 import 'package:sentimento_app/backend/supabase.dart';
 import 'package:sentimento_app/backend/tables/gym_exercises.dart';
+import 'package:sentimento_app/backend/tables/gym_workouts.dart';
 import 'package:sentimento_app/core/model.dart';
 
 class GymManagerModel extends FlutterFlowModel<Widget> with ChangeNotifier {
@@ -73,6 +74,8 @@ class GymManagerModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     'Domingo': [],
   };
 
+  List<GymWorkoutsRow> workouts = [];
+
   @override
   void initState(BuildContext context) {}
 
@@ -113,11 +116,13 @@ class GymManagerModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         if (exercise.dayOfWeek != null &&
             exercisesByDay.containsKey(exercise.dayOfWeek)) {
           exercisesByDay[exercise.dayOfWeek]!.add(exercise);
-        } else {
-          // Handle cases where day might be null or invalid (optional)
-          // For now, we ignore or put in 'Outros' if we had one
         }
       }
+
+      // Fetch workouts
+      workouts = await GymWorkoutsTable().queryRows(
+        queryFn: (q) => q.eq('user_id', userId),
+      );
 
       notifyListeners();
     } catch (e) {

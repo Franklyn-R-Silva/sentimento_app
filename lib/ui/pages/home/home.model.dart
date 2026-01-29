@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
 // Project imports:
+import 'package:sentimento_app/backend/services/data_refresh_service.dart';
 import 'package:sentimento_app/backend/supabase.dart';
 import 'package:sentimento_app/core/model.dart';
-import 'package:sentimento_app/backend/services/data_refresh_service.dart';
 
 class HomeModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   /// State fields for stateful widgets in this page.

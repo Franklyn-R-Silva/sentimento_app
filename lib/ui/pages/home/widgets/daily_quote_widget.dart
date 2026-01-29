@@ -14,8 +14,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 
 // Project imports:
-import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/core/data/quotes.dart';
+import 'package:sentimento_app/core/theme.dart';
 
 class DailyQuoteWidget extends StatefulWidget {
   const DailyQuoteWidget({super.key});

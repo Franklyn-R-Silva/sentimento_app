@@ -1,6 +1,9 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:sentimento_app/core/model.dart';
+
+// Project imports:
 import 'package:sentimento_app/core/exceptions/app_exceptions.dart';
+import 'package:sentimento_app/core/model.dart';
 import 'package:sentimento_app/services/toast_service.dart';
 
 /// Base Model que fornece funcionalidades comuns como gerenciamento de estado

@@ -1,4 +1,7 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:sentimento_app/backend/tables/gym_exercises.dart';
 import 'package:sentimento_app/core/theme.dart';
 
@@ -11,16 +14,22 @@ class GymExerciseInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = FlutterFlowTheme.of(context);
 
+    final hasReps = exercise.reps != null && exercise.reps!.isNotEmpty;
+    final hasTime =
+        exercise.exerciseTime != null && exercise.exerciseTime!.isNotEmpty;
+
     return Wrap(
       spacing: 12,
       runSpacing: 8,
       children: [
-        // Sets x Reps
-        if (exercise.sets != null || exercise.reps != null)
+        // Sets x Reps (or Time)
+        if (exercise.sets != null || hasReps || hasTime)
           _buildInfoItem(
             theme,
-            Icons.repeat_rounded,
-            '${exercise.sets ?? "-"}x ${exercise.reps ?? "-"}',
+            hasTime ? Icons.timer_rounded : Icons.repeat_rounded,
+            hasTime && !hasReps
+                ? '${exercise.sets ?? "-"}x ${exercise.exerciseTime}'
+                : '${exercise.sets ?? "-"}x ${exercise.reps ?? exercise.exerciseQty ?? "-"}',
           ),
 
         // Weight
@@ -34,10 +43,6 @@ class GymExerciseInfo extends StatelessWidget {
         // Rest Time
         if (exercise.restTime != null)
           _buildInfoItem(theme, Icons.timer_outlined, '${exercise.restTime}s'),
-
-        // Time text
-        if (exercise.exerciseTime != null && exercise.exerciseTime!.isNotEmpty)
-          _buildInfoItem(theme, Icons.timer_rounded, exercise.exerciseTime!),
       ],
     );
   }

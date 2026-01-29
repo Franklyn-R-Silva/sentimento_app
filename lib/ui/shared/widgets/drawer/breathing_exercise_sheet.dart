@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:audioplayers/audioplayers.dart';
-
 import 'package:flutter_animate/flutter_animate.dart';
 
 // Project imports:

@@ -1,14 +1,15 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-
 // Project imports:
 import 'package:sentimento_app/backend/tables/fotos_anuais.dart';
 import 'package:sentimento_app/core/theme.dart';
 import 'package:sentimento_app/ui/pages/gallery/gallery.model.dart';
 import 'package:sentimento_app/ui/pages/gallery/widgets/supabase_photo_widget.dart';
 import 'photo_detail_sheet.dart';
+
+// Package imports:
+
 
 class PhotoGridWidget extends StatelessWidget {
   final GalleryModel model;

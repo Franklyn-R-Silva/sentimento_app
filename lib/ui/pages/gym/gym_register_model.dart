@@ -8,6 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Project imports:
 import 'package:sentimento_app/backend/tables/gym_exercises.dart';
+import 'package:sentimento_app/backend/tables/gym_workouts.dart';
 import 'package:sentimento_app/core/model.dart';
 import 'package:sentimento_app/core/util.dart';
 import 'package:sentimento_app/services/toast_service.dart';
@@ -22,6 +23,7 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   final stretchingSeriesController = TextEditingController();
   final stretchingQtyController = TextEditingController();
   final stretchingTimeController = TextEditingController();
+  final timeController = TextEditingController(); // Added
 
   // New Exercise Controllers
   final setsController = TextEditingController(); // Replaces exerciseSeries
@@ -30,6 +32,10 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
   final restTimeController = TextEditingController();
 
   final descriptionController = TextEditingController();
+
+  // Workouts
+  List<GymWorkoutsRow> workouts = [];
+  String? selectedWorkoutId;
 
   String? selectedDay;
   final List<String> daysOfWeek = [
@@ -82,6 +88,23 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     if (selectedDay == null) {
       selectedDay = _getCurrentDayOfWeek();
     }
+    loadWorkouts();
+  }
+
+  Future<void> loadWorkouts() async {
+    final supabase = Supabase.instance.client;
+    final userId = supabase.auth.currentUser?.id;
+    if (userId == null) return;
+
+    try {
+      final response = await GymWorkoutsTable().queryRows(
+        queryFn: (q) => q.eq('user_id', userId).order('name'),
+      );
+      workouts = response;
+      notifyListeners();
+    } catch (e) {
+      Logger().e('Error loading workouts: $e');
+    }
   }
 
   String _getCurrentDayOfWeek() {
@@ -118,6 +141,7 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     repsController.dispose();
     weightController.dispose();
     restTimeController.dispose();
+    timeController.dispose(); // Added
     descriptionController.dispose();
     super.dispose();
   }
@@ -237,7 +261,9 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
     repsController.text = exercise.reps ?? '';
     weightController.text = exercise.weight?.toString() ?? '';
     restTimeController.text = exercise.restTime?.toString() ?? '';
+    timeController.text = exercise.exerciseTime ?? ''; // Added
     selectedDay = exercise.dayOfWeek;
+    selectedWorkoutId = exercise.workoutId;
 
     // Stretching fields
     stretchingNameController.text = exercise.stretchingName ?? '';
@@ -385,6 +411,9 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         'reps': repsController.text,
         'weight': double.tryParse(weightController.text.replaceAll(',', '.')),
         'rest_time': int.tryParse(restTimeController.text),
+        'exercise_time': timeController.text.isNotEmpty
+            ? timeController.text
+            : null, // Added
         'stretching_name': stretchingNameController.text.isNotEmpty
             ? stretchingNameController.text
             : null,
@@ -396,6 +425,7 @@ class GymRegisterModel extends FlutterFlowModel<Widget> with ChangeNotifier {
         'machine_photo_url': finalMachineUrl,
         'stretching_photo_url': finalStretchingUrl,
         'day_of_week': selectedDay,
+        'workout_id': selectedWorkoutId,
       };
 
       if (exerciseId != null) {

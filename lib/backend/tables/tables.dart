@@ -3,3 +3,4 @@ export 'entradas_humor.dart';
 export 'fotos_anuais.dart';
 export 'metas.dart';
 export 'metas_checkins.dart';
+export 'gym_workouts.dart';

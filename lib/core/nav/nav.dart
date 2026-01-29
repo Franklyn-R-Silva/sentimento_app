@@ -12,10 +12,15 @@ import 'package:provider/provider.dart';
 
 // Project imports:
 import 'package:sentimento_app/auth/base_auth_user_provider.dart';
+import 'package:sentimento_app/backend/tables/gym_exercises.dart';
 import 'package:sentimento_app/core/util.dart';
 import 'package:sentimento_app/ui/pages/fotos_anuais/fotos_anuais.page.dart';
 import 'package:sentimento_app/ui/pages/gallery/gallery.page.dart';
 import 'package:sentimento_app/ui/pages/goals/goals.page.dart';
+import 'package:sentimento_app/ui/pages/gym/gym_focus_page.dart';
+import 'package:sentimento_app/ui/pages/gym/gym_list_page.dart';
+import 'package:sentimento_app/ui/pages/gym/gym_manager_page.dart';
+import 'package:sentimento_app/ui/pages/gym/gym_register_page.dart';
 import 'package:sentimento_app/ui/pages/home/home.page.dart';
 import 'package:sentimento_app/ui/pages/journal/journal.page.dart';
 import 'package:sentimento_app/ui/pages/login/login.page.dart';
@@ -23,11 +28,6 @@ import 'package:sentimento_app/ui/pages/main/main.page.dart';
 import 'package:sentimento_app/ui/pages/profile/profile.page.dart';
 import 'package:sentimento_app/ui/pages/settings/settings.page.dart';
 import 'package:sentimento_app/ui/pages/stats/stats.page.dart';
-import 'package:sentimento_app/ui/pages/gym/gym_list_page.dart';
-import 'package:sentimento_app/ui/pages/gym/gym_register_page.dart';
-import 'package:sentimento_app/ui/pages/gym/gym_manager_page.dart';
-import 'package:sentimento_app/ui/pages/gym/gym_focus_page.dart';
-import 'package:sentimento_app/backend/tables/gym_exercises.dart';
 
 // Project imports:
 

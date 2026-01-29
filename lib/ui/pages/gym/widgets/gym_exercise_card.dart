@@ -89,27 +89,108 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: AutoSizeText(
-                    widget.exercise.name,
-                    style: theme.bodyLarge.override(
-                      fontFamily: 'Outfit',
-                      fontWeight: FontWeight.bold,
-                    ),
-                    maxLines: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          if (widget.exercise.category != null)
+                            Container(
+                              margin: const EdgeInsets.only(right: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: theme.primary.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                widget.exercise.category!,
+                                style: theme.labelSmall.override(
+                                  color: theme.primary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          if (widget.exercise.muscleGroup != null)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: theme.secondary.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                widget.exercise.muscleGroup!,
+                                style: theme.labelSmall.override(
+                                  color: theme.secondary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      AutoSizeText(
+                        widget.exercise.name,
+                        style: theme.bodyLarge.override(
+                          fontFamily: 'Outfit',
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 2,
+                      ),
+                    ],
                   ),
+                ),
+                Checkbox(
+                  value: widget.exercise.isCompleted,
+                  onChanged: (val) async {
+                    final newValue = val ?? false;
+                    setState(() {
+                      widget.exercise.isCompleted = newValue;
+                    });
+                    try {
+                      await GymExercisesTable().update(
+                        data: {'is_completed': newValue},
+                        matchingRows: (t) => t.eq('id', widget.exercise.id),
+                      );
+                    } catch (e) {
+                      setState(() {
+                        widget.exercise.isCompleted = !newValue;
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Erro ao atualizar status: $e',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  },
+                  activeColor: theme.primary,
+                  checkColor: theme.info,
                 ),
               ],
             ),
             const SizedBox(height: 8),
 
             // Info Row
-            Row(
-              children: [
-                if (widget.exercise.exerciseSeries != null ||
-                    widget.exercise.exerciseQty != null ||
-                    widget.exercise.exerciseTime != null)
-                  Expanded(
-                    child: Row(
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Wrap(
+                spacing: 12,
+                runSpacing: 8,
+                children: [
+                  // Sets x Reps
+                  if (widget.exercise.sets != null ||
+                      widget.exercise.reps != null)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
                           Icons.repeat_rounded,
@@ -118,27 +199,68 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          '${widget.exercise.exerciseSeries ?? "-"}x ${widget.exercise.exerciseQty ?? "-"}',
+                          '${widget.exercise.sets ?? "-"}x ${widget.exercise.reps ?? "-"}',
                           style: theme.bodyMedium,
                         ),
-                        if (widget.exercise.exerciseTime != null &&
-                            widget.exercise.exerciseTime!.isNotEmpty) ...[
-                          const SizedBox(width: 8),
-                          Icon(
-                            Icons.timer_rounded,
-                            color: theme.secondaryText,
-                            size: 16,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            widget.exercise.exerciseTime!,
-                            style: theme.bodyMedium,
-                          ),
-                        ],
                       ],
                     ),
-                  ),
-              ],
+
+                  // Weight
+                  if (widget.exercise.weight != null)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.fitness_center_rounded,
+                          color: theme.secondaryText,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${widget.exercise.weight!.toStringAsFixed(1).replaceAll('.0', '')} kg',
+                          style: theme.bodyMedium,
+                        ),
+                      ],
+                    ),
+
+                  // Rest Time
+                  if (widget.exercise.restTime != null)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.timer_outlined,
+                          color: theme.secondaryText,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${widget.exercise.restTime}s',
+                          style: theme.bodyMedium,
+                        ),
+                      ],
+                    ),
+
+                  // Time text (if any still used)
+                  if (widget.exercise.exerciseTime != null &&
+                      widget.exercise.exerciseTime!.isNotEmpty)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.timer_rounded,
+                          color: theme.secondaryText,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          widget.exercise.exerciseTime!,
+                          style: theme.bodyMedium,
+                        ),
+                      ],
+                    ),
+                ],
+              ),
             ),
 
             // Carousel

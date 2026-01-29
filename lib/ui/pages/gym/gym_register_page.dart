@@ -108,6 +108,7 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                       // Nome
                       TextFormField(
                         controller: model.nameController,
+                        textCapitalization: TextCapitalization.sentences,
                         decoration: InputDecoration(
                           labelText: 'Nome do Exercício',
                           labelStyle: theme.labelMedium,
@@ -350,6 +351,7 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                       const SizedBox(height: 12),
                       TextFormField(
                         controller: model.stretchingNameController,
+                        textCapitalization: TextCapitalization.sentences,
                         decoration: InputDecoration(
                           labelText: 'Nome do Alongamento',
                           filled: true,

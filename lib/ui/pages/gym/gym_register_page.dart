@@ -129,7 +129,75 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                       ),
                       const SizedBox(height: 16),
 
-                      // Dia da Semana
+                      // Category Dropdown
+                      DropdownButtonFormField<String>(
+                        value: model.selectedCategory,
+                        items: model.categories.map((cat) {
+                          return DropdownMenuItem(value: cat, child: Text(cat));
+                        }).toList(),
+                        onChanged: (val) => model.selectedCategory = val,
+                        decoration: InputDecoration(
+                          labelText: 'Categoria',
+                          labelStyle: theme.labelMedium,
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: theme.alternate,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: theme.primary,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          filled: true,
+                          fillColor: theme.secondaryBackground,
+                        ),
+                        style: theme.bodyMedium.override(
+                          color: theme.primaryText,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Muscle Group Dropdown
+                      DropdownButtonFormField<String>(
+                        value: model.selectedMuscleGroup,
+                        items: model.muscleGroups.map((group) {
+                          return DropdownMenuItem(
+                            value: group,
+                            child: Text(group),
+                          );
+                        }).toList(),
+                        onChanged: (val) => model.selectedMuscleGroup = val,
+                        decoration: InputDecoration(
+                          labelText: 'Grupo Muscular',
+                          labelStyle: theme.labelMedium,
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: theme.alternate,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: theme.primary,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          filled: true,
+                          fillColor: theme.secondaryBackground,
+                        ),
+                        style: theme.bodyMedium.override(
+                          color: theme.primaryText,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
                       DropdownButtonFormField<String>(
                         value: model.selectedDay,
                         items: model.daysOfWeek.map((day) {
@@ -180,10 +248,11 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                         children: [
                           Expanded(
                             child: TextFormField(
-                              controller: model.exerciseSeriesController,
+                              controller: model.setsController,
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                 labelText: 'Séries',
+                                hintText: 'Ex: 3',
                                 filled: true,
                                 fillColor: theme.secondaryBackground,
                                 border: OutlineInputBorder(
@@ -192,20 +261,16 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                                 ),
                               ),
                               style: theme.bodyMedium,
-                              validator: (val) {
-                                if (val == null || val.isEmpty)
-                                  return 'Informe';
-                                return null;
-                              },
                             ),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: TextFormField(
-                              controller: model.exerciseQtyController,
-                              keyboardType: TextInputType.number,
+                              controller:
+                                  model.repsController, // Text input for range
                               decoration: InputDecoration(
                                 labelText: 'Repetições',
+                                hintText: 'Ex: 12-15',
                                 filled: true,
                                 fillColor: theme.secondaryBackground,
                                 border: OutlineInputBorder(
@@ -214,29 +279,52 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                                 ),
                               ),
                               style: theme.bodyMedium,
-                              validator: (val) {
-                                if (val == null || val.isEmpty)
-                                  return 'Informe';
-                                return null;
-                              },
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 12),
-                      TextFormField(
-                        controller: model.exerciseTimeController,
-                        decoration: InputDecoration(
-                          labelText: 'Tempo (Opcional)',
-                          hintText: 'Ex: 45s, 1min',
-                          filled: true,
-                          fillColor: theme.secondaryBackground,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide.none,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: model.weightController,
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                    decimal: true,
+                                  ),
+                              decoration: InputDecoration(
+                                labelText: 'Carga (kg)',
+                                hintText: 'Ex: 20.5',
+                                filled: true,
+                                fillColor: theme.secondaryBackground,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                              style: theme.bodyMedium,
+                            ),
                           ),
-                        ),
-                        style: theme.bodyMedium,
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: TextFormField(
+                              controller: model.restTimeController,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                labelText: 'Descanso (s)',
+                                hintText: 'Ex: 60',
+                                filled: true,
+                                fillColor: theme.secondaryBackground,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                              style: theme.bodyMedium,
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 24),
 

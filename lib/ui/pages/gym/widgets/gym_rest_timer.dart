@@ -116,12 +116,21 @@ class _GymRestTimerState extends State<GymRestTimer>
         ? _secondsRemaining / _selectedDuration
         : 0.0;
 
-    return Card(
-      elevation: 8,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: theme.secondaryBackground,
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.secondaryBackground,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 12,
+            color: Colors.black.withOpacity(0.2),
+            offset: const Offset(0, 6),
+          ),
+        ],
+        border: Border.all(color: theme.alternate.withOpacity(0.5), width: 1),
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -129,18 +138,18 @@ class _GymRestTimerState extends State<GymRestTimer>
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.timer, color: theme.primary, size: 24),
+                Icon(Icons.timer_rounded, color: theme.primary, size: 28),
                 const SizedBox(width: 8),
                 Text(
                   'Descanso',
-                  style: theme.titleMedium.override(
+                  style: theme.titleLarge.override(
                     fontFamily: 'Outfit',
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
 
             // Timer Display with Progress
             Stack(
@@ -215,28 +224,54 @@ class _GymRestTimerState extends State<GymRestTimer>
 
             // Preset Chips
             Wrap(
-              spacing: 8,
-              runSpacing: 8,
+              spacing: 12,
+              runSpacing: 12,
               alignment: WrapAlignment.center,
               children: _presets.map((seconds) {
                 final isSelected = _selectedDuration == seconds;
-                return ChoiceChip(
-                  label: Text('${seconds}s'),
-                  selected: isSelected,
-                  onSelected: (selected) {
-                    if (!_isRunning && selected) {
+                return GestureDetector(
+                  onTap: () {
+                    if (!_isRunning) {
                       setState(() {
                         _selectedDuration = seconds;
                         _secondsRemaining = seconds;
                       });
+                      HapticFeedback.selectionClick();
                     }
                   },
-                  selectedColor: theme.primary.withOpacity(0.3),
-                  labelStyle: TextStyle(
-                    color: isSelected ? theme.primary : theme.secondaryText,
-                    fontWeight: isSelected
-                        ? FontWeight.bold
-                        : FontWeight.normal,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? theme.primary
+                          : theme.primaryBackground,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: isSelected ? theme.primary : theme.alternate,
+                        width: 1.5,
+                      ),
+                      boxShadow: isSelected
+                          ? [
+                              BoxShadow(
+                                color: theme.primary.withOpacity(0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
+                              ),
+                            ]
+                          : [],
+                    ),
+                    child: Text(
+                      '${seconds}s',
+                      style: theme.bodyMedium.override(
+                        fontFamily: 'Outfit',
+                        color: isSelected ? Colors.white : theme.secondaryText,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 );
               }).toList(),
@@ -301,8 +336,21 @@ class _GymRestTimerFABState extends State<GymRestTimerFAB> {
     return FloatingActionButton(
       heroTag: 'timer_fab',
       onPressed: () => setState(() => _isExpanded = true),
-      backgroundColor: theme.tertiary,
-      child: const Icon(Icons.timer, color: Colors.white),
+      backgroundColor: theme.primary,
+      elevation: 4,
+      child: Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            colors: [theme.primary, theme.tertiary],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: const Icon(Icons.timer_rounded, color: Colors.white, size: 28),
+      ),
     );
   }
 }

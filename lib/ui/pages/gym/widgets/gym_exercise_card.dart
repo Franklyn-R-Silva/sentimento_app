@@ -123,11 +123,13 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
       },
       background: Container(
         decoration: BoxDecoration(
-          color: widget.exercise.isCompleted ? Colors.orange : Colors.green,
-          borderRadius: BorderRadius.circular(12),
+          color: widget.exercise.isCompleted
+              ? Colors.orangeAccent
+              : Colors.teal,
+          borderRadius: BorderRadius.circular(16),
         ),
         alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.only(left: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Row(
           children: [
             Icon(
@@ -135,15 +137,15 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                   ? Icons.undo_rounded
                   : Icons.check_circle_rounded,
               color: Colors.white,
-              size: 28,
+              size: 32,
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 12),
             Text(
               widget.exercise.isCompleted ? 'Desmarcar' : 'Concluir',
-              style: const TextStyle(
+              style: theme.titleMedium.override(
+                fontFamily: 'Outfit',
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
-                fontSize: 16,
               ),
             ),
           ],
@@ -152,17 +154,17 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
       child: Container(
         decoration: BoxDecoration(
           color: widget.exercise.isCompleted
-              ? Colors.green.withOpacity(0.1)
+              ? theme.accent1.withOpacity(0.1)
               : theme.secondaryBackground,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           border: widget.exercise.isCompleted
-              ? Border.all(color: Colors.green, width: 2)
-              : null,
-          boxShadow: const [
+              ? Border.all(color: theme.accent1, width: 1.5)
+              : Border.all(color: theme.alternate, width: 1),
+          boxShadow: [
             BoxShadow(
-              blurRadius: 4,
-              color: Color(0x33000000),
-              offset: Offset(0, 2),
+              blurRadius: 8,
+              color: Colors.black.withOpacity(0.15),
+              offset: const Offset(0, 4),
             ),
           ],
         ),

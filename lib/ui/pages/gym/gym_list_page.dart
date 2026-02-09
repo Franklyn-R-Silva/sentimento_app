@@ -84,7 +84,7 @@ class _GymListPageState extends State<GymListPage> {
             elevation: 0, // No shadow on FAB itself
             highlightElevation: 0,
             tooltip: 'Novo Exercício',
-            child: Icon(Icons.add_rounded, color: Colors.white, size: 28),
+            child: const Icon(Icons.add_rounded, color: Colors.white, size: 28),
           ),
         ),
         body: SafeArea(
@@ -235,7 +235,7 @@ class _GymListPageState extends State<GymListPage> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Icon(
+                                      const Icon(
                                         Icons.play_circle_filled_rounded,
                                         color: Colors.white,
                                         size: 24,

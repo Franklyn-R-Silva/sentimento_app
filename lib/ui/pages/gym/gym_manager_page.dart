@@ -561,7 +561,7 @@ class _GymManagerPageState extends State<GymManagerPage> {
             ? const Color(0xFF1E1B2E)
             : Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(
+        title: const Text(
           'Mover Todos os Exercícios',
           style: TextStyle(
             fontFamily: 'Inter Tight',

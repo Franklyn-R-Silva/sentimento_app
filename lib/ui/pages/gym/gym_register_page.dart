@@ -147,7 +147,7 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
 
                       // Category Dropdown
                       DropdownButtonFormField<String>(
-                        value: model.selectedCategory,
+                        initialValue: model.selectedCategory,
                         items: model.categories.map((cat) {
                           return DropdownMenuItem(value: cat, child: Text(cat));
                         }).toList(),
@@ -180,7 +180,7 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
 
                       // Muscle Group Dropdown
                       DropdownButtonFormField<String>(
-                        value: model.selectedMuscleGroup,
+                        initialValue: model.selectedMuscleGroup,
                         items: model.muscleGroups.map((group) {
                           return DropdownMenuItem(
                             value: group,
@@ -215,7 +215,7 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                       const SizedBox(height: 16),
 
                       DropdownButtonFormField<String>(
-                        value: model.selectedDay,
+                        initialValue: model.selectedDay,
                         items: model.daysOfWeek.map((day) {
                           return DropdownMenuItem(value: day, child: Text(day));
                         }).toList(),
@@ -256,7 +256,7 @@ class _GymRegisterPageState extends State<GymRegisterPage> {
                         children: [
                           Expanded(
                             child: DropdownButtonFormField<String>(
-                              value:
+                              initialValue:
                                   (model.workouts.any(
                                     (w) => w.id == model.selectedWorkoutId,
                                   ))

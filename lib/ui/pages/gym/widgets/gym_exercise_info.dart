@@ -65,7 +65,7 @@ class GymExerciseInfo extends StatelessWidget {
           _buildInfoItem(
             context,
             Icons.speed_rounded,
-            '${exercise.speed!.toStringAsFixed(1).replaceAll('.0', '')}',
+            exercise.speed!.toStringAsFixed(1).replaceAll('.0', ''),
             color: Colors.orangeAccent,
           ),
       ],

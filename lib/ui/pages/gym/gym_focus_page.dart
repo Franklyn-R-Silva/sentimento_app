@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Package imports:
 import 'package:provider/provider.dart';
@@ -527,132 +528,168 @@ class _GymFocusPageState extends State<GymFocusPage> {
                     ),
                     const SizedBox(height: 24),
 
-                    // Inputs Row
+                    // Inputs Row (Read-Only)
                     Row(
                       children: [
-                        // Weight Input
+                        // Weight Display
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'CARGA (KG)',
-                                style: theme.labelSmall.override(
-                                  fontFamily: 'Outfit',
-                                  color: theme.secondaryText,
-                                ),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.05),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.1),
                               ),
-                              const SizedBox(height: 8),
-                              TextFormField(
-                                controller: model.weightController,
-                                keyboardType: TextInputType.number,
-                                style: theme.headlineMedium.override(
-                                  fontFamily: 'Outfit',
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                decoration: InputDecoration(
-                                  hintText: '0',
-                                  hintStyle: theme.headlineMedium.override(
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'CARGA',
+                                  style: theme.labelSmall.override(
                                     fontFamily: 'Outfit',
-                                    color: Colors.white24,
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.white.withOpacity(0.05),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 16,
+                                    color: theme.secondaryText,
+                                    fontSize: 10,
                                   ),
                                 ),
-                                onChanged: (val) => model.updateSetData(
-                                  val,
-                                  model.repsController.text,
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      FontAwesomeIcons.weightHanging,
+                                      size: 14,
+                                      color: theme.tertiary,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      model.weightController.text.isEmpty
+                                          ? '-'
+                                          : model.weightController.text,
+                                      style: theme.headlineSmall.override(
+                                        fontFamily: 'Outfit',
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      'kg',
+                                      style: theme.labelSmall.override(
+                                        fontFamily: 'Outfit',
+                                        color: Colors.white54,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        // Reps Input
+                        const SizedBox(width: 12),
+                        // Reps Display
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'REPETIÇÕES',
-                                style: theme.labelSmall.override(
-                                  fontFamily: 'Outfit',
-                                  color: theme.secondaryText,
-                                ),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.05),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.1),
                               ),
-                              const SizedBox(height: 8),
-                              TextFormField(
-                                controller: model.repsController,
-                                keyboardType: TextInputType.number,
-                                style: theme.headlineMedium.override(
-                                  fontFamily: 'Outfit',
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                decoration: InputDecoration(
-                                  hintText: '0',
-                                  hintStyle: theme.headlineMedium.override(
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'REPETIÇÕES',
+                                  style: theme.labelSmall.override(
                                     fontFamily: 'Outfit',
-                                    color: Colors.white24,
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.white.withOpacity(0.05),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 16,
+                                    color: theme.secondaryText,
+                                    fontSize: 10,
                                   ),
                                 ),
-                                onChanged: (val) => model.updateSetData(
-                                  model.weightController.text,
-                                  val,
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.repeat_rounded,
+                                      size: 16,
+                                      color: theme.secondary,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      model.repsController.text.isEmpty
+                                          ? '-'
+                                          : model.repsController.text,
+                                      style: theme.headlineSmall.override(
+                                        fontFamily: 'Outfit',
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 24),
 
-                    // Finish Set Button
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () => model.finishSet(),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: theme.primary,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                    // Buttons Row
+                    Row(
+                      children: [
+                        // Reset Button
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.red.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          elevation: 0,
-                          shadowColor: theme.primary.withOpacity(0.4),
-                        ),
-                        child: Text(
-                          model.currentSet < model.totalSets
-                              ? 'Concluir Série ${model.currentSet}'
-                              : 'Finalizar Exercício',
-                          style: theme.titleMedium.override(
-                            fontFamily: 'Outfit',
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.refresh_rounded,
+                              color: Colors.redAccent,
+                            ),
+                            onPressed: () => model.resetExercise(),
+                            tooltip: 'Reiniciar Exercício',
                           ),
                         ),
-                      ),
+                        const SizedBox(width: 12),
+                        // Finish Set Button
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () => model.finishSet(),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: theme.primary,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              elevation: 0,
+                              shadowColor: theme.primary.withOpacity(0.4),
+                            ),
+                            child: Text(
+                              model.currentSet < model.totalSets
+                                  ? 'Concluir Série ${model.currentSet}'
+                                  : 'Finalizar Exercício',
+                              style: theme.titleMedium.override(
+                                fontFamily: 'Outfit',
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

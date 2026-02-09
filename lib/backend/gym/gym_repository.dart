@@ -162,7 +162,7 @@ class GymRepository {
 
     double totalWeight = 0;
     int totalSets = 0;
-    Set<String> daysWorked = {};
+    final Set<String> daysWorked = {};
 
     for (final log in logs) {
       totalWeight += (log.weight ?? 0) * (log.reps ?? 0) * (log.series ?? 1);

@@ -123,11 +123,14 @@ class _GymRestTimerState extends State<GymRestTimer>
         boxShadow: [
           BoxShadow(
             blurRadius: 12,
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withValues(alpha: 0.2),
             offset: const Offset(0, 6),
           ),
         ],
-        border: Border.all(color: theme.alternate.withOpacity(0.5), width: 1),
+        border: Border.all(
+          color: theme.alternate.withValues(alpha: 0.5),
+          width: 1,
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -257,7 +260,7 @@ class _GymRestTimerState extends State<GymRestTimer>
                       boxShadow: isSelected
                           ? [
                               BoxShadow(
-                                color: theme.primary.withOpacity(0.3),
+                                color: theme.primary.withValues(alpha: 0.3),
                                 blurRadius: 8,
                                 offset: const Offset(0, 4),
                               ),

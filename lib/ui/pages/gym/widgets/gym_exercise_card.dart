@@ -152,19 +152,19 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
         margin: const EdgeInsets.symmetric(vertical: 4),
         decoration: BoxDecoration(
           color: isCompleted
-              ? theme.secondaryBackground.withOpacity(0.6)
+              ? theme.secondaryBackground.withValues(alpha: 0.6)
               : theme.secondaryBackground,
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
             color: isCompleted
-                ? theme.primary.withOpacity(0.2)
-                : theme.alternate.withOpacity(0.6),
+                ? theme.primary.withValues(alpha: 0.2)
+                : theme.alternate.withValues(alpha: 0.6),
             width: 1,
           ),
           boxShadow: [
             BoxShadow(
               blurRadius: 16,
-              color: theme.primaryText.withOpacity(0.05),
+              color: theme.primaryText.withValues(alpha: 0.05),
               offset: const Offset(0, 8),
             ),
           ],
@@ -196,7 +196,9 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                               padding: const EdgeInsets.only(right: 12),
                               child: Icon(
                                 Icons.drag_indicator_rounded,
-                                color: theme.secondaryText.withOpacity(0.5),
+                                color: theme.secondaryText.withValues(
+                                  alpha: 0.5,
+                                ),
                                 size: 20,
                               ),
                             ),
@@ -293,7 +295,7 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: theme.alternate.withOpacity(0.4),
+                          color: theme.alternate.withValues(alpha: 0.4),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
@@ -323,10 +325,10 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: theme.tertiary.withOpacity(0.1),
+                          color: theme.tertiary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: theme.tertiary.withOpacity(0.3),
+                            color: theme.tertiary.withValues(alpha: 0.3),
                           ),
                         ),
                         child: Column(
@@ -406,13 +408,13 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
         border: Border.all(
           color: isCompleted
               ? theme.primary
-              : theme.secondaryText.withOpacity(0.5),
+              : theme.secondaryText.withValues(alpha: 0.5),
           width: 2,
         ),
         boxShadow: isCompleted
             ? [
                 BoxShadow(
-                  color: theme.primary.withOpacity(0.4),
+                  color: theme.primary.withValues(alpha: 0.4),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -433,9 +435,9 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.15),
+        color: color.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: color.withOpacity(0.3), width: 0.5),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 0.5),
       ),
       child: Text(
         label,

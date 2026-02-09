@@ -70,7 +70,7 @@ class _GymListPageState extends State<GymListPage> {
             boxShadow: [
               BoxShadow(
                 blurRadius: 10,
-                color: theme.primary.withOpacity(0.4),
+                color: theme.primary.withValues(alpha: 0.4),
                 offset: const Offset(0, 4),
               ),
             ],
@@ -224,8 +224,8 @@ class _GymListPageState extends State<GymListPage> {
                                         ? [
                                             BoxShadow(
                                               blurRadius: 12,
-                                              color: theme.primary.withOpacity(
-                                                0.3,
+                                              color: theme.primary.withValues(
+                                                alpha: 0.3,
                                               ),
                                               offset: const Offset(0, 4),
                                             ),
@@ -462,12 +462,12 @@ class _GymListPageState extends State<GymListPage> {
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: isPrimary
-                ? theme.primary.withOpacity(0.1)
+                ? theme.primary.withValues(alpha: 0.1)
                 : theme.secondaryBackground,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isPrimary
-                  ? theme.primary.withOpacity(0.3)
+                  ? theme.primary.withValues(alpha: 0.3)
                   : theme.alternate,
             ),
           ),

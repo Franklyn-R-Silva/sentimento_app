@@ -38,13 +38,13 @@ class GymEmptyState extends StatelessWidget {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: theme.primary.withOpacity(0.1),
+                    color: theme.primary.withValues(alpha: 0.1),
                     blurRadius: 32,
                     offset: const Offset(0, 16),
                   ),
                 ],
                 border: Border.all(
-                  color: theme.primary.withOpacity(0.1),
+                  color: theme.primary.withValues(alpha: 0.1),
                   width: 1,
                 ),
               ),
@@ -55,7 +55,7 @@ class GymEmptyState extends StatelessWidget {
                     width: 80,
                     height: 80,
                     decoration: BoxDecoration(
-                      color: theme.primary.withOpacity(0.1),
+                      color: theme.primary.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -89,7 +89,7 @@ class GymEmptyState extends StatelessWidget {
                   borderRadius: BorderRadius.circular(30),
                   boxShadow: [
                     BoxShadow(
-                      color: theme.primary.withOpacity(0.3),
+                      color: theme.primary.withValues(alpha: 0.3),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),

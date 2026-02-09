@@ -57,13 +57,13 @@ class _GymPhotoPickerState extends State<GymPhotoPicker> {
             color: theme.secondaryBackground,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: theme.primary.withOpacity(0.3),
+              color: theme.primary.withValues(alpha: 0.3),
               width: 1,
               style: BorderStyle.solid,
             ),
             boxShadow: [
               BoxShadow(
-                color: theme.primary.withOpacity(0.05),
+                color: theme.primary.withValues(alpha: 0.05),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -75,7 +75,7 @@ class _GymPhotoPickerState extends State<GymPhotoPicker> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: theme.primary.withOpacity(0.1),
+                  color: theme.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -193,8 +193,8 @@ class _GymPhotoPickerState extends State<GymPhotoPicker> {
                               end: Alignment.bottomCenter,
                               colors: [
                                 Colors.transparent,
-                                Colors.black.withOpacity(0.0),
-                                Colors.black.withOpacity(0.3),
+                                Colors.black.withValues(alpha: 0.0),
+                                Colors.black.withValues(alpha: 0.3),
                               ],
                               stops: const [0.6, 0.8, 1.0],
                             ),
@@ -205,7 +205,7 @@ class _GymPhotoPickerState extends State<GymPhotoPicker> {
                         top: 12,
                         right: 12,
                         child: Material(
-                          color: Colors.black.withOpacity(0.5),
+                          color: Colors.black.withValues(alpha: 0.5),
                           shape: const CircleBorder(),
                           child: InkWell(
                             borderRadius: BorderRadius.circular(20),
@@ -295,7 +295,7 @@ class _GymPhotoPickerState extends State<GymPhotoPicker> {
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
-                side: BorderSide(color: theme.primary.withOpacity(0.5)),
+                side: BorderSide(color: theme.primary.withValues(alpha: 0.5)),
               ),
             ),
             icon: Icon(

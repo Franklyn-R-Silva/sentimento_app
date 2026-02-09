@@ -31,7 +31,7 @@ class GymProgressBar extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: theme.primaryText.withOpacity(0.05),
+            color: theme.primaryText.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -61,8 +61,8 @@ class GymProgressBar extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   color: isComplete
-                      ? Colors.green.withOpacity(0.1)
-                      : theme.primary.withOpacity(0.1),
+                      ? Colors.green.withValues(alpha: 0.1)
+                      : theme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -101,8 +101,8 @@ class GymProgressBar extends StatelessWidget {
                         boxShadow: [
                           BoxShadow(
                             color: isComplete
-                                ? Colors.green.withOpacity(0.4)
-                                : theme.primary.withOpacity(0.4),
+                                ? Colors.green.withValues(alpha: 0.4)
+                                : theme.primary.withValues(alpha: 0.4),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),

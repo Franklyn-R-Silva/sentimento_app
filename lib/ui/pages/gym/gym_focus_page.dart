@@ -68,7 +68,10 @@ class _GymFocusPageState extends State<GymFocusPage> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Colors.black.withOpacity(0.8), Colors.transparent],
+                colors: [
+                  Colors.black.withValues(alpha: 0.8),
+                  Colors.transparent,
+                ],
               ),
             ),
           ),
@@ -76,7 +79,7 @@ class _GymFocusPageState extends State<GymFocusPage> {
             icon: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.white.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -91,10 +94,10 @@ class _GymFocusPageState extends State<GymFocusPage> {
             builder: (context, model, _) => Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.white.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.1),
+                  color: Colors.white.withValues(alpha: 0.1),
                   width: 1,
                 ),
               ),
@@ -120,7 +123,7 @@ class _GymFocusPageState extends State<GymFocusPage> {
                         : Icons.check_circle_outline_rounded,
                     color: model.currentExercise.isCompleted
                         ? Theme.of(context).primaryColor
-                        : Colors.white.withOpacity(0.5),
+                        : Colors.white.withValues(alpha: 0.5),
                     size: 32,
                   ),
                   onPressed: () async {
@@ -158,7 +161,7 @@ class _GymFocusPageState extends State<GymFocusPage> {
                   height: 6,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
+                    color: Colors.white.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(3),
                   ),
                   child: FractionallySizedBox(
@@ -172,7 +175,7 @@ class _GymFocusPageState extends State<GymFocusPage> {
                         borderRadius: BorderRadius.circular(3),
                         boxShadow: [
                           BoxShadow(
-                            color: theme.primary.withOpacity(0.4),
+                            color: theme.primary.withValues(alpha: 0.4),
                             blurRadius: 6,
                             offset: const Offset(0, 2),
                           ),
@@ -206,7 +209,7 @@ class _GymFocusPageState extends State<GymFocusPage> {
                     end: Alignment.topCenter,
                     colors: [
                       Colors.black,
-                      Colors.black.withOpacity(0.8),
+                      Colors.black.withValues(alpha: 0.8),
                       Colors.transparent,
                     ],
                   ),
@@ -220,7 +223,7 @@ class _GymFocusPageState extends State<GymFocusPage> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
-                              color: Colors.white.withOpacity(0.2),
+                              color: Colors.white.withValues(alpha: 0.2),
                               width: 1,
                             ),
                           ),
@@ -262,7 +265,7 @@ class _GymFocusPageState extends State<GymFocusPage> {
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: theme.primary.withOpacity(0.3),
+                              color: theme.primary.withValues(alpha: 0.3),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -370,10 +373,10 @@ class _GymFocusPageState extends State<GymFocusPage> {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: theme.primary.withOpacity(0.15),
+                  color: theme.primary.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: theme.primary.withOpacity(0.3),
+                    color: theme.primary.withValues(alpha: 0.3),
                     width: 1,
                   ),
                 ),
@@ -428,10 +431,12 @@ class _GymFocusPageState extends State<GymFocusPage> {
                   decoration: BoxDecoration(
                     color: const Color(0xFF1A1A1A),
                     borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: theme.primary.withOpacity(0.3)),
+                    border: Border.all(
+                      color: theme.primary.withValues(alpha: 0.3),
+                    ),
                     boxShadow: [
                       BoxShadow(
-                        color: theme.primary.withOpacity(0.1),
+                        color: theme.primary.withValues(alpha: 0.1),
                         blurRadius: 20,
                         offset: const Offset(0, 10),
                       ),
@@ -477,16 +482,18 @@ class _GymFocusPageState extends State<GymFocusPage> {
                   gradient: LinearGradient(
                     colors: [
                       const Color(0xFF1E1E1E),
-                      const Color(0xFF1E1E1E).withOpacity(0.8),
+                      const Color(0xFF1E1E1E).withValues(alpha: 0.8),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: Colors.white.withOpacity(0.05)),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.05),
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
+                      color: Colors.black.withValues(alpha: 0.2),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -513,7 +520,7 @@ class _GymFocusPageState extends State<GymFocusPage> {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: theme.primary.withOpacity(0.1),
+                            color: theme.primary.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
@@ -539,10 +546,10 @@ class _GymFocusPageState extends State<GymFocusPage> {
                               vertical: 12,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.05),
+                              color: Colors.white.withValues(alpha: 0.05),
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: Colors.white.withOpacity(0.1),
+                                color: Colors.white.withValues(alpha: 0.1),
                               ),
                             ),
                             child: Column(
@@ -598,10 +605,10 @@ class _GymFocusPageState extends State<GymFocusPage> {
                               vertical: 12,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.05),
+                              color: Colors.white.withValues(alpha: 0.05),
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: Colors.white.withOpacity(0.1),
+                                color: Colors.white.withValues(alpha: 0.1),
                               ),
                             ),
                             child: Column(
@@ -650,7 +657,7 @@ class _GymFocusPageState extends State<GymFocusPage> {
                         // Reset Button
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.red.withOpacity(0.2),
+                            color: Colors.red.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: IconButton(
@@ -675,7 +682,7 @@ class _GymFocusPageState extends State<GymFocusPage> {
                                 borderRadius: BorderRadius.circular(16),
                               ),
                               elevation: 0,
-                              shadowColor: theme.primary.withOpacity(0.4),
+                              shadowColor: theme.primary.withValues(alpha: 0.4),
                             ),
                             child: Text(
                               model.currentSet < model.totalSets
@@ -704,7 +711,7 @@ class _GymFocusPageState extends State<GymFocusPage> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.03),
+                color: Colors.white.withValues(alpha: 0.03),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Row(
@@ -742,7 +749,7 @@ class _GymFocusPageState extends State<GymFocusPage> {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.black.withValues(alpha: 0.3),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -771,15 +778,17 @@ class _GymFocusPageState extends State<GymFocusPage> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.05),
+                      color: Colors.white.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.05),
+                      ),
                     ),
                     child: Text(
                       exercise.description!,
                       style: theme.bodyMedium.override(
                         fontFamily: 'Outfit',
-                        color: Colors.white.withOpacity(0.8),
+                        color: Colors.white.withValues(alpha: 0.8),
                         lineHeight: 1.5,
                       ),
                     ),
@@ -817,15 +826,15 @@ class _GymFocusPageState extends State<GymFocusPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.15),
+        color: color.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withOpacity(0.3), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
       ),
       child: Text(
         label,
         style: theme.bodySmall.override(
           fontFamily: 'Outfit',
-          color: color.withOpacity(0.9),
+          color: color.withValues(alpha: 0.9),
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -885,7 +894,7 @@ class _GymFocusPageState extends State<GymFocusPage> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.green.withOpacity(0.1),
+                color: Colors.green.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: const Icon(

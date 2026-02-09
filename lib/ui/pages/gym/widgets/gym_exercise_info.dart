@@ -84,9 +84,9 @@ class GymExerciseInfo extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: itemColor.withOpacity(0.1),
+        color: itemColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: itemColor.withOpacity(0.2), width: 1),
+        border: Border.all(color: itemColor.withValues(alpha: 0.2), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

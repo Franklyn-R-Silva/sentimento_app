@@ -280,17 +280,20 @@ class _GymWeeklyStatsState extends State<GymWeeklyStats> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            theme.primary.withOpacity(0.15),
-            theme.secondaryBackground.withOpacity(0.4),
+            theme.primary.withValues(alpha: 0.15),
+            theme.secondaryBackground.withValues(alpha: 0.4),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: theme.primary.withOpacity(0.2), width: 1),
+        border: Border.all(
+          color: theme.primary.withValues(alpha: 0.2),
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
-            color: theme.primary.withOpacity(0.1),
+            color: theme.primary.withValues(alpha: 0.1),
             blurRadius: 24,
             offset: const Offset(0, 8),
           ),
@@ -304,7 +307,7 @@ class _GymWeeklyStatsState extends State<GymWeeklyStats> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: theme.primary.withOpacity(0.2),
+                  color: theme.primary.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -343,7 +346,7 @@ class _GymWeeklyStatsState extends State<GymWeeklyStats> {
               Container(
                 height: 40,
                 width: 1,
-                color: theme.alternate.withOpacity(0.5),
+                color: theme.alternate.withValues(alpha: 0.5),
               ),
               _buildStatItem(
                 theme,
@@ -355,7 +358,7 @@ class _GymWeeklyStatsState extends State<GymWeeklyStats> {
               Container(
                 height: 40,
                 width: 1,
-                color: theme.alternate.withOpacity(0.5),
+                color: theme.alternate.withValues(alpha: 0.5),
               ),
               _buildStatItem(
                 theme,
@@ -383,7 +386,7 @@ class _GymWeeklyStatsState extends State<GymWeeklyStats> {
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: color, size: 20),
@@ -515,9 +518,9 @@ class GymWeightChart extends StatelessWidget {
                     minWeight: displayMin,
                     maxWeight: displayMax,
                     lineColor: theme.primary,
-                    fillColor: theme.primary.withOpacity(0.2),
+                    fillColor: theme.primary.withValues(alpha: 0.2),
                     dotColor: theme.secondaryBackground,
-                    gridColor: theme.alternate.withOpacity(0.5),
+                    gridColor: theme.alternate.withValues(alpha: 0.5),
                   ),
                   size: Size.infinite,
                 ),
@@ -631,7 +634,7 @@ class _WeightChartPainter extends CustomPainter {
 
     final fillPaint = Paint()
       ..shader = LinearGradient(
-        colors: [fillColor, fillColor.withOpacity(0.0)],
+        colors: [fillColor, fillColor.withValues(alpha: 0.0)],
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))

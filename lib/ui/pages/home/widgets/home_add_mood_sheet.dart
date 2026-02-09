@@ -86,43 +86,70 @@ class _HomeAddMoodSheetState extends State<HomeAddMoodSheet> {
               const SizedBox(height: 24),
 
               // Tags Section
-              Text('O que está acontecendo?', style: theme.bodyMedium),
-              const SizedBox(height: 12),
+              Text(
+                'O que está acontecendo?',
+                style: theme.titleSmall.override(
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              const SizedBox(height: 16),
               TagSelector(
                 selectedTags: selectedTags,
                 onSelectionChanged: (tags) =>
                     setState(() => selectedTags = tags),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 32),
 
               // Note input
-              Text('Quer adicionar algum detalhe?', style: theme.bodyMedium),
-              const SizedBox(height: 8),
+              Text(
+                'Quer adicionar algum detalhe?',
+                style: theme.titleSmall.override(
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              const SizedBox(height: 16),
               TextField(
                 controller: textController,
-                maxLines: 3,
+                maxLines: 4,
                 decoration: InputDecoration(
                   hintText: 'Hoje eu senti gratidão por...',
                   hintStyle: theme.bodyMedium.override(
-                    color: theme.secondaryText,
+                    color: theme.secondaryText.withValues(alpha: 0.7),
                   ),
                   filled: true,
                   fillColor: theme.primaryBackground,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(20),
                     borderSide: BorderSide.none,
                   ),
-                  contentPadding: const EdgeInsets.all(16),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide(
+                      color: theme.alternate.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide(
+                      color: theme.primary.withValues(alpha: 0.5),
+                      width: 1.5,
+                    ),
+                  ),
+                  contentPadding: const EdgeInsets.all(20),
                 ),
                 style: theme.bodyMedium,
+                cursorColor: theme.primary,
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 32),
 
               // Save button
               SizedBox(
                 width: double.infinity,
+                height: 56,
                 child: ElevatedButton(
                   onPressed: () {
                     widget.onSave(
@@ -133,14 +160,21 @@ class _HomeAddMoodSheetState extends State<HomeAddMoodSheet> {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: theme.primary,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    foregroundColor: Colors.white,
+                    elevation: 4,
+                    shadowColor: theme.primary.withValues(alpha: 0.4),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
                   child: Text(
                     'Salvar Registro',
-                    style: theme.titleSmall.override(color: Colors.white),
+                    style: theme.titleSmall.override(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      letterSpacing: 0.5,
+                    ),
                   ),
                 ),
               ),

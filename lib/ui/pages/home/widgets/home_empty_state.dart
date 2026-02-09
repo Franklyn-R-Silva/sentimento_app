@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:logger/logger.dart';
 
 // Project imports:
@@ -17,30 +16,45 @@ class HomeEmptyState extends StatelessWidget {
     final theme = FlutterFlowTheme.of(context);
 
     return Container(
-      padding: const EdgeInsets.all(32),
+      width: double.infinity,
+      padding: const EdgeInsets.all(40),
       decoration: BoxDecoration(
-        color: theme.secondaryBackground,
-        borderRadius: BorderRadius.circular(16),
+        color: theme.secondaryBackground.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: theme.alternate.withValues(alpha: 0.3)),
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.sentiment_satisfied_alt_rounded,
-            size: 64,
-            color: theme.primary.withValues(alpha: 0.5),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: theme.primary.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.sentiment_satisfied_rounded,
+              size: 48,
+              color: theme.primary,
+            ),
           ),
-          const SizedBox(height: 16),
-          AutoSizeText(
-            'Nenhum registro ainda',
-            style: theme.titleMedium,
-            minFontSize: 12,
-          ),
-          const SizedBox(height: 8),
-          AutoSizeText(
-            'Toque no botão "Registrar" para adicionar seu primeiro registro de humor!',
+          const SizedBox(height: 24),
+          Text(
+            'Comece sua jornada',
+            style: theme.titleMedium.override(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
             textAlign: TextAlign.center,
-            style: theme.bodySmall.override(color: theme.secondaryText),
-            minFontSize: 10,
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Registre como você está se sentindo hoje para começar a acompanhar seu progresso.',
+            textAlign: TextAlign.center,
+            style: theme.bodyMedium.override(
+              color: theme.secondaryText,
+              lineHeight: 1.5,
+            ),
           ),
         ],
       ),

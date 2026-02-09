@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 // Project imports:
@@ -193,24 +192,6 @@ class _GymFocusPageState extends State<GymFocusPage> {
                   itemBuilder: (context, index) {
                     final exercise = model.exercises[index];
                     return _buildExerciseView(context, exercise, theme);
-                  },
-                ),
-              ),
-
-              // Timer Widget
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: GymRestTimer(
-                  key: ValueKey('timer_${model.currentExercise.id}'),
-                  defaultSeconds: model.currentExercise.restTime ?? 60,
-                  onComplete: () async {
-                    if (!model.currentExercise.isCompleted) {
-                      try {
-                        await model.toggleComplete();
-                      } catch (e) {
-                        // Error handling already in toggleComplete or upper
-                      }
-                    }
                   },
                 ),
               ),
@@ -437,65 +418,246 @@ class _GymFocusPageState extends State<GymFocusPage> {
             ),
           const SizedBox(height: 32),
 
-          // Main Stats Card
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: const Color(0xFF1A1A1A),
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: Colors.white.withOpacity(0.05)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                // Sets
-                _buildStatItem(
-                  '${exercise.sets ?? exercise.exerciseSeries ?? "-"}',
-                  'Séries',
-                  FontAwesomeIcons.layerGroup,
-                  theme.primary,
-                  theme,
-                ),
-                _buildVerticalDivider(),
-
-                // Reps or Time
-                if (exercise.exerciseTime != null &&
-                    exercise.exerciseTime!.isNotEmpty)
-                  _buildStatItem(
-                    exercise.exerciseTime!,
-                    'Tempo',
-                    Icons.timer_outlined,
-                    theme.secondary,
-                    theme,
-                  )
-                else
-                  _buildStatItem(
-                    exercise.reps ?? '${exercise.exerciseQty ?? "-"}',
-                    'Reps',
-                    Icons.repeat_rounded,
-                    theme.secondary,
-                    theme,
+          // Active Set Card
+          Consumer<GymFocusModel>(
+            builder: (context, model, _) {
+              if (model.isResting) {
+                return Container(
+                  padding: const EdgeInsets.all(32),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1A1A1A),
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: theme.primary.withOpacity(0.3)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: theme.primary.withOpacity(0.1),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
                   ),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Descanso',
+                        style: theme.headlineMedium.override(
+                          fontFamily: 'Outfit',
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      GymRestTimer(
+                        key: ValueKey(
+                          'rest_timer_${model.currentExercise.id}_${model.currentSet}',
+                        ),
+                        defaultSeconds: model.currentExercise.restTime ?? 60,
+                        onComplete: () => model.finishRest(),
+                      ),
+                      const SizedBox(height: 16),
+                      TextButton(
+                        onPressed: () => model.finishRest(),
+                        child: Text(
+                          'Pular Descanso',
+                          style: theme.bodyMedium.override(
+                            fontFamily: 'Outfit',
+                            color: theme.secondaryText,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
 
-                _buildVerticalDivider(),
-
-                // Weight
-                _buildStatItem(
-                  '${exercise.weight ?? "-"}',
-                  'kg',
-                  FontAwesomeIcons.weightHanging,
-                  theme.tertiary,
-                  theme,
+              return Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      const Color(0xFF1E1E1E),
+                      const Color(0xFF1E1E1E).withOpacity(0.8),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: Colors.white.withOpacity(0.05)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+                child: Column(
+                  children: [
+                    // Header: Set X of Y
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'SÉRIE ${model.currentSet} / ${model.totalSets}',
+                          style: theme.labelMedium.override(
+                            fontFamily: 'Outfit',
+                            color: theme.primary,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: theme.primary.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            '${exercise.restTime ?? 60}s descanso',
+                            style: theme.labelSmall.override(
+                              fontFamily: 'Outfit',
+                              color: theme.primary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Inputs Row
+                    Row(
+                      children: [
+                        // Weight Input
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'CARGA (KG)',
+                                style: theme.labelSmall.override(
+                                  fontFamily: 'Outfit',
+                                  color: theme.secondaryText,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              TextFormField(
+                                controller: model.weightController,
+                                keyboardType: TextInputType.number,
+                                style: theme.headlineMedium.override(
+                                  fontFamily: 'Outfit',
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: '0',
+                                  hintStyle: theme.headlineMedium.override(
+                                    fontFamily: 'Outfit',
+                                    color: Colors.white24,
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.white.withOpacity(0.05),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 16,
+                                  ),
+                                ),
+                                onChanged: (val) => model.updateSetData(
+                                  val,
+                                  model.repsController.text,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        // Reps Input
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'REPETIÇÕES',
+                                style: theme.labelSmall.override(
+                                  fontFamily: 'Outfit',
+                                  color: theme.secondaryText,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              TextFormField(
+                                controller: model.repsController,
+                                keyboardType: TextInputType.number,
+                                style: theme.headlineMedium.override(
+                                  fontFamily: 'Outfit',
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: '0',
+                                  hintStyle: theme.headlineMedium.override(
+                                    fontFamily: 'Outfit',
+                                    color: Colors.white24,
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.white.withOpacity(0.05),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 16,
+                                  ),
+                                ),
+                                onChanged: (val) => model.updateSetData(
+                                  model.weightController.text,
+                                  val,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Finish Set Button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () => model.finishSet(),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: theme.primary,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          elevation: 0,
+                          shadowColor: theme.primary.withOpacity(0.4),
+                        ),
+                        child: Text(
+                          model.currentSet < model.totalSets
+                              ? 'Concluir Série ${model.currentSet}'
+                              : 'Finalizar Exercício',
+                          style: theme.titleMedium.override(
+                            fontFamily: 'Outfit',
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
 
           // Secondary Stats Row (if has data)
@@ -633,47 +795,6 @@ class _GymFocusPageState extends State<GymFocusPage> {
     );
   }
 
-  Widget _buildStatItem(
-    String value,
-    String label,
-    IconData icon,
-    Color color,
-    FlutterFlowTheme theme,
-  ) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, color: color, size: 20),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          value,
-          style: theme.headlineMedium.override(
-            fontFamily: 'Outfit',
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(
-          label.toUpperCase(),
-          style: theme.labelSmall.override(
-            fontFamily: 'Outfit',
-            color: Colors.white38,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 1,
-            fontSize: 10,
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildSecondaryStat(
     String label,
     String value,
@@ -707,14 +828,6 @@ class _GymFocusPageState extends State<GymFocusPage> {
           ],
         ),
       ],
-    );
-  }
-
-  Widget _buildVerticalDivider() {
-    return Container(
-      height: 40,
-      width: 1,
-      color: Colors.white.withOpacity(0.1),
     );
   }
 

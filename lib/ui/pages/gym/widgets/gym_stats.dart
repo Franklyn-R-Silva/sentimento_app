@@ -276,56 +276,90 @@ class _GymWeeklyStatsState extends State<GymWeeklyStats> {
     final daysWorked = _stats['daysWorked'] as int? ?? 0;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            theme.primary.withValues(alpha: 0.1),
-            theme.secondary.withValues(alpha: 0.1),
+            theme.primary.withOpacity(0.15),
+            theme.secondaryBackground.withOpacity(0.4),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.primary.withValues(alpha: 0.3)),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: theme.primary.withOpacity(0.2), width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: theme.primary.withOpacity(0.1),
+            blurRadius: 24,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.bar_chart_rounded, color: theme.primary, size: 24),
-              const SizedBox(width: 8),
-              Text(
-                'Esta Semana',
-                style: theme.titleMedium.override(
-                  fontFamily: 'Outfit',
-                  fontWeight: FontWeight.bold,
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: theme.primary.withOpacity(0.2),
+                  shape: BoxShape.circle,
                 ),
+                child: Icon(
+                  Icons.bar_chart_rounded,
+                  color: theme.primary,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Esta Semana',
+                    style: theme.titleMedium.override(
+                      fontFamily: 'Outfit',
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text('Resumo de atividades', style: theme.bodySmall),
+                ],
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 24),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _buildStatItem(
                 theme,
-                icon: Icons.fitness_center,
+                icon: Icons.calendar_today_rounded,
                 value: '$daysWorked',
                 label: 'Dias',
                 color: theme.tertiary,
               ),
+              Container(
+                height: 40,
+                width: 1,
+                color: theme.alternate.withOpacity(0.5),
+              ),
               _buildStatItem(
                 theme,
-                icon: Icons.repeat,
+                icon: Icons.repeat_rounded,
                 value: '$totalSets',
                 label: 'Séries',
                 color: theme.secondary,
               ),
+              Container(
+                height: 40,
+                width: 1,
+                color: theme.alternate.withOpacity(0.5),
+              ),
               _buildStatItem(
                 theme,
-                icon: Icons.scale,
+                icon: Icons.fitness_center_rounded,
                 value: '${totalVolume}kg',
                 label: 'Volume',
                 color: theme.primary,
@@ -346,14 +380,22 @@ class _GymWeeklyStatsState extends State<GymWeeklyStats> {
   }) {
     return Column(
       children: [
-        Icon(icon, color: color, size: 28),
-        const SizedBox(height: 4),
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: color, size: 20),
+        ),
+        const SizedBox(height: 8),
         Text(
           value,
           style: theme.headlineSmall.override(
             fontFamily: 'Outfit',
             fontWeight: FontWeight.bold,
-            color: color,
+            fontSize: 20,
+            color: theme.primaryText,
           ),
         ),
         Text(
@@ -361,6 +403,7 @@ class _GymWeeklyStatsState extends State<GymWeeklyStats> {
           style: theme.bodySmall.override(
             fontFamily: 'Outfit',
             color: theme.secondaryText,
+            fontSize: 12,
           ),
         ),
       ],
@@ -419,54 +462,62 @@ class GymWeightChart extends StatelessWidget {
     final theme = FlutterFlowTheme.of(context);
 
     if (logs.isEmpty) {
-      return const Center(child: Text('Sem dados'));
+      return Center(
+        child: Text(
+          'Sem dados para o gráfico',
+          style: theme.bodyMedium.override(
+            fontFamily: 'Outfit',
+            color: theme.secondaryText,
+          ),
+        ),
+      );
     }
 
     final weights = logs.map((l) => l.weight ?? 0.0).toList();
     final minWeight = weights.reduce((a, b) => a < b ? a : b);
     final maxWeight = weights.reduce((a, b) => a > b ? a : b);
+
+    // Add some padding to the range so points aren't on the absolute edge
     final range = maxWeight - minWeight;
+    final displayMin = minWeight - (range > 0 ? range * 0.1 : 5);
+    final displayMax = maxWeight + (range > 0 ? range * 0.1 : 5);
 
     return Column(
       children: [
-        // Y-axis labels
+        // Chart container
         Expanded(
           child: Row(
             children: [
-              // Y-axis
+              // Y-axis labels
               SizedBox(
-                width: 40,
+                width: 32,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      '${maxWeight.toStringAsFixed(0)}kg',
-                      style: theme.labelSmall,
+                      maxWeight.toStringAsFixed(1),
+                      style: theme.labelSmall.override(fontSize: 10),
                     ),
-                    if (range > 0)
-                      Text(
-                        '${(minWeight + range / 2).toStringAsFixed(0)}kg',
-                        style: theme.labelSmall,
-                      ),
                     Text(
-                      '${minWeight.toStringAsFixed(0)}kg',
-                      style: theme.labelSmall,
+                      minWeight.toStringAsFixed(1),
+                      style: theme.labelSmall.override(fontSize: 10),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 12),
               // Chart area
               Expanded(
                 child: CustomPaint(
                   painter: _WeightChartPainter(
                     weights: weights,
-                    minWeight: minWeight,
-                    maxWeight: maxWeight,
+                    minWeight: displayMin,
+                    maxWeight: displayMax,
                     lineColor: theme.primary,
-                    dotColor: theme.tertiary,
-                    gridColor: theme.alternate,
+                    fillColor: theme.primary.withOpacity(0.2),
+                    dotColor: theme.secondaryBackground,
+                    gridColor: theme.alternate.withOpacity(0.5),
                   ),
                   size: Size.infinite,
                 ),
@@ -474,17 +525,29 @@ class GymWeightChart extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 8),
-        // X-axis labels (dates)
+        const SizedBox(height: 12),
+        // X-axis labels (Start and End Date)
         Padding(
-          padding: const EdgeInsets.only(left: 48),
+          padding: const EdgeInsets.only(left: 44),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               if (logs.isNotEmpty)
-                Text(logs.first.displayDate, style: theme.labelSmall),
+                Text(
+                  logs.first.displayDate,
+                  style: theme.labelSmall.override(
+                    fontSize: 10,
+                    color: theme.secondaryText,
+                  ),
+                ),
               if (logs.length > 1)
-                Text(logs.last.displayDate, style: theme.labelSmall),
+                Text(
+                  logs.last.displayDate,
+                  style: theme.labelSmall.override(
+                    fontSize: 10,
+                    color: theme.secondaryText,
+                  ),
+                ),
             ],
           ),
         ),
@@ -499,6 +562,7 @@ class _WeightChartPainter extends CustomPainter {
     required this.minWeight,
     required this.maxWeight,
     required this.lineColor,
+    required this.fillColor,
     required this.dotColor,
     required this.gridColor,
   });
@@ -507,6 +571,7 @@ class _WeightChartPainter extends CustomPainter {
   final double minWeight;
   final double maxWeight;
   final Color lineColor;
+  final Color fillColor;
   final Color dotColor;
   final Color gridColor;
 
@@ -517,49 +582,85 @@ class _WeightChartPainter extends CustomPainter {
     final range = maxWeight - minWeight;
     final paddedRange = range == 0 ? 1.0 : range;
 
-    // Draw grid lines
+    // 1. Draw minimal grid lines (Top and Bottom)
     final gridPaint = Paint()
       ..color = gridColor
-      ..strokeWidth = 1;
-
-    for (int i = 0; i <= 2; i++) {
-      final y = size.height * i / 2;
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
-    }
-
-    // Draw line and points
-    final linePaint = Paint()
-      ..color = lineColor
-      ..strokeWidth = 2
+      ..strokeWidth = 1
       ..style = PaintingStyle.stroke;
 
-    final dotPaint = Paint()
-      ..color = dotColor
-      ..style = PaintingStyle.fill;
+    // Draw bottom line
+    canvas.drawLine(
+      Offset(0, size.height),
+      Offset(size.width, size.height),
+      gridPaint,
+    );
 
-    final path = Path();
+    // 2. Compute points
     final points = <Offset>[];
-
     for (int i = 0; i < weights.length; i++) {
-      final x = weights.length == 1
+      final x = weights.length <= 1
           ? size.width / 2
           : size.width * i / (weights.length - 1);
       final normalizedY = (weights[i] - minWeight) / paddedRange;
       final y = size.height - (normalizedY * size.height);
       points.add(Offset(x, y));
+    }
 
-      if (i == 0) {
-        path.moveTo(x, y);
-      } else {
-        path.lineTo(x, y);
+    // 3. Create Smooth Path (Spline)
+    final path = Path();
+    if (points.isNotEmpty) {
+      path.moveTo(points[0].dx, points[0].dy);
+      for (int i = 0; i < points.length - 1; i++) {
+        final p0 = points[i];
+        final p1 = points[i + 1];
+
+        // Simple cubic bezier smoothing
+        final cp1 = Offset(p0.dx + (p1.dx - p0.dx) / 2, p0.dy);
+        final cp2 = Offset(p0.dx + (p1.dx - p0.dx) / 2, p1.dy);
+
+        // Using cubicTo for smoother S-shape connection
+        path.cubicTo(cp1.dx, cp1.dy, cp2.dx, cp2.dy, p1.dx, p1.dy);
       }
     }
 
+    // 4. Draw Gradient Fill area
+    final fillPath = Path.from(path);
+    fillPath.lineTo(size.width, size.height);
+    fillPath.lineTo(0, size.height);
+    fillPath.close();
+
+    final fillPaint = Paint()
+      ..shader = LinearGradient(
+        colors: [fillColor, fillColor.withOpacity(0.0)],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
+      ..style = PaintingStyle.fill;
+
+    canvas.drawPath(fillPath, fillPaint);
+
+    // 5. Draw the Line
+    final linePaint = Paint()
+      ..color = lineColor
+      ..strokeWidth = 3
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
+
     canvas.drawPath(path, linePaint);
 
-    // Draw dots
+    // 6. Draw Dots (Outer Ring + Inner Circle)
+    final dotFillPaint = Paint()
+      ..color = dotColor
+      ..style = PaintingStyle.fill;
+
+    final dotBorderPaint = Paint()
+      ..color = lineColor
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
+
     for (final point in points) {
-      canvas.drawCircle(point, 5, dotPaint);
+      canvas.drawCircle(point, 4, dotFillPaint);
+      canvas.drawCircle(point, 4, dotBorderPaint);
     }
   }
 

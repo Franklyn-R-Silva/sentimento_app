@@ -19,58 +19,90 @@ class GymExerciseInfo extends StatelessWidget {
         exercise.exerciseTime != null && exercise.exerciseTime!.isNotEmpty;
 
     return Wrap(
-      spacing: 12,
+      spacing: 8,
       runSpacing: 8,
       children: [
         // Sets x Reps (or Time)
         if (exercise.sets != null || hasReps || hasTime)
           _buildInfoItem(
-            theme,
+            context,
             hasTime ? Icons.timer_rounded : Icons.repeat_rounded,
             hasTime && !hasReps
                 ? '${exercise.sets ?? "-"}x ${exercise.exerciseTime}'
                 : '${exercise.sets ?? "-"}x ${exercise.reps ?? exercise.exerciseQty ?? "-"}',
+            // Default color
           ),
 
         // Weight
         if (exercise.weight != null)
           _buildInfoItem(
-            theme,
+            context,
             Icons.fitness_center_rounded,
             '${exercise.weight!.toStringAsFixed(1).replaceAll('.0', '')} kg',
+            color: theme.primary,
           ),
 
         // Rest Time
         if (exercise.restTime != null)
-          _buildInfoItem(theme, Icons.timer_outlined, '${exercise.restTime}s'),
+          _buildInfoItem(
+            context,
+            Icons.hourglass_empty_rounded,
+            '${exercise.restTime}s',
+            color: theme.tertiary,
+          ),
 
         // Elevation
         if (exercise.elevation != null && exercise.elevation! > 0)
           _buildInfoItem(
-            theme,
+            context,
             Icons.trending_up_rounded,
             '${exercise.elevation!.toStringAsFixed(1).replaceAll('.0', '')}%',
+            color: Colors.purpleAccent,
           ),
 
         // Speed
         if (exercise.speed != null && exercise.speed! > 0)
           _buildInfoItem(
-            theme,
+            context,
             Icons.speed_rounded,
             '${exercise.speed!.toStringAsFixed(1).replaceAll('.0', '')}',
+            color: Colors.orangeAccent,
           ),
       ],
     );
   }
 
-  Widget _buildInfoItem(FlutterFlowTheme theme, IconData icon, String text) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, color: theme.secondaryText, size: 16),
-        const SizedBox(width: 4),
-        Text(text, style: theme.bodyMedium),
-      ],
+  Widget _buildInfoItem(
+    BuildContext context,
+    IconData icon,
+    String text, {
+    Color? color,
+  }) {
+    final theme = FlutterFlowTheme.of(context);
+    final itemColor = color ?? theme.secondaryText;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: itemColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: itemColor.withOpacity(0.2), width: 1),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: itemColor, size: 14),
+          const SizedBox(width: 6),
+          Text(
+            text,
+            style: theme.bodyMedium.override(
+              fontFamily: 'Outfit',
+              fontWeight: FontWeight.w600,
+              color: theme.primaryText,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -1,10 +1,13 @@
+// Dart imports:
+import 'dart:math';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:sentimento_app/core/theme.dart';
 
-/// A progress bar that shows workout completion with smooth animation
+/// A premium progress bar with gradient and animation
 class GymProgressBar extends StatelessWidget {
   const GymProgressBar({
     super.key,
@@ -22,9 +25,19 @@ class GymProgressBar extends StatelessWidget {
     final isComplete = completed >= total && total > 0;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      decoration: BoxDecoration(
+        color: theme.secondaryBackground,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: theme.primaryText.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -32,22 +45,28 @@ class GymProgressBar extends StatelessWidget {
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
                 child: Text(
-                  isComplete ? '🎉 Treino Completo!' : 'Progresso',
+                  isComplete ? '🎉 Treino Concluído!' : 'Seu Progresso',
                   key: ValueKey(isComplete),
-                  style: theme.labelMedium.override(
+                  style: theme.titleSmall.override(
                     fontFamily: 'Outfit',
                     color: isComplete ? Colors.green : theme.secondaryText,
-                    fontWeight: isComplete
-                        ? FontWeight.bold
-                        : FontWeight.normal,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: isComplete
+                      ? Colors.green.withOpacity(0.1)
+                      : theme.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20),
+                ),
                 child: Text(
                   '$completed / $total',
-                  key: ValueKey('$completed/$total'),
                   style: theme.labelMedium.override(
                     fontFamily: 'Outfit',
                     fontWeight: FontWeight.bold,
@@ -57,23 +76,42 @@ class GymProgressBar extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 4),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: TweenAnimationBuilder<double>(
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.easeOutCubic,
-              tween: Tween<double>(begin: 0, end: progress),
-              builder: (context, value, child) {
-                return LinearProgressIndicator(
-                  value: value,
-                  minHeight: 8,
-                  backgroundColor: theme.alternate,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    isComplete ? Colors.green : theme.primary,
-                  ),
-                );
-              },
+          const SizedBox(height: 12),
+          Container(
+            height: 12,
+            decoration: BoxDecoration(
+              color: theme.alternate,
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Stack(
+              children: [
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 800),
+                      curve: Curves.fastOutSlowIn,
+                      width: constraints.maxWidth * progress,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        gradient: LinearGradient(
+                          colors: isComplete
+                              ? [Colors.greenAccent, Colors.green]
+                              : [theme.primary, theme.tertiary],
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: isComplete
+                                ? Colors.green.withOpacity(0.4)
+                                : theme.primary.withOpacity(0.4),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         ],
@@ -82,7 +120,7 @@ class GymProgressBar extends StatelessWidget {
   }
 }
 
-/// An animated celebration widget that shows when workout is complete
+/// An animated celebration widget that overlays confetti
 class GymCelebration extends StatefulWidget {
   const GymCelebration({
     super.key,
@@ -100,20 +138,23 @@ class GymCelebration extends StatefulWidget {
 class _GymCelebrationState extends State<GymCelebration>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-  bool _hasShownCelebration = false;
+  final List<_ConfettiParticle> _particles = [];
+  bool _isPlaying = false;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 600),
       vsync: this,
+      duration: const Duration(seconds: 2),
     );
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.05,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
+    _controller.addListener(() {
+      setState(() {
+        for (final particle in _particles) {
+          particle.update();
+        }
+      });
+    });
   }
 
   @override
@@ -125,42 +166,134 @@ class _GymCelebrationState extends State<GymCelebration>
   @override
   void didUpdateWidget(GymCelebration oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.isComplete && !_hasShownCelebration) {
-      _controller.forward().then((_) => _controller.reverse());
-      _hasShownCelebration = true;
-      _showCelebrationSnackbar();
-    } else if (!widget.isComplete) {
-      _hasShownCelebration = false;
+    if (widget.isComplete && !oldWidget.isComplete) {
+      _startCelebration();
     }
   }
 
-  void _showCelebrationSnackbar() {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Row(
-          children: [
-            Text('🎉', style: TextStyle(fontSize: 24)),
-            SizedBox(width: 12),
-            Text(
-              'Parabéns! Treino concluído!',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+  void _startCelebration() {
+    setState(() {
+      _isPlaying = true;
+      _particles.clear();
+      for (int i = 0; i < 50; i++) {
+        _particles.add(_ConfettiParticle());
+      }
+    });
+    _controller.forward(from: 0).then((_) {
+      setState(() => _isPlaying = false);
+    });
+
+    // Also show snackbar
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Row(
+            children: [
+              Text('🏆', style: TextStyle(fontSize: 24)),
+              SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Parabéns!',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text('Você concluiu seu treino.'),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
+          backgroundColor: Colors.green.shade600,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: const EdgeInsets.all(16),
+          duration: const Duration(seconds: 4),
         ),
-        backgroundColor: Colors.green,
-        duration: const Duration(seconds: 3),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-    );
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return ScaleTransition(scale: _scaleAnimation, child: widget.child);
+    return Stack(
+      children: [
+        widget.child,
+        if (_isPlaying)
+          Positioned.fill(
+            child: IgnorePointer(
+              child: CustomPaint(painter: _ConfettiPainter(_particles)),
+            ),
+          ),
+      ],
+    );
   }
+}
+
+class _ConfettiParticle {
+  _ConfettiParticle() {
+    final random = Random();
+    x = random.nextDouble();
+    y = -0.1; // Start above screen
+    size = random.nextDouble() * 8 + 4;
+    color = Colors.primaries[random.nextInt(Colors.primaries.length)];
+    speed = random.nextDouble() * 0.02 + 0.01;
+    angle = random.nextDouble() * pi;
+    rotationSpeed = (random.nextDouble() - 0.5) * 0.2;
+  }
+
+  late double x;
+  late double y;
+  late double size;
+  late Color color;
+  late double speed;
+  late double angle;
+  late double rotationSpeed;
+
+  void update() {
+    y += speed;
+    angle += rotationSpeed;
+    x += sin(angle) * 0.002;
+  }
+}
+
+class _ConfettiPainter extends CustomPainter {
+  _ConfettiPainter(this.particles);
+
+  final List<_ConfettiParticle> particles;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    for (final particle in particles) {
+      final paint = Paint()..color = particle.color;
+      final dx = particle.x * size.width;
+      final dy = particle.y * size.height;
+
+      canvas.save();
+      canvas.translate(dx, dy);
+      canvas.rotate(particle.angle);
+
+      // Draw a simple rectangle (confetti piece)
+      canvas.drawRect(
+        Rect.fromCenter(
+          center: Offset.zero,
+          width: particle.size,
+          height: particle.size / 2,
+        ),
+        paint,
+      );
+
+      canvas.restore();
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:auto_size_text/auto_size_text.dart';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -59,18 +59,32 @@ class _GymListPageState extends State<GymListPage> {
       value: _model,
       child: Scaffold(
         backgroundColor: theme.primaryBackground,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            await context.pushNamedAuth('GymRegister', mounted);
-            await _model.loadData();
-          },
-          backgroundColor: theme.primary,
-          elevation: 8,
-          tooltip: 'Novo Exercício',
-          child: Icon(
-            Icons.add_rounded,
-            color: theme.primaryBackground,
-            size: 24,
+        floatingActionButton: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [theme.primary, theme.tertiary],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 10,
+                color: theme.primary.withOpacity(0.4),
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: FloatingActionButton(
+            onPressed: () async {
+              await context.pushNamedAuth('GymRegister', mounted);
+              await _model.loadData();
+            },
+            backgroundColor: Colors.transparent, // Transparent to show gradient
+            elevation: 0, // No shadow on FAB itself
+            highlightElevation: 0,
+            tooltip: 'Novo Exercício',
+            child: Icon(Icons.add_rounded, color: Colors.white, size: 28),
           ),
         ),
         body: SafeArea(
@@ -81,106 +95,180 @@ class _GymListPageState extends State<GymListPage> {
             children: [
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(24, 24, 24, 0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: AutoSizeText(
-                        'Treino do Dia',
-                        maxLines: 1,
-                        style: theme.displaySmall.override(
-                          fontFamily: 'Outfit',
-                          color: theme.primaryText,
-                        ),
-                      ),
-                    ),
                     Row(
-                      mainAxisSize: MainAxisSize.min,
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Focus Mode Play Button
-                        Consumer<GymListModel>(
-                          builder: (context, model, _) => IconButton(
-                            icon: Icon(
-                              Icons.play_circle_filled_rounded,
-                              color: model.todaysExercises.isNotEmpty
-                                  ? theme.tertiary
-                                  : theme.alternate,
-                              size: 28,
-                            ),
-                            tooltip: 'Modo Foco',
-                            onPressed: model.todaysExercises.isNotEmpty
-                                ? () async {
-                                    await context.push(
-                                      '/gym/focus',
-                                      extra: model.todaysExercises,
-                                    );
-                                    await model.loadData();
-                                  }
-                                : null,
-                          ),
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            Icons.refresh_rounded,
-                            color: theme.secondaryText, // Less prominent
-                            size: 24,
-                          ),
-                          tooltip: 'Reiniciar Treino',
-                          onPressed: () async {
-                            final confirmed = await showDialog<bool>(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: const Text('Reiniciar Treino?'),
-                                content: const Text(
-                                  'Deseja marcar todos os exercícios de hoje como não concluídos?',
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Treino do Dia',
+                                style: theme.displaySmall.override(
+                                  fontFamily: 'Outfit',
+                                  color: theme.primaryText,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, false),
-                                    child: const Text('Cancelar'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, true),
-                                    child: const Text('Sim'),
-                                  ),
-                                ],
                               ),
-                            );
+                              const SizedBox(height: 4),
+                              Text(
+                                DateFormat('EEEE, d MMMM', 'pt_BR')
+                                    .format(DateTime.now())
+                                    .toCapitalization(
+                                      TextCapitalization.sentences,
+                                    ),
+                                style: theme.labelLarge.override(
+                                  fontFamily: 'Outfit',
+                                  color: theme.secondaryText,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Action Buttons Row
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Reset Button
+                            _buildActionButton(
+                              theme,
+                              icon: Icons.refresh_rounded,
+                              tooltip: 'Reiniciar Treino',
+                              onTap: () async {
+                                final confirmed = await showDialog<bool>(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text('Reiniciar Treino?'),
+                                    content: const Text(
+                                      'Deseja marcar todos os exercícios de hoje como não concluídos?',
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(context, false),
+                                        child: const Text('Cancelar'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(context, true),
+                                        child: const Text('Sim'),
+                                      ),
+                                    ],
+                                  ),
+                                );
 
-                            if (confirmed == true) {
-                              await _model.resetDailyWorkout();
-                            }
-                          },
+                                if (confirmed == true) {
+                                  await _model.resetDailyWorkout();
+                                }
+                              },
+                            ),
+                            const SizedBox(width: 12),
+                            // Calendar/Manager Button
+                            _buildActionButton(
+                              theme,
+                              icon: Icons.calendar_today_rounded,
+                              tooltip: 'Gerenciar Treinos',
+                              onTap: () async {
+                                await context.pushNamedAuth(
+                                  'GymManager',
+                                  mounted,
+                                );
+                                await _model.loadData();
+                              },
+                              isPrimary: true,
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 8),
-                        IconButton(
-                          icon: Icon(
-                            Icons.calendar_today_rounded,
-                            color: theme.primary,
-                            size: 24,
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    // Focus Mode & Stats (Secondary Row)
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Consumer<GymListModel>(
+                            builder: (context, model, _) {
+                              final hasExercises =
+                                  model.todaysExercises.isNotEmpty;
+                              return InkWell(
+                                onTap: hasExercises
+                                    ? () async {
+                                        await context.push(
+                                          '/gym/focus',
+                                          extra: model.todaysExercises,
+                                        );
+                                        await model.loadData();
+                                      }
+                                    : null,
+                                borderRadius: BorderRadius.circular(12),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 12,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: hasExercises
+                                          ? [theme.primary, theme.secondary]
+                                          : [theme.alternate, theme.alternate],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                    borderRadius: BorderRadius.circular(12),
+                                    boxShadow: hasExercises
+                                        ? [
+                                            BoxShadow(
+                                              blurRadius: 12,
+                                              color: theme.primary.withOpacity(
+                                                0.3,
+                                              ),
+                                              offset: const Offset(0, 4),
+                                            ),
+                                          ]
+                                        : [],
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.play_circle_filled_rounded,
+                                        color: Colors.white,
+                                        size: 24,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        'Iniciar Modo Foco',
+                                        style: theme.titleSmall.override(
+                                          fontFamily: 'Outfit',
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                          onPressed: () async {
-                            await context.pushNamedAuth('GymManager', mounted);
-                            await _model.loadData();
-                          },
                         ),
-                        const SizedBox(width: 8),
-                        IconButton(
-                          icon: Icon(
-                            FontAwesomeIcons.dumbbell,
-                            color: theme.primary,
-                            size: 20,
-                          ),
+                        const SizedBox(width: 12),
+                        // Stats Button
+                        _buildActionButton(
+                          theme,
+                          icon: FontAwesomeIcons.chartBar,
                           tooltip: 'Estatísticas',
-                          onPressed: () {
+                          onTap: () {
                             showDialog<void>(
                               context: context,
                               builder: (context) => const GymStatsDialog(),
                             );
                           },
+                          size: 20,
                         ),
                       ],
                     ),
@@ -353,6 +441,42 @@ class _GymListPageState extends State<GymListPage> {
               ),
             ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildActionButton(
+    FlutterFlowTheme theme, {
+    required IconData icon,
+    required VoidCallback onTap,
+    String? tooltip,
+    bool isPrimary = false,
+    double size = 24,
+  }) {
+    return Tooltip(
+      message: tooltip ?? '',
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: isPrimary
+                ? theme.primary.withOpacity(0.1)
+                : theme.secondaryBackground,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isPrimary
+                  ? theme.primary.withOpacity(0.3)
+                  : theme.alternate,
+            ),
+          ),
+          child: Icon(
+            icon,
+            color: isPrimary ? theme.primary : theme.secondaryText,
+            size: size,
+          ),
+        ),
       ),
     );
   }

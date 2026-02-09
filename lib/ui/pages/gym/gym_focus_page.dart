@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 // Project imports:
@@ -58,49 +59,86 @@ class _GymFocusPageState extends State<GymFocusPage> {
       value: _model,
       child: Scaffold(
         backgroundColor: Colors.black,
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.black.withOpacity(0.8), Colors.transparent],
+              ),
+            ),
+          ),
           leading: IconButton(
-            icon: const Icon(Icons.close, color: Colors.white, size: 28),
+            icon: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.close_rounded,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
             onPressed: () => Navigator.pop(context),
           ),
           title: Consumer<GymFocusModel>(
-            builder: (context, model, _) => Text(
-              '${model.currentIndex + 1} / ${model.exercises.length}',
-              style: theme.titleMedium.override(
-                fontFamily: 'Outfit',
-                color: Colors.white,
+            builder: (context, model, _) => Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.1),
+                  width: 1,
+                ),
+              ),
+              child: Text(
+                '${model.currentIndex + 1} / ${model.exercises.length}',
+                style: theme.bodyMedium.override(
+                  fontFamily: 'Outfit',
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
           centerTitle: true,
           actions: [
             Consumer<GymFocusModel>(
-              builder: (context, model, _) => IconButton(
-                icon: Icon(
-                  model.currentExercise.isCompleted
-                      ? Icons.check_circle
-                      : Icons.check_circle_outline,
-                  color: model.currentExercise.isCompleted
-                      ? Colors.green
-                      : Colors.white,
-                  size: 28,
-                ),
-                onPressed: () async {
-                  try {
-                    await model.toggleComplete();
-                  } catch (e) {
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Erro ao atualizar: $e'),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
+              builder: (context, model, _) => Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: IconButton(
+                  icon: Icon(
+                    model.currentExercise.isCompleted
+                        ? Icons.check_circle_rounded
+                        : Icons.check_circle_outline_rounded,
+                    color: model.currentExercise.isCompleted
+                        ? Theme.of(context).primaryColor
+                        : Colors.white.withOpacity(0.5),
+                    size: 32,
+                  ),
+                  onPressed: () async {
+                    try {
+                      await model.toggleComplete();
+                    } catch (e) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Erro ao atualizar: $e'),
+                            backgroundColor: theme.error,
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                      }
                     }
-                  }
-                },
+                  },
+                ),
               ),
             ),
           ],
@@ -108,16 +146,43 @@ class _GymFocusPageState extends State<GymFocusPage> {
         body: Consumer<GymFocusModel>(
           builder: (context, model, _) => Column(
             children: [
-              // Progress Bar (shows completed exercises)
-              LinearProgressIndicator(
-                value:
-                    model.progress, // Use completed/total instead of position
-                backgroundColor: Colors.grey[800],
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  model.progress >= 1.0 ? Colors.green : theme.primary,
-                ),
-                minHeight: 4,
+              SizedBox(
+                height:
+                    MediaQuery.of(context).padding.top + kToolbarHeight + 10,
               ),
+
+              // Custom Progress Bar
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Container(
+                  height: 6,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                  child: FractionallySizedBox(
+                    alignment: Alignment.centerLeft,
+                    widthFactor: model.progress > 0 ? model.progress : 0.01,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [theme.primary, theme.tertiary],
+                        ),
+                        borderRadius: BorderRadius.circular(3),
+                        boxShadow: [
+                          BoxShadow(
+                            color: theme.primary.withOpacity(0.4),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
 
               // Exercise PageView
               Expanded(
@@ -134,7 +199,7 @@ class _GymFocusPageState extends State<GymFocusPage> {
 
               // Timer Widget
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: GymRestTimer(
                   key: ValueKey('timer_${model.currentExercise.id}'),
                   defaultSeconds: model.currentExercise.restTime ?? 60,
@@ -143,16 +208,7 @@ class _GymFocusPageState extends State<GymFocusPage> {
                       try {
                         await model.toggleComplete();
                       } catch (e) {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Erro ao marcar como concluído: $e',
-                              ),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                        }
+                        // Error handling already in toggleComplete or upper
                       }
                     }
                   },
@@ -160,65 +216,112 @@ class _GymFocusPageState extends State<GymFocusPage> {
               ),
 
               // Navigation Buttons
-              Padding(
-                padding: const EdgeInsets.all(16),
+              Container(
+                padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      Colors.black,
+                      Colors.black.withOpacity(0.8),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
                 child: Row(
                   children: [
                     // Previous Button
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: model.currentIndex > 0
-                            ? () {
-                                _pageController.previousPage(
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeInOut,
-                                );
-                              }
-                            : null,
-                        icon: const Icon(Icons.arrow_back),
-                        label: const Text('Anterior'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey[800],
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                    if (model.currentIndex > 0)
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.2),
+                              width: 1,
+                            ),
+                          ),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _pageController.previousPage(
+                                duration: const Duration(milliseconds: 400),
+                                curve: Curves.fastOutSlowIn,
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                            child: const Icon(Icons.arrow_back_rounded),
                           ),
                         ),
-                      ),
-                    ),
+                      )
+                    else
+                      const Spacer(),
+
                     const SizedBox(width: 16),
+
                     // Next/Finish Button
                     Expanded(
                       flex: 2,
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          if (model.currentIndex < model.exercises.length - 1) {
-                            _pageController.nextPage(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                          } else {
-                            // Finished all exercises
-                            _showCompletionDialog(context, model);
-                          }
-                        },
-                        icon: Icon(
-                          model.currentIndex < model.exercises.length - 1
-                              ? Icons.arrow_forward
-                              : Icons.celebration,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          gradient: LinearGradient(
+                            colors: [theme.primary, theme.tertiary],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: theme.primary.withOpacity(0.3),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
-                        label: Text(
-                          model.currentIndex < model.exercises.length - 1
-                              ? 'Próximo'
-                              : 'Finalizar! 🎉',
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: theme.primary,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            if (model.currentIndex <
+                                model.exercises.length - 1) {
+                              _pageController.nextPage(
+                                duration: const Duration(milliseconds: 400),
+                                curve: Curves.fastOutSlowIn,
+                              );
+                            } else {
+                              _showCompletionDialog(context, model);
+                            }
+                          },
+                          icon: Icon(
+                            model.currentIndex < model.exercises.length - 1
+                                ? Icons.arrow_forward_rounded
+                                : Icons.emoji_events_rounded,
+                            color: Colors.white,
+                          ),
+                          label: Text(
+                            model.currentIndex < model.exercises.length - 1
+                                ? 'Próximo'
+                                : 'Finalizar',
+                            style: theme.titleSmall.override(
+                              fontFamily: 'Outfit',
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
                           ),
                         ),
                       ),
@@ -226,7 +329,6 @@ class _GymFocusPageState extends State<GymFocusPage> {
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
             ],
           ),
         ),
@@ -261,11 +363,11 @@ class _GymFocusPageState extends State<GymFocusPage> {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Exercise Name
+          // Workout Name Tag
           Consumer<GymFocusModel>(
             builder: (context, model, _) {
               final workoutId = exercise.workoutId;
@@ -277,162 +379,279 @@ class _GymFocusPageState extends State<GymFocusPage> {
                 }
               }
 
-              return Column(
-                children: [
-                  if (workoutName != null)
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 8),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.7),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: Colors.black.withValues(alpha: 0.6),
-                          width: 1,
-                        ),
-                      ),
-                      child: Text(
-                        workoutName.toUpperCase(),
-                        style: theme.labelMedium.override(
-                          fontFamily: 'Outfit',
-                          color: theme.tertiary,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.2,
-                        ),
-                      ),
-                    ),
-                  Text(
-                    exercise.name,
-                    style: theme.headlineLarge.override(
-                      fontFamily: 'Outfit',
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
+              if (workoutName == null) return const SizedBox.shrink();
+
+              return Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: theme.primary.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: theme.primary.withOpacity(0.3),
+                    width: 1,
                   ),
-                ],
+                ),
+                child: Text(
+                  workoutName.toUpperCase(),
+                  style: theme.labelSmall.override(
+                    fontFamily: 'Outfit',
+                    color: theme.primary,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.5,
+                  ),
+                ),
               );
             },
           ),
-          const SizedBox(height: 8),
 
-          // Category & Muscle Group
+          // Exercise Name
+          Text(
+            exercise.name,
+            style: theme.headlineLarge.override(
+              fontFamily: 'Outfit',
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 32,
+              letterSpacing: -0.5,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+
+          // Tags Row
           if (exercise.category != null || exercise.muscleGroup != null)
             Wrap(
-              spacing: 8,
+              spacing: 12,
+              runSpacing: 8,
+              alignment: WrapAlignment.center,
               children: [
                 if (exercise.category != null)
-                  Chip(
-                    label: Text(exercise.category!),
-                    backgroundColor: theme.primary.withOpacity(0.2),
-                    labelStyle: TextStyle(color: theme.primary),
-                  ),
+                  _buildTag(exercise.category!, theme.secondary, theme),
                 if (exercise.muscleGroup != null)
-                  Chip(
-                    label: Text(exercise.muscleGroup!),
-                    backgroundColor: theme.secondary.withOpacity(0.2),
-                    labelStyle: TextStyle(color: theme.secondary),
-                  ),
+                  _buildTag(exercise.muscleGroup!, theme.tertiary, theme),
               ],
             ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
 
-          // Image Carousel
-          if (imageUrls.isNotEmpty)
-            SizedBox(
-              height: 250,
-              child: GymExerciseCarousel(imageUrls: imageUrls),
-            ),
-          const SizedBox(height: 24),
-
-          // Exercise Details (Big & Bold)
+          // Main Stats Card
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: Colors.grey[900],
-              borderRadius: BorderRadius.circular(16),
+              color: const Color(0xFF1A1A1A),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: Colors.white.withOpacity(0.05)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
+                ),
+              ],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildDetailColumn(
-                  'Séries',
+                // Sets
+                _buildStatItem(
                   '${exercise.sets ?? exercise.exerciseSeries ?? "-"}',
+                  'Séries',
+                  FontAwesomeIcons.layerGroup,
+                  theme.primary,
                   theme,
                 ),
-                _buildDivider(),
+                _buildVerticalDivider(),
+
+                // Reps or Time
                 if (exercise.exerciseTime != null &&
                     exercise.exerciseTime!.isNotEmpty)
-                  _buildDetailColumn('Tempo', exercise.exerciseTime!, theme)
+                  _buildStatItem(
+                    exercise.exerciseTime!,
+                    'Tempo',
+                    Icons.timer_outlined,
+                    theme.secondary,
+                    theme,
+                  )
                 else
-                  _buildDetailColumn(
-                    'Reps',
+                  _buildStatItem(
                     exercise.reps ?? '${exercise.exerciseQty ?? "-"}',
+                    'Reps',
+                    Icons.repeat_rounded,
+                    theme.secondary,
                     theme,
                   ),
-                _buildDivider(),
-                _buildDetailColumn(
-                  'Peso',
-                  '${exercise.weight ?? "-"} kg',
+
+                _buildVerticalDivider(),
+
+                // Weight
+                _buildStatItem(
+                  '${exercise.weight ?? "-"}',
+                  'kg',
+                  FontAwesomeIcons.weightHanging,
+                  theme.tertiary,
                   theme,
                 ),
-                if (exercise.elevation != null && exercise.elevation! > 0) ...[
-                  _buildDivider(),
-                  _buildDetailColumn(
-                    'Elevação',
-                    '${exercise.elevation!}%',
-                    theme,
-                  ),
-                ],
-                if (exercise.speed != null && exercise.speed! > 0) ...[
-                  _buildDivider(),
-                  _buildDetailColumn('Velocidade', '${exercise.speed!}', theme),
-                ],
               ],
             ),
           ),
-          const SizedBox(height: 16),
+
+          // Secondary Stats Row (if has data)
+          if ((exercise.elevation != null && exercise.elevation! > 0) ||
+              (exercise.speed != null && exercise.speed! > 0)) ...[
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.03),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (exercise.elevation != null && exercise.elevation! > 0)
+                    _buildSecondaryStat(
+                      'Elevação',
+                      '${exercise.elevation!}%',
+                      Icons.trending_up,
+                      theme,
+                    ),
+                  if ((exercise.elevation != null && exercise.elevation! > 0) &&
+                      (exercise.speed != null && exercise.speed! > 0))
+                    const SizedBox(width: 32),
+                  if (exercise.speed != null && exercise.speed! > 0)
+                    _buildSecondaryStat(
+                      'Velocidade',
+                      '${exercise.speed!}',
+                      Icons.speed,
+                      theme,
+                    ),
+                ],
+              ),
+            ),
+          ],
+
+          const SizedBox(height: 32),
+
+          // Image Carousel
+          if (imageUrls.isNotEmpty)
+            Container(
+              height: 220,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: GymExerciseCarousel(imageUrls: imageUrls),
+            ),
 
           // Description
           if (exercise.description != null && exercise.description!.isNotEmpty)
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey[850],
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                exercise.description!,
-                style: theme.bodyMedium.override(
-                  fontFamily: 'Outfit',
-                  color: Colors.white70,
-                ),
-                textAlign: TextAlign.center,
+            Padding(
+              padding: const EdgeInsets.only(top: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Observações',
+                    style: theme.labelMedium.override(
+                      fontFamily: 'Outfit',
+                      color: theme.secondaryText,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.white.withOpacity(0.05)),
+                    ),
+                    child: Text(
+                      exercise.description!,
+                      style: theme.bodyMedium.override(
+                        fontFamily: 'Outfit',
+                        color: Colors.white.withOpacity(0.8),
+                        lineHeight: 1.5,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
 
-          // Weight History
-          const SizedBox(height: 16),
+          // History Section
+          const SizedBox(height: 32),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Histórico',
+              style: theme.titleMedium.override(
+                fontFamily: 'Outfit',
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
           GymExerciseHistory(
             exerciseId: exercise.id,
             exerciseName: exercise.name,
           ),
+          // Extra Space for scrolling past buttons
+          const SizedBox(height: 100),
         ],
       ),
     );
   }
 
-  Widget _buildDetailColumn(
-    String label,
+  Widget _buildTag(String label, Color color, FlutterFlowTheme theme) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color.withOpacity(0.3), width: 1),
+      ),
+      child: Text(
+        label,
+        style: theme.bodySmall.override(
+          fontFamily: 'Outfit',
+          color: color.withOpacity(0.9),
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatItem(
     String value,
+    String label,
+    IconData icon,
+    Color color,
     FlutterFlowTheme theme,
   ) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: color, size: 20),
+        ),
+        const SizedBox(height: 12),
         Text(
           value,
           style: theme.headlineMedium.override(
@@ -441,42 +660,130 @@ class _GymFocusPageState extends State<GymFocusPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 4),
         Text(
-          label,
-          style: theme.bodySmall.override(
+          label.toUpperCase(),
+          style: theme.labelSmall.override(
             fontFamily: 'Outfit',
-            color: Colors.white60,
+            color: Colors.white38,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 1,
+            fontSize: 10,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildDivider() {
-    return Container(height: 40, width: 1, color: Colors.white24);
+  Widget _buildSecondaryStat(
+    String label,
+    String value,
+    IconData icon,
+    FlutterFlowTheme theme,
+  ) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 16, color: Colors.white54),
+        const SizedBox(width: 8),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              value,
+              style: theme.bodyLarge.override(
+                fontFamily: 'Outfit',
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              label,
+              style: theme.labelSmall.override(
+                fontFamily: 'Outfit',
+                color: Colors.white38,
+                fontSize: 10,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildVerticalDivider() {
+    return Container(
+      height: 40,
+      width: 1,
+      color: Colors.white.withOpacity(0.1),
+    );
   }
 
   void _showCompletionDialog(BuildContext context, GymFocusModel model) {
     final completed = model.exercises.where((e) => e.isCompleted).length;
     final total = model.exercises.length;
+    final theme = FlutterFlowTheme.of(context);
 
     showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Row(children: [Text('🎉 '), Text('Treino Finalizado!')]),
-        content: Text(
-          'Você completou $completed de $total exercícios.\n\nExcelente trabalho!',
+        backgroundColor: const Color(0xFF1E1E1E),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        contentPadding: const EdgeInsets.all(32),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.green.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.emoji_events_rounded,
+                size: 48,
+                color: Colors.green,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'Treino Finalizado!',
+              style: theme.headlineMedium.override(
+                fontFamily: 'Outfit',
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Você completou $completed de $total exercícios.\nExcelente trabalho!',
+              style: theme.bodyLarge.override(
+                fontFamily: 'Outfit',
+                color: Colors.white70,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 32),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close dialog
+                  Navigator.pop(context); // Return to previous screen
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: theme.primary,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: const Text('Voltar para o início'),
+              ),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context); // Close dialog
-              Navigator.pop(context); // Return to previous screen
-            },
-            child: const Text('Voltar'),
-          ),
-        ],
       ),
     );
   }

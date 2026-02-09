@@ -31,7 +31,14 @@ class GymPhotoPicker extends StatefulWidget {
 }
 
 class _GymPhotoPickerState extends State<GymPhotoPicker> {
+  final PageController _pageController = PageController(viewportFraction: 0.9);
   int _currentIndex = 0;
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,30 +49,54 @@ class _GymPhotoPickerState extends State<GymPhotoPicker> {
     if (totalCount == 0) {
       return InkWell(
         onTap: widget.onPickImages,
+        borderRadius: BorderRadius.circular(16),
         child: Container(
           width: double.infinity,
-          height: 200,
+          height: 220,
           decoration: BoxDecoration(
             color: theme.secondaryBackground,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: theme.alternate,
-              width: 2,
+              color: theme.primary.withOpacity(0.3),
+              width: 1,
               style: BorderStyle.solid,
             ),
+            boxShadow: [
+              BoxShadow(
+                color: theme.primary.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.camera_alt_rounded,
-                color: theme.secondaryText,
-                size: 48,
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: theme.primary.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.add_a_photo_rounded,
+                  color: theme.primary,
+                  size: 32,
+                ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 16),
               Text(
-                'Toque para adicionar fotos',
-                style: theme.bodyMedium.override(color: theme.secondaryText),
+                'Adicionar Fotos',
+                style: theme.titleMedium.override(
+                  fontFamily: 'Outfit',
+                  color: theme.primaryText,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Registre seu progresso visual',
+                style: theme.bodySmall.override(color: theme.secondaryText),
               ),
             ],
           ),
@@ -76,132 +107,209 @@ class _GymPhotoPickerState extends State<GymPhotoPicker> {
     return Column(
       children: [
         SizedBox(
-          height: 250,
-          child: Stack(
-            children: [
-              PageView.builder(
-                itemCount: totalCount,
-                onPageChanged: (index) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                },
-                itemBuilder: (context, index) {
-                  final bool isExisting = index < existingCount;
-                  Widget imageWidget;
+          height: 280,
+          child: PageView.builder(
+            controller: _pageController,
+            itemCount: totalCount,
+            onPageChanged: (index) {
+              setState(() => _currentIndex = index);
+            },
+            itemBuilder: (context, index) {
+              final bool isExisting = index < existingCount;
+              Widget imageWidget;
 
-                  if (isExisting) {
-                    imageWidget = Image.network(
-                      widget.existingImages![index],
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      height: 250,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return const Center(child: CircularProgressIndicator());
-                      },
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        color: Colors.grey[300],
-                        child: const Icon(Icons.error),
+              if (isExisting) {
+                imageWidget = Image.network(
+                  widget.existingImages![index],
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: 280,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes!
+                            : null,
                       ),
                     );
+                  },
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    color: theme.alternate,
+                    child: Icon(
+                      Icons.broken_image,
+                      color: theme.secondaryText,
+                      size: 40,
+                    ),
+                  ),
+                );
+              } else {
+                final newIndex = index - existingCount;
+                imageWidget = Image.file(
+                  File(widget.images[newIndex].path),
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: 280,
+                );
+              }
+
+              return AnimatedBuilder(
+                animation: _pageController,
+                builder: (context, child) {
+                  double value = 1.0;
+                  if (_pageController.position.haveDimensions) {
+                    value = _pageController.page! - index;
+                    value = (1 - (value.abs() * 0.1)).clamp(0.9, 1.0);
                   } else {
-                    final newIndex = index - existingCount;
-                    imageWidget = Image.file(
-                      File(widget.images[newIndex].path),
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      height: 250,
-                    );
+                    // Initial state when controller doesn't have dimensions yet
+                    // If it's the current index, scale is 1, else 0.9 is a safe default for neighbors
+                    value = index == _currentIndex ? 1.0 : 0.9;
                   }
 
-                  return Stack(
+                  return Center(
+                    child: SizedBox(
+                      height: Curves.easeOut.transform(value) * 280,
+                      width: Curves.easeOut.transform(value) * 350,
+                      child: child,
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Stack(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: imageWidget,
-                        ),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: imageWidget,
                       ),
-                      Positioned(
-                        top: 8,
-                        right: 12,
-                        child: InkWell(
-                          onTap: () {
-                            final newTotal = totalCount - 1;
-                            if (isExisting) {
-                              widget.onRemoveExistingImage?.call(index);
-                            } else {
-                              widget.onRemoveImage(index - existingCount);
-                            }
-                            // Reset current index if it would be out of bounds
-                            if (_currentIndex >= newTotal && newTotal > 0) {
-                              setState(() {
-                                _currentIndex = newTotal - 1;
-                              });
-                            } else if (newTotal == 0) {
-                              setState(() {
-                                _currentIndex = 0;
-                              });
-                            }
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.6),
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.delete,
-                              color: Colors.red,
-                              size: 20,
+                      // Gradient overlay at the bottom for text readability if needed
+                      Positioned.fill(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.transparent,
+                                Colors.black.withOpacity(0.0),
+                                Colors.black.withOpacity(0.3),
+                              ],
+                              stops: const [0.6, 0.8, 1.0],
                             ),
                           ),
                         ),
                       ),
-                    ],
-                  );
-                },
-              ),
-              if (totalCount > 1)
-                Positioned(
-                  bottom: 8,
-                  left: 0,
-                  right: 0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(totalCount, (index) {
-                      return Container(
-                        width: 8.0,
-                        height: 8.0,
-                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color:
-                              (Theme.of(context).brightness == Brightness.dark
-                                      ? Colors.white
-                                      : Colors.black)
-                                  .withOpacity(
-                                    _currentIndex == index ? 0.9 : 0.4,
-                                  ),
+                      Positioned(
+                        top: 12,
+                        right: 12,
+                        child: Material(
+                          color: Colors.black.withOpacity(0.5),
+                          shape: const CircleBorder(),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(20),
+                            onTap: () {
+                              final newTotal = totalCount - 1;
+                              if (isExisting) {
+                                widget.onRemoveExistingImage?.call(index);
+                              } else {
+                                widget.onRemoveImage(index - existingCount);
+                              }
+
+                              // Logic to update current index safely
+                              if (_currentIndex >= newTotal && newTotal > 0) {
+                                setState(() => _currentIndex = newTotal - 1);
+                              } else if (newTotal == 0) {
+                                setState(() => _currentIndex = 0);
+                              }
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Icon(
+                                Icons.delete_outline_rounded,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                          ),
                         ),
-                      );
-                    }),
+                      ),
+                      if (!isExisting)
+                        Positioned(
+                          bottom: 12,
+                          left: 12,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: theme.primary,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              'NOVA',
+                              style: theme.bodySmall.override(
+                                fontFamily: 'Outfit',
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
-            ],
+              );
+            },
           ),
         ),
-        const SizedBox(height: 12),
-        Align(
-          alignment: Alignment.centerRight,
+        const SizedBox(height: 16),
+        // Page Indicators
+        if (totalCount > 1)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(totalCount, (index) {
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                width: _currentIndex == index ? 24.0 : 8.0,
+                height: 8.0,
+                margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  color: _currentIndex == index
+                      ? theme.primary
+                      : theme.alternate,
+                ),
+              );
+            }),
+          ),
+        const SizedBox(height: 16),
+        // Add More Button
+        Center(
           child: TextButton.icon(
             onPressed: widget.onPickImages,
-            icon: Icon(Icons.add_a_photo, color: theme.primary),
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+                side: BorderSide(color: theme.primary.withOpacity(0.5)),
+              ),
+            ),
+            icon: Icon(
+              Icons.add_photo_alternate_rounded,
+              size: 20,
+              color: theme.primary,
+            ),
             label: Text(
               'Adicionar mais fotos',
-              style: TextStyle(color: theme.primary),
+              style: theme.bodyMedium.override(
+                fontFamily: 'Outfit',
+                color: theme.primary,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ),

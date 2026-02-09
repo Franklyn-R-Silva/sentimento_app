@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 // Project imports:
@@ -75,7 +76,7 @@ class _GymManagerPageState extends State<GymManagerPage> {
               backgroundColor: theme.primaryBackground,
               appBar: AppBar(
                 backgroundColor: model.isSelectionMode
-                    ? Colors.grey[800]
+                    ? const Color(0xFF2D2A3E)
                     : theme.primary,
                 automaticallyImplyLeading: !model.isSelectionMode,
                 leading: model.isSelectionMode
@@ -89,17 +90,19 @@ class _GymManagerPageState extends State<GymManagerPage> {
                       ? '${model.selectedCount} selecionado(s)'
                       : 'Gerenciar Treinos',
                   style: theme.headlineMedium.override(
-                    fontFamily: 'Outfit',
+                    fontFamily: 'Inter Tight',
                     color: Colors.white,
                     fontSize: 22,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 actions: model.isSelectionMode
                     ? [
                         IconButton(
-                          icon: const Icon(
-                            Icons.drive_file_move_outlined,
+                          icon: const FaIcon(
+                            FontAwesomeIcons.rightToBracket,
                             color: Colors.white,
+                            size: 20,
                           ),
                           tooltip: 'Mover selecionados',
                           onPressed: model.selectedCount > 0
@@ -122,16 +125,23 @@ class _GymManagerPageState extends State<GymManagerPage> {
                         ),
                       ],
                 centerTitle: false,
-                elevation: 2,
+                elevation: 0,
                 bottom: TabBar(
                   isScrollable: true,
                   labelColor: Colors.white,
                   unselectedLabelColor: const Color(0xB3FFFFFF),
                   indicatorColor: Colors.white,
                   indicatorWeight: 3,
+                  indicatorSize: TabBarIndicatorSize.label,
                   labelStyle: theme.titleSmall.override(
                     fontFamily: 'Outfit',
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                  unselectedLabelStyle: theme.titleSmall.override(
+                    fontFamily: 'Outfit',
+                    fontWeight: FontWeight.normal,
+                    fontSize: 14,
                   ),
                   tabs: shortDays.map((d) => Tab(text: d)).toList(),
                 ),
@@ -145,7 +155,12 @@ class _GymManagerPageState extends State<GymManagerPage> {
                         await model.loadData();
                       },
                       backgroundColor: theme.primary,
-                      child: const Icon(Icons.add, color: Colors.white),
+                      elevation: 4,
+                      child: const Icon(
+                        Icons.add_rounded,
+                        color: Colors.white,
+                        size: 28,
+                      ),
                     ),
             );
           },
@@ -160,7 +175,9 @@ class _GymManagerPageState extends State<GymManagerPage> {
     FlutterFlowTheme theme,
   ) {
     if (model.isLoading) {
-      return Center(child: CircularProgressIndicator(color: theme.primary));
+      return Center(
+        child: CircularProgressIndicator(color: theme.primary, strokeWidth: 2),
+      );
     }
 
     return TabBarView(
@@ -170,8 +187,8 @@ class _GymManagerPageState extends State<GymManagerPage> {
         if (exercises.isEmpty) {
           return GymEmptyState(
             message: 'Sem exercícios para $day',
-            icon: Icons.fitness_center_outlined,
-            actionLabel: 'Adicionar',
+            icon: FontAwesomeIcons.dumbbell,
+            actionLabel: 'Adicionar Exercício',
             onAction: () async {
               await context.pushNamed(GymRegisterPage.routeName);
               await model.loadData();
@@ -195,50 +212,108 @@ class _GymManagerPageState extends State<GymManagerPage> {
       children: [
         // Action buttons row
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
           child: Row(
             children: [
               // Move all exercises button
               Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: () =>
-                      _showMoveAllDialog(context, model, day, exercises.length),
-                  icon: const Icon(Icons.drive_file_move, color: Colors.white),
-                  label: Text(
-                    'Mover Todos',
-                    style: theme.titleSmall.override(
-                      fontFamily: 'Outfit',
-                      color: Colors.white,
+                child: Container(
+                  height: 44,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.blueGrey.shade700,
+                        Colors.blueGrey.shade900,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.blueGrey.withValues(alpha: 0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueGrey,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () => _showMoveAllDialog(
+                        context,
+                        model,
+                        day,
+                        exercises.length,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const FaIcon(
+                            FontAwesomeIcons.rightToBracket,
+                            color: Colors.white,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Mover Todos',
+                            style: theme.titleSmall.override(
+                              fontFamily: 'Outfit',
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 12),
               // Shift/postpone button
               Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: () => _showShiftDayDialog(context, model, day),
-                  icon: const Icon(
-                    Icons.more_time_rounded,
-                    color: Colors.white,
-                  ),
-                  label: Text(
-                    'Adiar Treino',
-                    style: theme.titleSmall.override(
-                      fontFamily: 'Outfit',
-                      color: Colors.white,
+                child: Container(
+                  height: 44,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [theme.secondary, theme.primary],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: theme.primary.withValues(alpha: 0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.secondary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () => _showShiftDayDialog(context, model, day),
+                      borderRadius: BorderRadius.circular(12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const FaIcon(
+                            FontAwesomeIcons.clock,
+                            color: Colors.white,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Adiar Treino',
+                            style: theme.titleSmall.override(
+                              fontFamily: 'Outfit',
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -249,12 +324,25 @@ class _GymManagerPageState extends State<GymManagerPage> {
         // Selection hint
         if (model.isSelectionMode)
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                Text(
+                  'Toque para selecionar',
+                  style: theme.bodySmall.override(
+                    fontFamily: 'Inter',
+                    color: theme.secondaryText,
+                  ),
+                ),
                 TextButton(
                   onPressed: () => model.selectAll(day),
+                  style: TextButton.styleFrom(
+                    foregroundColor: theme.primary,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
                   child: const Text('Selecionar todos'),
                 ),
               ],
@@ -264,7 +352,11 @@ class _GymManagerPageState extends State<GymManagerPage> {
         Expanded(
           child: model.isSelectionMode
               ? ListView.builder(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    bottom: 80,
+                  ),
                   itemCount: exercises.length,
                   itemBuilder: (context, index) {
                     final exercise = exercises[index];
@@ -312,19 +404,30 @@ class _GymManagerPageState extends State<GymManagerPage> {
                                     child: Container(
                                       decoration: BoxDecoration(
                                         color: theme.primary.withValues(
-                                          alpha: 0.3,
+                                          alpha: 0.2,
                                         ),
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(16),
                                         border: Border.all(
                                           color: theme.primary,
-                                          width: 3,
+                                          width: 2,
                                         ),
                                       ),
-                                      child: const Center(
-                                        child: Icon(
-                                          Icons.check_circle,
-                                          color: Colors.white,
-                                          size: 48,
+                                      child: Align(
+                                        alignment: Alignment.topRight,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: theme.primary,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            padding: const EdgeInsets.all(4),
+                                            child: const Icon(
+                                              Icons.check,
+                                              color: Colors.white,
+                                              size: 16,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -338,7 +441,11 @@ class _GymManagerPageState extends State<GymManagerPage> {
                   },
                 )
               : ReorderableListView.builder(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    bottom: 80,
+                  ),
                   itemCount: exercises.length,
                   onReorder: (oldIndex, newIndex) {
                     model.reorderExercises(day, oldIndex, newIndex);
@@ -397,7 +504,7 @@ class _GymManagerPageState extends State<GymManagerPage> {
     FlutterFlowTheme theme,
   ) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16, top: 4),
+      padding: const EdgeInsets.only(bottom: 12, top: 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -405,7 +512,7 @@ class _GymManagerPageState extends State<GymManagerPage> {
             children: [
               Container(
                 width: 4,
-                height: 20,
+                height: 18,
                 decoration: BoxDecoration(
                   color: theme.tertiary,
                   borderRadius: BorderRadius.circular(2),
@@ -415,22 +522,24 @@ class _GymManagerPageState extends State<GymManagerPage> {
               Text(
                 workout.name,
                 style: theme.titleMedium.override(
-                  fontFamily: 'Outfit',
+                  fontFamily: 'Inter Tight',
                   color: theme.primaryText,
                   fontWeight: FontWeight.bold,
+                  fontSize: 16,
                 ),
               ),
             ],
           ),
           if (workout.description != null && workout.description!.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.only(left: 12, top: 4),
+              padding: const EdgeInsets.only(left: 12, top: 2),
               child: Text(
                 workout.description!,
                 style: theme.bodySmall.override(
-                  fontFamily: 'Outfit',
+                  fontFamily: 'Inter',
                   color: theme.secondaryText,
                   fontStyle: FontStyle.italic,
+                  fontSize: 12,
                 ),
               ),
             ),
@@ -448,12 +557,25 @@ class _GymManagerPageState extends State<GymManagerPage> {
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Mover Todos os Exercícios'),
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? const Color(0xFF1E1B2E)
+            : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(
+          'Mover Todos os Exercícios',
+          style: TextStyle(
+            fontFamily: 'Inter Tight',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Mover $count exercício(s) de $sourceDay para:'),
+            Text(
+              'Mover $count exercício(s) de $sourceDay para:',
+              style: const TextStyle(fontFamily: 'Inter'),
+            ),
             const SizedBox(height: 16),
             Wrap(
               spacing: 8,
@@ -463,6 +585,14 @@ class _GymManagerPageState extends State<GymManagerPage> {
                   .map(
                     (d) => ActionChip(
                       label: Text(d),
+                      backgroundColor: Theme.of(
+                        ctx,
+                      ).primaryColor.withValues(alpha: 0.1),
+                      side: BorderSide.none,
+                      labelStyle: TextStyle(
+                        color: Theme.of(ctx).primaryColor,
+                        fontWeight: FontWeight.w600,
+                      ),
                       onPressed: () async {
                         Navigator.pop(ctx);
                         await model.moveAllExercises(sourceDay, d);
@@ -473,6 +603,7 @@ class _GymManagerPageState extends State<GymManagerPage> {
                                 '$count exercício(s) movido(s) para $d',
                               ),
                               backgroundColor: Colors.green,
+                              behavior: SnackBarBehavior.floating,
                             ),
                           );
                         }
@@ -497,12 +628,25 @@ class _GymManagerPageState extends State<GymManagerPage> {
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Mover Selecionados'),
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? const Color(0xFF1E1B2E)
+            : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text(
+          'Mover Selecionados',
+          style: TextStyle(
+            fontFamily: 'Inter Tight',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Mover ${model.selectedCount} exercício(s) para:'),
+            Text(
+              'Mover ${model.selectedCount} exercício(s) para:',
+              style: const TextStyle(fontFamily: 'Inter'),
+            ),
             const SizedBox(height: 16),
             Wrap(
               spacing: 8,
@@ -511,6 +655,14 @@ class _GymManagerPageState extends State<GymManagerPage> {
                   .map(
                     (d) => ActionChip(
                       label: Text(d),
+                      backgroundColor: Theme.of(
+                        ctx,
+                      ).primaryColor.withValues(alpha: 0.1),
+                      side: BorderSide.none,
+                      labelStyle: TextStyle(
+                        color: Theme.of(ctx).primaryColor,
+                        fontWeight: FontWeight.w600,
+                      ),
                       onPressed: () async {
                         Navigator.pop(ctx);
                         final count = model.selectedCount;
@@ -522,6 +674,7 @@ class _GymManagerPageState extends State<GymManagerPage> {
                                 '$count exercício(s) movido(s) para $d',
                               ),
                               backgroundColor: Colors.green,
+                              behavior: SnackBarBehavior.floating,
                             ),
                           );
                         }
@@ -550,9 +703,20 @@ class _GymManagerPageState extends State<GymManagerPage> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Adiar Treino'),
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? const Color(0xFF1E1B2E)
+            : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text(
+          'Adiar Treino',
+          style: TextStyle(
+            fontFamily: 'Inter Tight',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         content: Text(
           'Isso moverá todos os treinos de $day para o dia seguinte, e assim por diante.\n\nTem certeza?',
+          style: const TextStyle(fontFamily: 'Inter'),
         ),
         actions: [
           TextButton(
@@ -563,7 +727,7 @@ class _GymManagerPageState extends State<GymManagerPage> {
             onPressed: () => Navigator.pop(ctx, true),
             child: const Text(
               'Sim, Adiar',
-              style: TextStyle(color: Colors.red),
+              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -577,6 +741,7 @@ class _GymManagerPageState extends State<GymManagerPage> {
           const SnackBar(
             content: Text('Agenda deslocada com sucesso!'),
             backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
           ),
         );
       }

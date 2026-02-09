@@ -356,39 +356,31 @@ class DarkModeTheme extends FlutterFlowTheme {
   @Deprecated('Use tertiary instead')
   Color get tertiaryColor => tertiary;
 
-  // Cores principais - tema roxo profissional
-  late Color primary = const Color(
-    0xFF9C7CF2,
-  ); // Roxo mais claro para destaque no escuro
-  late Color secondary = const Color(0xFFB388FF); // Lavanda
-  late Color tertiary = const Color(0xFFCE93D8); // Rosa lavanda
-  late Color alternate = const Color(
-    0xFF3D3A50,
-  ); // Roxo acinzentado para bordas
+  // Cores principais - tema roxo profissional dark
+  late Color primary = const Color(0xFF7C75FF); // Roxo claro neon
+  late Color secondary = const Color(0xFF9E99FF); // Roxo médio
+  late Color tertiary = const Color(0xFFC4C0FF); // Lavanda claro
+  late Color alternate = const Color(0xFF2B2645); // Roxo escuro alternativo
 
   // Textos - claros no modo escuro
-  late Color primaryText = const Color(0xFFF5F5F7); // Texto principal claro
-  late Color secondaryText = const Color(0xFFB8B8C7); // Texto secundário
+  late Color primaryText = const Color(0xFFFFFFFF); // Branco puro
+  late Color secondaryText = const Color(0xFFB5B0D5); // Cinza arroxeado claro
 
-  // Fundos - NÃO muito escuros (cinza médio com tom roxo)
-  late Color primaryBackground = const Color(
-    0xFF1E1B2E,
-  ); // Fundo principal (roxo escuro suave)
-  late Color secondaryBackground = const Color(
-    0xFF2D2A3E,
-  ); // Cards (roxo escuro mais claro)
+  // Fundos - modo escuro profundo
+  late Color primaryBackground = const Color(0xFF13111C); // Quase preto
+  late Color secondaryBackground = const Color(0xFF1E1B2E); // Card escuro
 
   // Acentos (uso sutil)
-  late Color accent1 = const Color(0x409C7CF2); // Roxo 25%
-  late Color accent2 = const Color(0x40B388FF); // Lavanda 25%
-  late Color accent3 = const Color(0x40CE93D8); // Rosa lavanda 25%
-  late Color accent4 = const Color(0x663D3A50); // Roxo acinzentado 40%
+  late Color accent1 = const Color(0x407C75FF); // Roxo 25%
+  late Color accent2 = const Color(0x409E99FF); // Roxo claro 25%
+  late Color accent3 = const Color(0x40C4C0FF); // Lavanda 25%
+  late Color accent4 = const Color(0x662B2645); // Roxo escuro 40%
 
   // Estados
-  late Color success = const Color(0xFF66BB6A); // Verde mais claro
-  late Color warning = const Color(0xFFFFB74D); // Laranja mais claro
-  late Color error = const Color(0xFFEF5350); // Vermelho mais claro
-  late Color info = const Color(0xFF7E57C2); // Roxo info
+  late Color success = const Color(0xFF69F0AE); // Verde menta
+  late Color warning = const Color(0xFFFFD740); // Amarelo
+  late Color error = const Color(0xFFFF8A80); // Vermelho claro
+  late Color info = const Color(0xFF82B1FF); // Azul claro
 }
 
 extension TextStyleHelper on TextStyle {

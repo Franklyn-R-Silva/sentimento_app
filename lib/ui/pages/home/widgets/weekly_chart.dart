@@ -85,123 +85,164 @@ class WeeklyChart extends StatelessWidget {
     }
 
     return Container(
-      height: 200,
-      padding: const EdgeInsets.only(right: 16, top: 16),
-      child: LineChart(
-        LineChartData(
-          gridData: FlGridData(
-            show: true,
-            drawVerticalLine: false,
-            horizontalInterval: 1,
-            getDrawingHorizontalLine: (value) {
-              return FlLine(
-                color: theme.alternate.withValues(alpha: 0.2),
-                strokeWidth: 1,
-                dashArray: [5, 5],
-              );
-            },
+      height: 240,
+      padding: const EdgeInsets.fromLTRB(16, 24, 24, 16),
+      decoration: BoxDecoration(
+        color: theme.secondaryBackground,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: theme.alternate.withValues(alpha: 0.3)),
+        boxShadow: [
+          BoxShadow(
+            color: theme.primaryText.withValues(alpha: 0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
           ),
-          titlesData: FlTitlesData(
-            show: true,
-            rightTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 8, bottom: 20),
+            child: Row(
+              children: [
+                Icon(Icons.show_chart_rounded, color: theme.primary, size: 20),
+                const SizedBox(width: 8),
+                Text(
+                  'Humor Semanal',
+                  style: theme.titleMedium.override(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-            topTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                reservedSize: 30,
-                interval: 1,
-                getTitlesWidget: (value, meta) {
-                  final emojis = ['😢', '😟', '😐', '🙂', '😄'];
-                  if (value.toInt() >= 1 && value.toInt() <= 5) {
-                    return Text(
-                      emojis[value.toInt() - 1],
-                      style: const TextStyle(fontSize: 12),
+          ),
+          Expanded(
+            child: LineChart(
+              LineChartData(
+                gridData: FlGridData(
+                  show: true,
+                  drawVerticalLine: false,
+                  horizontalInterval: 1,
+                  getDrawingHorizontalLine: (value) {
+                    return FlLine(
+                      color: theme.alternate.withValues(alpha: 0.3),
+                      strokeWidth: 1,
+                      dashArray: [4, 4],
                     );
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
-            ),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                reservedSize: 30,
-                interval: 1,
-                getTitlesWidget: (value, meta) {
-                  if (value.toInt() >= 0 && value.toInt() < 7) {
-                    return Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: Text(
-                        _weekDays[value.toInt()],
-                        style: theme.labelSmall.override(
-                          color: theme.secondaryText,
-                        ),
+                  },
+                ),
+                titlesData: FlTitlesData(
+                  show: true,
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 32,
+                      interval: 1,
+                      getTitlesWidget: (value, meta) {
+                        final emojis = ['😢', '😟', '😐', '🙂', '😄'];
+                        if (value.toInt() >= 1 && value.toInt() <= 5) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: Text(
+                              emojis[value.toInt() - 1],
+                              style: const TextStyle(fontSize: 14),
+                              textAlign: TextAlign.right,
+                            ),
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 24,
+                      interval: 1,
+                      getTitlesWidget: (value, meta) {
+                        if (value.toInt() >= 0 && value.toInt() < 7) {
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Text(
+                              _weekDays[value.toInt()],
+                              style: theme.labelSmall.override(
+                                color: theme.secondaryText,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
+                  ),
+                ),
+                borderData: FlBorderData(show: false),
+                minX: 0,
+                maxX: 6,
+                minY: 0.5,
+                maxY: 5.5,
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: spots,
+                    isCurved: true,
+                    curveSmoothness: 0.35,
+                    gradient: LinearGradient(
+                      colors: [theme.primary, theme.tertiary],
+                    ),
+                    barWidth: 4,
+                    isStrokeCapRound: true,
+                    dotData: FlDotData(
+                      show: true,
+                      getDotPainter: (spot, percent, barData, index) {
+                        return FlDotCirclePainter(
+                          radius: 5,
+                          color: theme.primaryBackground,
+                          strokeWidth: 3,
+                          strokeColor: theme.primary,
+                        );
+                      },
+                    ),
+                    belowBarData: BarAreaData(
+                      show: true,
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          theme.primary.withValues(alpha: 0.25),
+                          theme.primary.withValues(alpha: 0.0),
+                        ],
                       ),
-                    );
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
-            ),
-          ),
-          borderData: FlBorderData(show: false),
-          minX: 0,
-          maxX: 6,
-          minY: 1,
-          maxY: 5,
-          lineBarsData: [
-            LineChartBarData(
-              spots: spots,
-              isCurved: true,
-              curveSmoothness: 0.3,
-              gradient: LinearGradient(
-                colors: [theme.primary, theme.secondary],
-              ),
-              barWidth: 3,
-              isStrokeCapRound: true,
-              dotData: FlDotData(
-                show: true,
-                getDotPainter: (spot, percent, barData, index) {
-                  return FlDotCirclePainter(
-                    radius: 6,
-                    color: theme.primary,
-                    strokeWidth: 2,
-                    strokeColor: theme.secondaryBackground,
-                  );
-                },
-              ),
-              belowBarData: BarAreaData(
-                show: true,
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    theme.primary.withValues(alpha: 0.3),
-                    theme.primary.withValues(alpha: 0.0),
-                  ],
+                    ),
+                  ),
+                ],
+                lineTouchData: LineTouchData(
+                  touchTooltipData: LineTouchTooltipData(
+                    getTooltipColor: (_) => theme.primary,
+                    tooltipPadding: const EdgeInsets.all(8),
+                    getTooltipItems: (touchedSpots) {
+                      return touchedSpots.map((spot) {
+                        final emojis = ['😢', '😟', '😐', '🙂', '😄'];
+                        return LineTooltipItem(
+                          emojis[(spot.y.round() - 1).clamp(0, 4)],
+                          const TextStyle(fontSize: 24),
+                        );
+                      }).toList();
+                    },
+                  ),
+                  handleBuiltInTouches: true,
                 ),
               ),
             ),
-          ],
-          lineTouchData: LineTouchData(
-            touchTooltipData: LineTouchTooltipData(
-              getTooltipColor: (touchedSpot) => theme.secondaryBackground,
-              getTooltipItems: (touchedSpots) {
-                return touchedSpots.map((spot) {
-                  final emojis = ['😢', '😟', '😐', '🙂', '😄'];
-                  return LineTooltipItem(
-                    emojis[(spot.y.round() - 1).clamp(0, 4)],
-                    const TextStyle(fontSize: 24),
-                  );
-                }).toList();
-              },
-            ),
           ),
-        ),
+        ],
       ),
     );
   }

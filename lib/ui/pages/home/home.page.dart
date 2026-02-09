@@ -82,130 +82,205 @@ class _HomePageWidgetState extends State<HomePageWidget>
             floatingActionButton: FloatingActionButton.extended(
               onPressed: () => _showAddMoodSheet(context),
               backgroundColor: theme.primary,
-              elevation: 8,
+              elevation: 4,
               heroTag: 'home_add_mood_fab',
-              icon: const Icon(Icons.add_rounded, color: Colors.white),
+              icon: const Icon(
+                Icons.add_rounded,
+                color: Colors.white,
+                size: 28,
+              ),
               label: Text(
                 'Registrar',
                 style: theme.labelMedium.override(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  letterSpacing: 0.5,
                 ),
               ),
             ),
-            body: SafeArea(
-              child: model.isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : RefreshIndicator(
-                      onRefresh: _loadData,
-                      color: theme.primary,
-                      child: SingleChildScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Header with greeting
-                              HomeHeader(recentEntries: model.recentEntries)
-                                  .animate()
-                                  .fade(duration: 400.ms)
-                                  .slideY(begin: -0.2, end: 0),
-
-                              const SizedBox(height: 24),
-
-                              // Daily Quote
-                              const DailyQuoteWidget()
-                                  .animate()
-                                  .fade(delay: 50.ms)
-                                  .slideX(begin: -0.1, end: 0),
-
-                              const SizedBox(height: 24),
-
-                              // Streak widget
-                              MoodStreak(
-                                    streakDays: model.currentStreak,
-                                    longestStreak: model.longestStreak,
-                                  )
-                                  .animate()
-                                  .fade(delay: 100.ms)
-                                  .slideX(begin: 0.1, end: 0),
-
-                              const SizedBox(height: 24),
-
-                              // Weekly chart section
-                              Text('Sua Semana', style: theme.titleMedium),
-                              const SizedBox(height: 12),
-                              GradientCard(
-                                    margin: EdgeInsets.zero,
-                                    child: WeeklyChart(
-                                      entries: model.weeklyEntries,
+            body: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [theme.primaryBackground, theme.secondaryBackground],
+                  stops: const [0.0, 1.0],
+                ),
+              ),
+              child: SafeArea(
+                child: model.isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(color: theme.primary),
+                      )
+                    : RefreshIndicator(
+                        onRefresh: _loadData,
+                        color: theme.primary,
+                        backgroundColor: theme.secondaryBackground,
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 100),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Header with greeting
+                                HomeHeader(recentEntries: model.recentEntries)
+                                    .animate()
+                                    .fade(
+                                      duration: 600.ms,
+                                      curve: Curves.easeOut,
+                                    )
+                                    .slideY(
+                                      begin: -0.2,
+                                      end: 0,
+                                      curve: Curves.easeOut,
                                     ),
-                                  )
-                                  .animate()
-                                  .fade(delay: 150.ms)
-                                  .scale(
-                                    alignment: Alignment.bottomCenter,
-                                    begin: const Offset(0.9, 0.9),
-                                  ),
 
-                              const SizedBox(height: 24),
+                                const SizedBox(height: 32),
 
-                              // Recent entries
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Entradas Recentes',
-                                    style: theme.titleMedium,
+                                // Daily Quote
+                                const DailyQuoteWidget()
+                                    .animate()
+                                    .fade(delay: 200.ms, duration: 600.ms)
+                                    .slideX(
+                                      begin: -0.1,
+                                      end: 0,
+                                      curve: Curves.easeOut,
+                                    ),
+
+                                const SizedBox(height: 32),
+
+                                // Streak widget
+                                MoodStreak(
+                                      streakDays: model.currentStreak,
+                                      longestStreak: model.longestStreak,
+                                    )
+                                    .animate()
+                                    .fade(delay: 300.ms, duration: 600.ms)
+                                    .slideX(
+                                      begin: 0.1,
+                                      end: 0,
+                                      curve: Curves.easeOut,
+                                    ),
+
+                                const SizedBox(height: 32),
+
+                                // Weekly chart section
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 4,
                                   ),
-                                  TextButton(
-                                    onPressed: () {
-                                      // Navigate to journal - handled by bottom nav
-                                    },
-                                    child: Text(
-                                      'Ver todas',
-                                      style: theme.labelMedium.override(
-                                        color: theme.primary,
+                                  child: Text(
+                                    'Sua Semana',
+                                    style: theme.titleMedium.override(
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: -0.5,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                GradientCard(
+                                      margin: EdgeInsets.zero,
+                                      child: WeeklyChart(
+                                        entries: model.weeklyEntries,
                                       ),
-                                    ),
-                                  ),
-                                ],
-                              ).animate().fade().slideY(
-                                begin: 0.5,
-                                end: 0,
-                                delay: 200.ms,
-                              ),
-                              const SizedBox(height: 8),
-
-                              if (model.recentEntries.isEmpty)
-                                const HomeEmptyState().animate().fade().scale()
-                              else
-                                ...model.recentEntries
-                                    .take(5)
-                                    .toList()
-                                    .asMap()
-                                    .entries
-                                    .map(
-                                      (entry) =>
-                                          MoodCard(
-                                                entry: entry.value,
-                                                onTap: () {},
-                                              )
-                                              .animate(
-                                                delay: (100 * entry.key).ms,
-                                              )
-                                              .fade()
-                                              .slideX(begin: 0.2, end: 0),
+                                    )
+                                    .animate()
+                                    .fade(delay: 400.ms, duration: 600.ms)
+                                    .scale(
+                                      alignment: Alignment.bottomCenter,
+                                      begin: const Offset(0.95, 0.95),
+                                      curve: Curves.easeOut,
                                     ),
 
-                              const SizedBox(height: 100), // Space for FAB
-                            ],
+                                const SizedBox(height: 32),
+
+                                // Recent entries
+                                Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 4,
+                                          ),
+                                          child: Text(
+                                            'Entradas Recentes',
+                                            style: theme.titleMedium.override(
+                                              fontWeight: FontWeight.bold,
+                                              letterSpacing: -0.5,
+                                            ),
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            // Navigate to journal
+                                          },
+                                          style: TextButton.styleFrom(
+                                            foregroundColor: theme.primary,
+                                          ),
+                                          child: Text(
+                                            'Ver todas',
+                                            style: theme.labelMedium.override(
+                                              color: theme.primary,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                    .animate()
+                                    .fade(delay: 500.ms)
+                                    .slideY(
+                                      begin: 0.5,
+                                      end: 0,
+                                      curve: Curves.easeOut,
+                                    ),
+                                const SizedBox(height: 12),
+
+                                if (model.recentEntries.isEmpty)
+                                  const HomeEmptyState()
+                                      .animate()
+                                      .fade(duration: 600.ms)
+                                      .scale(curve: Curves.easeOut)
+                                else
+                                  ...model.recentEntries
+                                      .take(5)
+                                      .toList()
+                                      .asMap()
+                                      .entries
+                                      .map(
+                                        (entry) => Padding(
+                                          padding: const EdgeInsets.only(
+                                            bottom: 12,
+                                          ),
+                                          child:
+                                              MoodCard(
+                                                    entry: entry.value,
+                                                    onTap: () {},
+                                                  )
+                                                  .animate(
+                                                    delay:
+                                                        (500 +
+                                                                (100 *
+                                                                    entry.key))
+                                                            .ms,
+                                                  )
+                                                  .fade(duration: 600.ms)
+                                                  .slideX(
+                                                    begin: 0.2,
+                                                    end: 0,
+                                                    curve: Curves.easeOut,
+                                                  ),
+                                        ),
+                                      ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
+              ),
             ),
           );
         },

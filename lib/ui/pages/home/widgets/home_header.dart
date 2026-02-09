@@ -63,7 +63,7 @@ class _HomeHeaderState extends State<HomeHeader> {
     final theme = FlutterFlowTheme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -71,29 +71,19 @@ class _HomeHeaderState extends State<HomeHeader> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Text(
-                      _getGreeting(),
-                      style: theme.headlineMedium.override(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.5,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    const Text('👋', style: TextStyle(fontSize: 24)),
-                  ],
-                ),
-                const SizedBox(height: 4),
+                // Date pill with glass effect
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
+                    horizontal: 12,
+                    vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: theme.primary.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(20),
+                    color: theme.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(
+                      color: theme.primary.withValues(alpha: 0.2),
+                      width: 1,
+                    ),
                   ),
                   child: Text(
                     DateFormat(
@@ -103,9 +93,26 @@ class _HomeHeaderState extends State<HomeHeader> {
                     style: theme.labelSmall.override(
                       color: theme.primary,
                       fontWeight: FontWeight.bold,
-                      letterSpacing: 0.5,
+                      letterSpacing: 1.0,
+                      fontSize: 10,
                     ),
                   ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Text(
+                      _getGreeting(),
+                      style: theme.displaySmall.override(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -1.0,
+                        color: theme.primaryText,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    const Text('👋', style: TextStyle(fontSize: 28)),
+                  ],
                 ),
               ],
             ),
@@ -123,12 +130,15 @@ class _HomeHeaderState extends State<HomeHeader> {
                 color: theme.secondaryBackground,
                 boxShadow: [
                   BoxShadow(
-                    color: theme.primaryText.withValues(alpha: 0.1),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
+                    color: theme.primary.withValues(alpha: 0.2),
+                    blurRadius: 15,
+                    offset: const Offset(0, 5),
                   ),
                 ],
-                border: Border.all(color: theme.primaryBackground, width: 2),
+                border: Border.all(
+                  color: theme.primary.withValues(alpha: 0.1),
+                  width: 2,
+                ),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(25),

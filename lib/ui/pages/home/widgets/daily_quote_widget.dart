@@ -120,78 +120,149 @@ class _DailyQuoteWidgetState extends State<DailyQuoteWidget>
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: theme.secondaryBackground,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: theme.alternate.withValues(alpha: 0.5)),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            theme.secondaryBackground,
+            theme.secondaryBackground.withValues(alpha: 0.8),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: theme.primaryText.withValues(alpha: 0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+        border: Border.all(
+          color: theme.primary.withValues(alpha: 0.1),
+          width: 1,
+        ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.format_quote_rounded,
-                    color: theme.primary,
-                    size: 24,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Frase do Dia',
-                    style: theme.labelMedium.override(
-                      color: theme.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.copy,
-                      size: 20,
-                      color: theme.secondaryText,
-                    ),
-                    onPressed: _copyToClipboard,
-                    tooltip: 'Copiar',
-                  ),
-                  IconButton(
-                    icon: FaIcon(
-                      FontAwesomeIcons.whatsapp,
-                      size: 20,
-                      color: theme.success,
-                    ),
-                    onPressed: _shareToWhatsApp,
-                    tooltip: 'WhatsApp',
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          AutoSizeText(
-            '"$_quote"',
-            style: theme.bodyMedium.override(
-              fontStyle: FontStyle.italic,
-              color: theme.primaryText,
+          // Background decorative icon
+          Positioned(
+            right: -20,
+            top: -20,
+            child: Icon(
+              Icons.format_quote_rounded,
+              size: 140,
+              color: theme.primary.withValues(alpha: 0.05),
             ),
-            minFontSize: 12,
           ),
-          const SizedBox(height: 8),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              '- $_author',
-              style: theme.labelSmall.override(color: theme.secondaryText),
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: theme.primary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.auto_awesome_rounded,
+                            color: theme.primary,
+                            size: 14,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            'Frase do Dia',
+                            style: theme.labelSmall.override(
+                              color: theme.primary,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildActionButton(
+                          theme,
+                          Icons.copy_rounded,
+                          _copyToClipboard,
+                        ),
+                        const SizedBox(width: 8),
+                        _buildActionButton(
+                          theme,
+                          FontAwesomeIcons.whatsapp,
+                          _shareToWhatsApp,
+                          isFa: true,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                AutoSizeText(
+                  '"$_quote"',
+                  style: theme.titleMedium.override(
+                    fontStyle: FontStyle.italic,
+                    color: theme.primaryText,
+                    lineHeight: 1.4,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  minFontSize: 16,
+                  maxLines: 4,
+                ),
+                const SizedBox(height: 16),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    '— $_author',
+                    style: theme.labelMedium.override(
+                      color: theme.secondaryText,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildActionButton(
+    FlutterFlowTheme theme,
+    IconData icon,
+    VoidCallback onPressed, {
+    bool isFa = false,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: theme.primaryBackground,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: theme.alternate.withValues(alpha: 0.5)),
+          ),
+          child: isFa
+              ? FaIcon(icon, size: 16, color: theme.secondaryText)
+              : Icon(icon, size: 18, color: theme.secondaryText),
+        ),
       ),
     );
   }

@@ -183,101 +183,99 @@ class _GymExerciseCardState extends State<GymExerciseCard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    IntrinsicHeight(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // Reorder Handle
-                          if (widget.isReorderable && widget.index != null)
-                            ReorderableDragStartListener(
-                              index: widget.index!,
-                              key: ValueKey('drag_${widget.exercise.id}'),
-                              child: Container(
-                                alignment: Alignment.centerLeft,
-                                padding: const EdgeInsets.only(right: 12),
-                                child: Icon(
-                                  Icons.drag_indicator_rounded,
-                                  color: theme.secondaryText.withOpacity(0.5),
-                                  size: 20,
-                                ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Reorder Handle
+                        if (widget.isReorderable && widget.index != null)
+                          ReorderableDragStartListener(
+                            index: widget.index!,
+                            key: ValueKey('drag_${widget.exercise.id}'),
+                            child: Container(
+                              alignment: Alignment.centerLeft,
+                              padding: const EdgeInsets.only(right: 12),
+                              child: Icon(
+                                Icons.drag_indicator_rounded,
+                                color: theme.secondaryText.withOpacity(0.5),
+                                size: 20,
                               ),
                             ),
-                          // Content
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Exercise Name & Badges
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          AutoSizeText(
-                                            widget.exercise.name,
-                                            style: theme.titleMedium.override(
-                                              fontFamily: 'Outfit',
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18,
-                                              color: isCompleted
-                                                  ? theme.secondaryText
-                                                  : theme.primaryText,
-                                              decoration: isCompleted
-                                                  ? TextDecoration.lineThrough
-                                                  : null,
-                                            ),
-                                            maxLines: 2,
-                                          ),
-                                          const SizedBox(height: 6),
-                                          Wrap(
-                                            spacing: 6,
-                                            runSpacing: 4,
-                                            children: [
-                                              if (widget.exercise.category !=
-                                                  null)
-                                                _buildBadge(
-                                                  theme,
-                                                  label:
-                                                      widget.exercise.category!,
-                                                  color: _getCategoryColor(
-                                                    widget.exercise.category,
-                                                  ),
-                                                ),
-                                              if (widget.exercise.muscleGroup !=
-                                                  null)
-                                                _buildBadge(
-                                                  theme,
-                                                  label: widget
-                                                      .exercise
-                                                      .muscleGroup!,
-                                                  color: _getMuscleGroupColor(
-                                                    widget.exercise.muscleGroup,
-                                                  ),
-                                                ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    // Checkbox Area
-                                    Column(
+                          ),
+                        // Content
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Exercise Name & Badges
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        _buildAnimatedCheckbox(
-                                          isCompleted,
-                                          theme,
+                                        AutoSizeText(
+                                          widget.exercise.name,
+                                          style: theme.titleMedium.override(
+                                            fontFamily: 'Outfit',
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                            color: isCompleted
+                                                ? theme.secondaryText
+                                                : theme.primaryText,
+                                            decoration: isCompleted
+                                                ? TextDecoration.lineThrough
+                                                : null,
+                                          ),
+                                          maxLines: 2,
+                                        ),
+                                        const SizedBox(height: 6),
+                                        Wrap(
+                                          spacing: 6,
+                                          runSpacing: 4,
+                                          children: [
+                                            if (widget.exercise.category !=
+                                                null)
+                                              _buildBadge(
+                                                theme,
+                                                label:
+                                                    widget.exercise.category!,
+                                                color: _getCategoryColor(
+                                                  widget.exercise.category,
+                                                ),
+                                              ),
+                                            if (widget.exercise.muscleGroup !=
+                                                null)
+                                              _buildBadge(
+                                                theme,
+                                                label: widget
+                                                    .exercise
+                                                    .muscleGroup!,
+                                                color: _getMuscleGroupColor(
+                                                  widget.exercise.muscleGroup,
+                                                ),
+                                              ),
+                                          ],
                                         ),
                                       ],
                                     ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                                  ),
+                                  // Checkbox Area
+                                  Column(
+                                    children: [
+                                      _buildAnimatedCheckbox(
+                                        isCompleted,
+                                        theme,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 16),
                     // Exercise Info (Sets, Reps, etc.)
